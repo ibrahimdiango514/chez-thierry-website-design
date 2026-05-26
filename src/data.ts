@@ -67,30 +67,28 @@ export const RESTAURANT_MENU: MenuItem[] = [
 ];
 
 export const ROOFTOP_MENU: MenuItem[] = [
-  // FOOD
-  { id: 'rf1', name: 'Tenders', price: 5000, category: 'Food' },
-  { id: 'rf2', name: 'Wings', price: 4000, category: 'Food' },
-  { id: 'rf3', name: 'Smash Burger', price: 4500, category: 'Food' },
-  { id: 'rf4', name: 'Double Smash', price: 7000, category: 'Food' },
-  { id: 'rf5', name: 'Burger Chicken', price: 4000, category: 'Food' },
-  { id: 'rf6', name: 'Brochettes boeuf', price: 6000, category: 'Food' },
-  { id: 'rf7', name: 'Carpe grillée', price: 7000, category: 'Food' },
+  // BURGERS & FRIED FOOD
+  { id: 'rf1', name: 'Smash Burger', price: 5000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf2', name: 'Double Smash', price: 7000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf3', name: 'Chicken Burger', price: 6000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf4', name: 'Tenders', price: 5000, category: 'Burgers & Fried Food', description: '5 pièces croustillantes, sauce maison, frites' },
+  { id: 'rf5', name: 'Wings Signature', price: 4000, category: 'Burgers & Fried Food', description: 'Wings laquées, sésame & herbes fraîches, frites' },
 
-  // DRINKS - MOCKTAILS
-  { id: 'rd1', name: 'Mocktail Palmier Fresh', price: 2500, category: 'Mocktails' },
-  { id: 'rd2', name: 'Mocktail Blue Mango', price: 2500, category: 'Mocktails' },
-  { id: 'rd3', name: 'Mocktail Piña Fresh', price: 2500, category: 'Mocktails' },
-  { id: 'rd4', name: 'Mocktail Sunrise Gingembre', price: 2500, category: 'Mocktails' },
-  { id: 'rd5', name: 'Mocktail Green Lemon', price: 2500, category: 'Mocktails' },
+  // GRILL & AFRICAN TOUCH
+  { id: 'rg1', name: 'Brochettes Grillées', price: 6000, category: 'Grill & African Touch', description: '3 brochettes bœuf marinées, tomates, oignons, frites' },
+  { id: 'rg2', name: 'Carpe Grillée', price: 7500, category: 'Grill & African Touch', description: 'Carpe entière, sauce tomate/oignon, attiéké ou alloco' },
 
-  // DRINKS - COCKTAILS
-  { id: 'rd6', name: 'Cocktail Palmier Signature', price: 4000, category: 'Cocktails' },
-  { id: 'rd7', name: 'Cocktail Blue Sunset', price: 4000, category: 'Cocktails' },
-  { id: 'rd8', name: 'Cocktail Piña Colada', price: 4000, category: 'Cocktails' },
-  { id: 'rd9', name: 'Cocktail Gingembre Sunrise', price: 4000, category: 'Cocktails' },
-  { id: 'rd10', name: 'Cocktail Mint Vodka', price: 4000, category: 'Cocktails' },
-
-  // SUGGESTIONS
-  { id: 'rs1', name: 'Tasty Crousty', price: 6000, category: 'Suggestions' },
-  { id: 'rs2', name: 'Cocktail Glitter', price: 5000, category: 'Suggestions' },
+  // COCKTAILS
+  { id: 'rc1', name: 'Pina Fresh', price: 3000, category: 'Cocktails' },
+  { id: 'rc2', name: 'Pina Colada', price: 4500, category: 'Cocktails' },
+  { id: 'rc3', name: 'Palmier Fresh', price: 2500, category: 'Cocktails' },
+  { id: 'rc4', name: 'Blue Mango', price: 2500, category: 'Cocktails' },
+  { id: 'rc5', name: 'Sunrise Gingembre', price: 2500, category: 'Cocktails' },
+  { id: 'rc6', name: 'Green Lemon', price: 2500, category: 'Cocktails' },
+  { id: 'rc7', name: 'Palmier Signature', price: 4000, category: 'Cocktails' },
+  { id: 'rc8', name: 'Blue Sunset', price: 4000, category: 'Cocktails' },
+  { id: 'rc9', name: 'Gingembre Sunrise', price: 4000, category: 'Cocktails' },
+  { id: 'rc10', name: 'Mint Vodka', price: 4000, category: 'Cocktails' },
+  { id: 'rc11', name: 'Tasty Crousty', price: 6000, category: 'Cocktails' },
+  { id: 'rc12', name: 'Cocktail Glitter', price: 5000, category: 'Cocktails' },
 ];
