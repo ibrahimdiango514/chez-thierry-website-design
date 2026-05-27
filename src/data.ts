@@ -67,16 +67,16 @@ export const RESTAURANT_MENU: MenuItem[] = [
 ];
 
 export const ROOFTOP_MENU: MenuItem[] = [
-  // BURGERS & FRIED FOOD
-  { id: 'rf1', name: 'Smash Burger', price: 5000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
-  { id: 'rf2', name: 'Double Smash', price: 7000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
-  { id: 'rf3', name: 'Chicken Burger', price: 6000, category: 'Burgers & Fried Food', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
-  { id: 'rf4', name: 'Tenders', price: 5000, category: 'Burgers & Fried Food', description: '5 pièces croustillantes, sauce maison, frites' },
-  { id: 'rf5', name: 'Wings Signature', price: 4000, category: 'Burgers & Fried Food', description: 'Wings laquées, sésame & herbes fraîches, frites' },
+  // BURGERS & FRITURES
+  { id: 'rf1', name: 'Smash Burger', price: 5000, category: 'Burgers & Fritures', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf2', name: 'Double Smash', price: 7000, category: 'Burgers & Fritures', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf3', name: 'Chicken Burger', price: 6000, category: 'Burgers & Fritures', description: 'Cheddar fondant, salade fraîche, sauce maison, frites' },
+  { id: 'rf4', name: 'Tenders', price: 5000, category: 'Burgers & Fritures', description: '5 pièces croustillantes, sauce maison, frites' },
+  { id: 'rf5', name: 'Wings Signature', price: 4000, category: 'Burgers & Fritures', description: 'Wings laquées, sésame & herbes fraîches, frites' },
 
-  // GRILL & AFRICAN TOUCH
-  { id: 'rg1', name: 'Brochettes Grillées', price: 6000, category: 'Grill & African Touch', description: '3 brochettes bœuf marinées, tomates, oignons, frites' },
-  { id: 'rg2', name: 'Carpe Grillée', price: 7500, category: 'Grill & African Touch', description: 'Carpe entière, sauce tomate/oignon, attiéké ou alloco' },
+  // GRILL & TOUCHE AFRICAINE
+  { id: 'rg1', name: 'Brochettes Grillées', price: 6000, category: 'Grill & Touche Africaine', description: '3 brochettes bœuf marinées, tomates, oignons, frites' },
+  { id: 'rg2', name: 'Carpe Grillée', price: 7500, category: 'Grill & Touche Africaine', description: 'Carpe entière, sauce tomate/oignon, attiéké ou alloco' },
 
   // COCKTAILS
   { id: 'rc1', name: 'Pina Fresh', price: 3000, category: 'Cocktails' },
