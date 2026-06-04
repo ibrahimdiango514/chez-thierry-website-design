@@ -4,6 +4,7 @@ export interface MenuItem {
   price: number;
   category: string;
   description?: string;
+  composants?: string;
 }
 
 export interface CartItem {
