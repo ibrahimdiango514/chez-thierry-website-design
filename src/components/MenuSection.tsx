@@ -24,13 +24,10 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
   return (
     <div className="w-full bg-neutral-950 text-white py-12 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
-        
-        {/* Search & Categories Header */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
           <h2 className="text-2xl md:text-3xl font-bold font-playfair border-l-4 border-amber-500 pl-4 text-white">
             {isRooftop ? 'Menu Rooftop Le Palmier' : 'Menu Restaurant Chez Thierry'}
           </h2>
-          
           <div className="relative w-full md:w-80">
             <input
               type="text"
@@ -43,7 +40,6 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
           </div>
         </div>
 
-        {/* Category Tabs */}
         <div className="flex overflow-x-auto pb-4 gap-2 scrollbar-hide mb-8">
           {categories.map((category) => (
             <button
@@ -60,7 +56,6 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
           ))}
         </div>
 
-        {/* Menu Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <div
@@ -78,9 +73,14 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
                     {item.description}
                   </p>
                 )}
+                {item.composants && (
+                  <p className="text-amber-500/80 text-xs mt-2 leading-relaxed border-t border-neutral-800/50 pt-2">
+                    📋 {item.composants}
+                  </p>
+                )}
               </div>
 
-              <div className="flex items-center justify-between mt-6 pt-3 border-t border-neutral-800/40">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-800/40">
                 <div className="flex flex-col">
                   <span className="text-xl font-bold text-amber-400">
                     {item.price.toLocaleString()} F
@@ -111,7 +111,6 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
             Aucun article trouvé dans cette catégorie.
           </div>
         )}
-
       </div>
     </div>
   );
