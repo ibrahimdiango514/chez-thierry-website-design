@@ -1,0 +1,89 @@
+# ─────────────────────────────────────────────────────────────
+# 🛰️ SURVEILLANCE UPTIME — Chez Thierry x Le Palmier
+# Vérifie toutes les 30 minutes que le site est en ligne :
+#   - racine (/) → HTTP 200
+#   - Menu Digital (/menu) → HTTP 200
+#   - contenu (marqueur "Chef Thierry" présent)
+# En cas d'anomalie : ouvre un ticket GitHub (label "uptime").
+# Quand tout est rétabli : ferme automatiquement le ticket.
+# Aucune modification du site — 100 % côté GitHub Actions.
+# ─────────────────────────────────────────────────────────────
+name: Uptime Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # toutes les 30 minutes
+  workflow_dispatch:          # déclenchement manuel possible
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  uptime:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifications HTTP (racine, /menu, contenu)
+        id: checks
+        run: |
+          set +e
+          R=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://chezthierryxlepalmier.com/" 2>/dev/null)
+          M=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://chezthierryxlepalmier.com/menu" 2>/dev/null)
+          C=$(curl -s --max-time 25 "https://chezthierryxlepalmier.com/menu" 2>/dev/null | grep -c "Chef Thierry")
+          echo "root=$R"
+          echo "menu=$M"
+          echo "content=$C"
+          echo "root=$R" >> "$GITHUB_OUTPUT"
+          echo "menu=$M" >> "$GITHUB_OUTPUT"
+          echo "content=$C" >> "$GITHUB_OUTPUT"
+
+      - name: Ouvrir un ticket si anomalie
+        if: steps.checks.outputs.root != '200' || steps.checks.outputs.menu != '200' || steps.checks.outputs.content == '0'
+        env:
+          ROOT: ${{ steps.checks.outputs.root }}
+          MENU: ${{ steps.checks.outputs.menu }}
+          CONTENT: ${{ steps.checks.outputs.content }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'uptime';
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: [label],
+            });
+            if (open.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: [label],
+                title: '🚨 Alerte uptime — le site Chez Thierry ne répond pas correctement',
+                body: `Détection automatique le ${new Date().toISOString()}\n\n` +
+                      `- Racine (https://chezthierryxlepalmier.com/) : HTTP ${process.env.ROOT}\n` +
+                      `- /menu : HTTP ${process.env.MENU}\n` +
+                      `- Contenu (marqueur « Chef Thierry ») : ${process.env.CONTENT === '0' ? 'ABSENT' : 'présent'}\n\n` +
+                      `🔎 Vérifier : build Netlify (statut du dernier déploiement), DNS, certificat SSL.`,
+              });
+            }
+
+      - name: Fermer le ticket si tout est rétabli
+        if: steps.checks.outputs.root == '200' && steps.checks.outputs.menu == '200' && steps.checks.outputs.content != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'uptime';
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: [label],
+            });
+            for (const issue of open) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+              });
+            }
