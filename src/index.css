@@ -164,3 +164,96 @@ body {
   opacity: 0;
   animation: word-reveal 0.8s ease-out forwards, word-glow 3s ease-in-out infinite;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   🤖 ASSISTANT — animations d'apparition, d'accueil et d'attention
+   ───────────────────────────────────────────────────────────── */
+
+/* Apparition du bouton au chargement (échelle + fondu) */
+@keyframes assistant-enter {
+  0% { opacity: 0; transform: translateY(24px) scale(0.5); }
+  60% { opacity: 1; transform: translateY(-4px) scale(1.06); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.assistant-enter {
+  animation: assistant-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Flottement doux et continu (avatar vivant) */
+@keyframes assistant-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+.assistant-float {
+  animation: assistant-float 3.5s ease-in-out infinite;
+}
+
+/* Anneau d'attention discret qui se déploie */
+@keyframes assistant-ring {
+  0% { transform: scale(0.9); opacity: 0.55; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+.assistant-ring {
+  animation: assistant-ring 2.2s ease-out infinite;
+}
+
+/* Petit signe de la main 👋 périodique */
+@keyframes assistant-wave {
+  0% { opacity: 0; transform: translateY(8px) scale(0.4) rotate(0deg); }
+  15% { opacity: 1; transform: translateY(0) scale(1) rotate(-14deg); }
+  30% { transform: rotate(12deg); }
+  45% { transform: rotate(-10deg); }
+  60% { transform: rotate(8deg); }
+  75% { transform: rotate(0deg) scale(1); opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.8); }
+}
+.assistant-wave {
+  animation: assistant-wave 2.4s ease-in-out forwards;
+}
+
+/* Apparition de la bulle de bienvenue */
+@keyframes assistant-bubble-in {
+  0% { opacity: 0; transform: translateY(14px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.assistant-bubble-in {
+  animation: assistant-bubble-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Disparition douce de la bulle */
+@keyframes assistant-bubble-out {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(10px) scale(0.95); }
+}
+.assistant-bubble-out {
+  animation: assistant-bubble-out 0.4s ease-in forwards;
+}
+
+/* Réaction pendant l'attente (avatar qui hoche la tête) */
+@keyframes assistant-thinking {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(-3deg); }
+  75% { transform: translateY(-3px) rotate(3deg); }
+}
+.assistant-thinking {
+  animation: assistant-thinking 0.8s ease-in-out infinite;
+}
+
+/* Petit "pop" au clic */
+@keyframes assistant-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.assistant-pop {
+  animation: assistant-pop 0.3s ease-out;
+}
+
+/* Étiquette "Besoin d'aide ?" qui glisse */
+@keyframes assistant-hint-in {
+  0% { opacity: 0; transform: translateX(12px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.assistant-hint-in {
+  animation: assistant-hint-in 0.4s ease-out forwards;
+}

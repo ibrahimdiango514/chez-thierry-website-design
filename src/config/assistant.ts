@@ -17,11 +17,23 @@ export const ASSISTANT_CONFIG = {
   /** 👤 Nom de l'assistant (identité de marque Chez Thierry) */
   name: 'Chef Thierry',
 
-  /** 🖼️ Image / avatar du personnage (déposée dans public/images/assistant/) */
-  avatar: '/images/assistant/assistant-avatar.jpg',
+  /** 🖼️ Avatar 3D du personnage (déposée dans public/images/assistant/) */
+  avatar: '/images/assistant/assistant-avatar-3d.jpg',
 
   /** 👋 Message d'accueil (l'heure est ajoutée automatiquement : Bonjour/Bonsoir) */
   welcome: 'Je peux vous aider à choisir un plat, découvrir notre carte ou préparer votre commande.',
+
+  /**
+   * 💬 Bulle de bienvenue affichée à l'arrivée (avant tout clic),
+   * pour que le client comprenne immédiatement qu'un assistant existe.
+   */
+  bubble: 'Bonjour 👋 Je suis l’assistant Chez Thierry. Je peux vous aider à découvrir notre carte et préparer votre commande.',
+  /** Durée d'affichage de la bulle (ms) avant qu'elle ne disparaisse seule */
+  bubbleDuration: 12000,
+  /** Délai avant l'apparition de la bulle au chargement (ms) */
+  bubbleDelay: 1200,
+  /** Étiquette discrète sous l'avatar (hover/desktop) */
+  hint: 'Besoin d’aide ?',
 
   /** 🤖 FUTUR : URL du webhook n8n / API externe (vide pour l'instant) */
   webhookUrl: env('VITE_ASSISTANT_WEBHOOK_URL'),

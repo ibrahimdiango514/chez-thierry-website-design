@@ -24,9 +24,47 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
+  const [bubbleOut, setBubbleOut] = useState(false);
+  const [showWave, setShowWave] = useState(false);
+  const [pop, setPop] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  /* Réponse : externe (n8n) si configurée, sinon moteur local */
+  /* ── Bulle de bienvenue + salutation 👋 périodique ─────────────────── */
+  useEffect(() => {
+    const inT = setTimeout(() => setShowBubble(true), ASSISTANT_CONFIG.bubbleDelay);
+    const outT = setTimeout(
+      () => {
+        setBubbleOut(true);
+        setTimeout(() => {
+          setShowBubble(false);
+          setBubbleOut(false);
+        }, 450);
+      },
+      ASSISTANT_CONFIG.bubbleDelay + ASSISTANT_CONFIG.bubbleDuration
+    );
+    return () => {
+      clearTimeout(inT);
+      clearTimeout(outT);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (open) return;
+    const first = setTimeout(() => setShowWave(true), ASSISTANT_CONFIG.bubbleDelay + 8000);
+    const interval = setInterval(() => {
+      setShowWave(false);
+      setTimeout(() => setShowWave(true), 120);
+      setTimeout(() => setShowWave(false), 2600);
+    }, 16000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(interval);
+    };
+  }, [open]);
+
+  /* ── Réponse : externe (n8n) si configurée, sinon moteur local ─────── */
   const getReply = async (text: string): Promise<string> => {
     if (ASSISTANT_CONFIG.useExternalAI && ASSISTANT_CONFIG.webhookUrl) {
       try {
@@ -48,8 +86,17 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
     return respond(text, cartInfo);
   };
 
-  /* Salutation automatique à l'ouverture */
-  const openChat = () => {
+  /* ── Défilement auto ───────────────────────────────────────────────── */
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages, typing, open]);
+
+  /* ── Ouverture : bulle → disparaît, avatar pop ─────────────────────── */
+  const handleOpen = () => {
+    setPop(true);
+    setTimeout(() => setPop(false), 320);
+    setShowBubble(false);
+    setBubbleOut(false);
     setOpen((prev) => {
       if (!prev && messages.length === 0) {
         setMessages([{ id: ++msgId, from: 'assistant', text: welcomeMessage() }]);
@@ -57,11 +104,6 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
       return !prev;
     });
   };
-
-  /* Défilement auto vers le bas */
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, typing, open]);
 
   const send = async (raw?: string) => {
     const text = (raw ?? input).trim();
@@ -76,35 +118,92 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
 
   return (
     <>
-      {/* 🤖 Bouton flottant — discret, en bas à droite */}
-      <button
-        onClick={openChat}
-        aria-label={open ? 'Fermer l’assistant' : `Discuter avec ${ASSISTANT_CONFIG.name}`}
-        className="fixed bottom-24 right-4 md:right-6 z-40 group"
+      {/* 🤖 Bouton flottant — avatar 3D animé, discret */}
+      <div
+        className="fixed bottom-24 right-4 md:right-6 z-40 flex items-end justify-end gap-3"
+        onMouseEnter={() => setShowHint(true)}
+        onMouseLeave={() => setShowHint(false)}
       >
-        <span className="relative flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-amber-500/50 bg-neutral-900 shadow-2xl shadow-black/50 transition-transform hover:scale-105 active:scale-95 overflow-hidden">
-          <img
-            src={ASSISTANT_CONFIG.avatar}
-            alt={ASSISTANT_CONFIG.name}
-            className="h-full w-full object-cover"
-          />
-          <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-neutral-950" />
-        </span>
-      </button>
+        {/* Étiquette "Besoin d'aide ?" (desktop/hover) */}
+        {showHint && !open && (
+          <div className="hidden md:block mb-4 assistant-hint-in">
+            <span className="bg-neutral-900/95 backdrop-blur-md border border-amber-500/30 text-amber-300 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+              {ASSISTANT_CONFIG.hint}
+            </span>
+          </div>
+        )}
+
+        {/* Bulle de bienvenue (première visite) */}
+        {showBubble && !open && (
+          <div className={`relative mb-4 max-w-[240px] sm:max-w-[260px] ${bubbleOut ? 'assistant-bubble-out' : 'assistant-bubble-in'}`}>
+            <div className="relative bg-neutral-900/95 backdrop-blur-md border border-amber-500/30 rounded-2xl rounded-br-md px-4 py-3 shadow-2xl">
+              <button
+                onClick={() => {
+                  setBubbleOut(true);
+                  setTimeout(() => {
+                    setShowBubble(false);
+                    setBubbleOut(false);
+                  }, 400);
+                }}
+                aria-label="Fermer le message de bienvenue"
+                className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-slate-300 flex items-center justify-center transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+              <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-line">
+                {ASSISTANT_CONFIG.bubble}
+              </p>
+              <p className="text-[11px] text-amber-400 font-bold mt-2 flex items-center gap-1">
+                👆 Touchez ici pour me parler
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Avatar animé */}
+        <button
+          onClick={handleOpen}
+          aria-label={open ? 'Fermer l’assistant' : `Discuter avec ${ASSISTANT_CONFIG.name}`}
+          className={`relative assistant-enter ${pop ? 'assistant-pop' : ''}`}
+        >
+          {/* Anneau d'attention */}
+          <span className="absolute inset-0 rounded-full border-2 border-amber-500/60 assistant-ring" />
+          {/* Avatar flottant */}
+          <span className="relative flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-amber-500/50 bg-neutral-900 shadow-2xl shadow-black/50 overflow-hidden">
+            <img
+              src={ASSISTANT_CONFIG.avatar}
+              alt={ASSISTANT_CONFIG.name}
+              className={`h-full w-full object-cover ${open ? '' : 'assistant-float'}`}
+            />
+            <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-neutral-950" />
+          </span>
+          {/* 👋 Salutation périodique */}
+          {showWave && !open && (
+            <span className="absolute -top-2 -right-2 text-2xl assistant-wave pointer-events-none">
+              👋
+            </span>
+          )}
+        </button>
+      </div>
 
       {/* 💬 Fenêtre de discussion */}
       {open && (
         <div className="fixed bottom-40 right-3 md:right-6 z-50 w-[calc(100vw-1.5rem)] max-w-sm flex flex-col rounded-3xl border border-neutral-800 bg-neutral-950/95 backdrop-blur-md shadow-2xl overflow-hidden animate-fade-in-up">
           {/* En-tête */}
           <div className="flex items-center gap-3 px-4 py-3 bg-neutral-900/60 border-b border-neutral-800">
-            <img
-              src={ASSISTANT_CONFIG.avatar}
-              alt={ASSISTANT_CONFIG.name}
-              className="h-10 w-10 rounded-full object-cover border border-amber-500/40"
-            />
+            <div className="relative h-10 w-10 flex-shrink-0">
+              <img
+                src={ASSISTANT_CONFIG.avatar}
+                alt={ASSISTANT_CONFIG.name}
+                className={`h-10 w-10 rounded-full object-cover border border-amber-500/40 ${typing ? 'assistant-thinking' : ''}`}
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-500 border-2 border-neutral-950" />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-white truncate">{ASSISTANT_CONFIG.name}</p>
-              <p className="text-[11px] text-green-400 font-semibold">● En ligne — {getGreeting()}</p>
+              <p className="text-[11px] text-green-400 font-semibold">
+                {typing ? 'réfléchit…' : `● En ligne — ${getGreeting()}`}
+              </p>
             </div>
             <button
               onClick={() => setOpen(false)}
