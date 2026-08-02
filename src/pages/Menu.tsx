@@ -19,6 +19,7 @@ import { RESTAURANT_MENU, ROOFTOP_MENU, RESTAURANT_SPECIAL_DISH } from '../data'
 import { MenuItem, OrderMode } from '../types';
 import { Footer } from '../components/Footer';
 import { DishImage, CATEGORY_EMOJIS } from '../components/DishImage';
+import { QRCodeSection } from '../components/QRCodeSection';
 import { Assistant } from '../components/Assistant';
 
 type Establishment = 'restaurant' | 'rooftop';
@@ -903,6 +904,9 @@ export default function Menu() {
           </p>
         </section>
       </main>
+
+      {/* 📱 QR Code — Menu Digital Chez Thierry (uniquement sur /menu) */}
+      <QRCodeSection variant="menu" />
 
       <Footer />
 

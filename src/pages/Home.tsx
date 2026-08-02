@@ -496,8 +496,8 @@ export default function Home() {
         onClearCart={handleClearCart}
       />
 
-      {/* 📱 Section QR Codes — Site Officiel + Menu Digital */}
-      <QRCodeSection />
+      {/* 📱 QR Code — Site Officiel Chez Thierry (uniquement sur le site principal) */}
+      <QRCodeSection variant="site" />
 
       {/* Footer */}
       <Footer />
