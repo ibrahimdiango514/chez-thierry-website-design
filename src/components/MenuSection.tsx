@@ -158,7 +158,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
                         }`}
                       >
                         <Plus className="w-4 h-4 stroke-[2.5]" />
-                        <span>Commander</span>
+                        <span>Ajouter au panier</span>
                       </button>
                     </div>
                   </div>

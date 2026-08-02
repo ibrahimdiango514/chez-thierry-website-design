@@ -5,10 +5,11 @@ import { ASSISTANT_CONFIG } from '../config/assistant';
 import { Establishment } from '../lib/restaurantKnowledge';
 import {
   getGreeting,
-  respond,
   welcomeMessage,
+  handleMessage,
   AssistantContext,
   AssistantState,
+  CartEntry,
   ChatTurn,
 } from '../lib/assistantEngine';
 
@@ -19,22 +20,33 @@ interface ChatMessage {
 }
 
 interface AssistantProps {
-  /** Contexte optionnel (panier) pour des réponses plus personnalisées */
+  /** Contexte léger (résumé du panier) pour des réponses personnalisées */
   cartInfo?: AssistantContext;
-  /**
-   * Callback d'ajout au panier — appelé quand l'assistant ajoute un plat
-   * (après confirmation du client). Permet de connecter l'assistant au
-   * panier réel du site.
-   */
-  onAddToCart?: (item: MenuItem, section: Establishment) => void;
+  /** Contenu réel du panier (pour retirer / modifier les quantités) */
+  cart?: CartEntry[];
+  /** Ajout d'un article (après confirmation du client) */
+  onAddToCart?: (item: MenuItem, section: Establishment, quantity: number) => void;
+  /** Retrait d'un article (après confirmation) */
+  onRemoveFromCart?: (itemId: string) => void;
+  /** Mise à jour d'une quantité (après confirmation) */
+  onUpdateQuantity?: (itemId: string, quantity: number) => void;
+  /** Vider le panier (après confirmation) */
+  onClearCart?: () => void;
 }
 
-/** Suggestions rapides (discrètes, faciles à taper pour tous les âges) */
-const QUICK_SUGGESTIONS = ['📖 Le menu', '🌟 Recommande-moi', '🍕 Les pizzas', '🍰 Les desserts', '🛒 Commander'];
+/** Suggestions rapides (discrètes, faciles pour tous les âges) */
+const QUICK_SUGGESTIONS = ['📖 Le menu', '🌟 Recommande-moi', '🍕 Les pizzas', '🍰 Les desserts', '🛒 Mon panier'];
 
 let msgId = 0;
 
-export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) => {
+export const Assistant: React.FC<AssistantProps> = ({
+  cartInfo,
+  cart,
+  onAddToCart,
+  onRemoveFromCart,
+  onUpdateQuantity,
+  onClearCart,
+}) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -46,6 +58,7 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) =
   const [showHint, setShowHint] = useState(false);
   const [engineState, setEngineState] = useState<AssistantState>({});
   const scrollRef = useRef<HTMLDivElement>(null);
+  const historyRef = useRef<ChatTurn[]>([]);
 
   /* ── Bulle de bienvenue + salutation 👋 périodique ─────────────────── */
   useEffect(() => {
@@ -80,39 +93,19 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) =
     };
   }, [open]);
 
-  /* ── Historique pour le contexte conversationnel ───────────────────── */
-  const historyRef = useRef<ChatTurn[]>([]);
-
-  /* ── Réponse : externe (n8n) si configurée, sinon moteur local ─────── */
-  const getReply = async (text: string): Promise<{ reply: string; actions: { type: 'addToCart'; item: MenuItem; section: Establishment }[] }> => {
-    // En mode externe (n8n) : envoi au webhook, réponse texte (les actions
-    // panier pourront être ajoutées plus tard via le protocole externe).
-    if (ASSISTANT_CONFIG.useExternalAI && ASSISTANT_CONFIG.webhookUrl) {
-      try {
-        const res = await fetch(ASSISTANT_CONFIG.webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: text,
-            history: historyRef.current,
-            context: { ...cartInfo, assistant: ASSISTANT_CONFIG.name },
-          }),
-        });
-        const data = await res.json();
-        const reply = data?.reply ?? data?.message ?? data?.text ?? data?.response;
-        if (typeof reply === 'string' && reply.trim()) return { reply, actions: [] };
-      } catch {
-        /* erreur réseau : on retombe sur le moteur local */
-      }
-    }
-    // Mode local : moteur conversationnel connecté aux données du site
-    const result = respond(text, {
-      state: engineState,
+  /* ── Envoi au moteur (local ou n8n) + exécution des actions ────────── */
+  const getReply = async (text: string) => {
+    const result = await handleMessage({
+      text,
       history: historyRef.current,
-      cartInfo,
+      state: engineState,
+      cart: cart ?? [],
+      cartInfo: cartInfo ?? {},
+      assistantName: ASSISTANT_CONFIG.name,
+      welcome: ASSISTANT_CONFIG.welcome,
     });
     setEngineState(result.state);
-    return { reply: result.reply, actions: result.actions };
+    return result;
   };
 
   /* ── Défilement auto ───────────────────────────────────────────────── */
@@ -134,6 +127,20 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) =
     });
   };
 
+  const executeActions = (actions: { type: string; item?: MenuItem; section?: Establishment; quantity?: number; itemId?: string }[]) => {
+    actions.forEach((a) => {
+      if (a.type === 'addToCart' && a.item && a.section && onAddToCart) {
+        onAddToCart(a.item, a.section, a.quantity ?? 1);
+      } else if (a.type === 'removeFromCart' && a.itemId && onRemoveFromCart) {
+        onRemoveFromCart(a.itemId);
+      } else if (a.type === 'updateQuantity' && a.itemId && onUpdateQuantity) {
+        onUpdateQuantity(a.itemId, a.quantity ?? 1);
+      } else if (a.type === 'clearCart' && onClearCart) {
+        onClearCart();
+      }
+    });
+  };
+
   const send = async (raw?: string) => {
     const text = (raw ?? input).trim();
     if (!text || typing) return;
@@ -142,13 +149,8 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) =
     setTyping(true);
 
     const { reply, actions } = await getReply(text);
+    executeActions(actions);
 
-    // Exécution des actions (ajout au panier)
-    actions.forEach((a) => {
-      if (a.type === 'addToCart' && onAddToCart) onAddToCart(a.item, a.section);
-    });
-
-    // Mise à jour de l'historique conversationnel (derniers 12 échanges)
     historyRef.current = [
       ...historyRef.current,
       { role: 'user' as const, text },

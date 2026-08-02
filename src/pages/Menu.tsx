@@ -186,7 +186,7 @@ function DishCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
             className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold text-base px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-amber-500/20"
           >
             <Plus className="w-5 h-5 stroke-[2.5]" />
-            Commander
+            Ajouter au panier
           </button>
         </div>
       </div>
@@ -295,7 +295,7 @@ function SpecialDishBanner({ onAdd }: { onAdd: () => void }) {
             className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold text-base px-6 py-3.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-amber-500/30"
           >
             <Plus className="w-5 h-5 stroke-[2.5]" />
-            Ajouter à la commande
+            Ajouter au panier
           </button>
         </div>
       </div>
@@ -710,6 +710,22 @@ export default function Menu() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  /* ── Handlers panier pour l'assistant (après validation) ── */
+  const assistantAdd = (item: MenuItem, section: Establishment, quantity = 1) => {
+    setCart((prev) => {
+      const key = `${section}-${item.id}`;
+      const found = prev.find((l) => l.key === key);
+      if (found) return prev.map((l) => (l.key === key ? { ...l, qty: l.qty + quantity } : l));
+      return [...prev, { key, item, section, qty: quantity }];
+    });
+  };
+  const assistantRemove = (itemId: string) =>
+    setCart((prev) => prev.filter((l) => l.item.id !== itemId));
+  const assistantUpdateQty = (itemId: string, quantity: number) =>
+    setCart((prev) =>
+      prev.flatMap((l) => (l.item.id === itemId ? (quantity <= 0 ? [] : [{ ...l, qty: quantity }]) : [l]))
+    );
+
   return (
     <div
       className={`min-h-screen bg-neutral-950 font-sans antialiased text-slate-100 ${
@@ -921,7 +937,11 @@ export default function Menu() {
       {/* 🤖 Assistant IA — Chez Thierry */}
       <Assistant
         cartInfo={{ cartCount: totalQty, cartTotal: totalPrice, page: 'menu' }}
-        onAddToCart={addToCart}
+        cart={cart.map((l) => ({ key: l.key, item: l.item, quantity: l.qty, section: l.section }))}
+        onAddToCart={assistantAdd}
+        onRemoveFromCart={assistantRemove}
+        onUpdateQuantity={assistantUpdateQty}
+        onClearCart={() => setCart([])}
       />
     </div>
   );
