@@ -919,7 +919,10 @@ export default function Menu() {
       )}
 
       {/* 🤖 Assistant IA — Chez Thierry */}
-      <Assistant cartInfo={{ cartCount: totalQty, cartTotal: totalPrice, page: 'menu' }} />
+      <Assistant
+        cartInfo={{ cartCount: totalQty, cartTotal: totalPrice, page: 'menu' }}
+        onAddToCart={addToCart}
+      />
     </div>
   );
 }

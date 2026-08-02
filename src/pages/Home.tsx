@@ -31,6 +31,20 @@ export default function Home() {
     setIsCartOpen(true);
   };
 
+  /* Ajout silencieux (utilisé par l'assistant) : ajoute au panier sans
+     ouvrir le drawer, pour ne pas interrompre la conversation. */
+  const handleAssistantAddToCart = (item: MenuItem) => {
+    setCartItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex((ci) => ci.item.id === item.id);
+      if (existingItemIndex > -1) {
+        const newItems = [...prevItems];
+        newItems[existingItemIndex].quantity += 1;
+        return newItems;
+      }
+      return [...prevItems, { item, quantity: 1 }];
+    });
+  };
+
   const handleUpdateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
       handleRemoveItem(id);
@@ -474,6 +488,7 @@ export default function Home() {
           cartTotal: cartItems.reduce((s, ci) => s + ci.item.price * ci.quantity, 0),
           page: 'home',
         }}
+        onAddToCart={handleAssistantAddToCart}
       />
 
       {/* QR Code Section */}

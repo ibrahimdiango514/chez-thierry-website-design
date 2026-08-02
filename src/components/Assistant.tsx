@@ -1,7 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Send, X } from 'lucide-react';
+import { MenuItem } from '../types';
 import { ASSISTANT_CONFIG } from '../config/assistant';
-import { getGreeting, respond, welcomeMessage, AssistantContext } from '../lib/assistantEngine';
+import { Establishment } from '../lib/restaurantKnowledge';
+import {
+  getGreeting,
+  respond,
+  welcomeMessage,
+  AssistantContext,
+  AssistantState,
+  ChatTurn,
+} from '../lib/assistantEngine';
 
 interface ChatMessage {
   id: number;
@@ -12,6 +21,12 @@ interface ChatMessage {
 interface AssistantProps {
   /** Contexte optionnel (panier) pour des réponses plus personnalisées */
   cartInfo?: AssistantContext;
+  /**
+   * Callback d'ajout au panier — appelé quand l'assistant ajoute un plat
+   * (après confirmation du client). Permet de connecter l'assistant au
+   * panier réel du site.
+   */
+  onAddToCart?: (item: MenuItem, section: Establishment) => void;
 }
 
 /** Suggestions rapides (discrètes, faciles à taper pour tous les âges) */
@@ -19,7 +34,7 @@ const QUICK_SUGGESTIONS = ['📖 Le menu', '🌟 Recommande-moi', '🍕 Les pizz
 
 let msgId = 0;
 
-export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
+export const Assistant: React.FC<AssistantProps> = ({ cartInfo, onAddToCart }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -29,6 +44,7 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
   const [showWave, setShowWave] = useState(false);
   const [pop, setPop] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [engineState, setEngineState] = useState<AssistantState>({});
   const scrollRef = useRef<HTMLDivElement>(null);
 
   /* ── Bulle de bienvenue + salutation 👋 périodique ─────────────────── */
@@ -64,8 +80,13 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
     };
   }, [open]);
 
+  /* ── Historique pour le contexte conversationnel ───────────────────── */
+  const historyRef = useRef<ChatTurn[]>([]);
+
   /* ── Réponse : externe (n8n) si configurée, sinon moteur local ─────── */
-  const getReply = async (text: string): Promise<string> => {
+  const getReply = async (text: string): Promise<{ reply: string; actions: { type: 'addToCart'; item: MenuItem; section: Establishment }[] }> => {
+    // En mode externe (n8n) : envoi au webhook, réponse texte (les actions
+    // panier pourront être ajoutées plus tard via le protocole externe).
     if (ASSISTANT_CONFIG.useExternalAI && ASSISTANT_CONFIG.webhookUrl) {
       try {
         const res = await fetch(ASSISTANT_CONFIG.webhookUrl, {
@@ -73,17 +94,25 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: text,
+            history: historyRef.current,
             context: { ...cartInfo, assistant: ASSISTANT_CONFIG.name },
           }),
         });
         const data = await res.json();
         const reply = data?.reply ?? data?.message ?? data?.text ?? data?.response;
-        if (typeof reply === 'string' && reply.trim()) return reply;
+        if (typeof reply === 'string' && reply.trim()) return { reply, actions: [] };
       } catch {
         /* erreur réseau : on retombe sur le moteur local */
       }
     }
-    return respond(text, cartInfo);
+    // Mode local : moteur conversationnel connecté aux données du site
+    const result = respond(text, {
+      state: engineState,
+      history: historyRef.current,
+      cartInfo,
+    });
+    setEngineState(result.state);
+    return { reply: result.reply, actions: result.actions };
   };
 
   /* ── Défilement auto ───────────────────────────────────────────────── */
@@ -111,7 +140,21 @@ export const Assistant: React.FC<AssistantProps> = ({ cartInfo }) => {
     setInput('');
     setMessages((m) => [...m, { id: ++msgId, from: 'user', text }]);
     setTyping(true);
-    const reply = await getReply(text);
+
+    const { reply, actions } = await getReply(text);
+
+    // Exécution des actions (ajout au panier)
+    actions.forEach((a) => {
+      if (a.type === 'addToCart' && onAddToCart) onAddToCart(a.item, a.section);
+    });
+
+    // Mise à jour de l'historique conversationnel (derniers 12 échanges)
+    historyRef.current = [
+      ...historyRef.current,
+      { role: 'user' as const, text },
+      { role: 'assistant' as const, text: reply },
+    ].slice(-12);
+
     setTyping(false);
     setMessages((m) => [...m, { id: ++msgId, from: 'assistant', text: reply }]);
   };
