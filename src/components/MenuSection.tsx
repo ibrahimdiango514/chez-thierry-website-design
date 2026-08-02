@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MenuItem } from '../types';
 import { Plus, Search } from 'lucide-react';
+import { DishImage, CATEGORY_EMOJIS } from './DishImage';
 
 interface MenuSectionProps {
   items: MenuItem[];
@@ -62,6 +63,15 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
               key={item.id}
               className="group bg-neutral-900/40 hover:bg-neutral-900 border border-neutral-800/60 hover:border-neutral-700 p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between shadow-md"
             >
+              {/* Photo du plat (placeholder élégant si l'image n'existe pas encore) */}
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-neutral-800/60 mb-4 bg-neutral-900">
+                <DishImage
+                  src={item.image}
+                  alt={item.name}
+                  emoji={CATEGORY_EMOJIS[item.category] ?? '🍽️'}
+                />
+              </div>
+
               <div>
                 <div className="flex justify-between items-start gap-2">
                   <h3 className="font-bold text-lg text-slate-100 group-hover:text-white transition-colors">
