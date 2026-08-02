@@ -9,18 +9,48 @@ interface MenuSectionProps {
   sectionType: 'restaurant' | 'rooftop';
 }
 
+/* Ordre naturel du menu (parcours vertical, comme une carte de restaurant) */
+const RESTAURANT_CATEGORY_ORDER = [
+  'Entrées',
+  'Plats',
+  'Les plus de chez Thierry',
+  'Les temporelles',
+  "Suppléments d'accompagnement",
+  'Desserts',
+  'Pizzas',
+  'Vins bouteilles',
+  'Vins en pichet et au verre',
+  'Cocktails alcoolisés',
+];
+
+const ROOFTOP_CATEGORY_ORDER = [
+  'Burgers & Fried Food',
+  'Grill & African Touch',
+  'Mocktails - Sans alcool',
+  'Cocktails - Avec alcool',
+  'Desserts',
+];
+
 export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, sectionType }) => {
-  const categories = Array.from(new Set(items.map((item) => item.category)));
-  const [activeCategory, setActiveCategory] = useState<string>(categories[0] || '');
   const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredItems = items.filter((item) => {
-    const matchesCategory = activeCategory ? item.category === activeCategory : true;
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
   const isRooftop = sectionType === 'rooftop';
+
+  // Ordre naturel, suivi des éventuelles catégories non listées (sécurité)
+  const allCategories = Array.from(new Set(items.map((item) => item.category)));
+  const order = isRooftop ? ROOFTOP_CATEGORY_ORDER : RESTAURANT_CATEGORY_ORDER;
+  const orderedCategories = [
+    ...order.filter((c) => allCategories.includes(c)),
+    ...allCategories.filter((c) => !order.includes(c)),
+  ];
+
+  const query = searchQuery.trim().toLowerCase();
+  const isSearching = query.length > 0;
+
+  const matches = (item: MenuItem) =>
+    item.name.toLowerCase().includes(query) ||
+    (item.description ?? '').toLowerCase().includes(query);
+
+  let totalResults = 0;
 
   return (
     <div className="w-full bg-neutral-950 text-white py-12 px-4 md:px-8">
@@ -41,84 +71,86 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
           </div>
         </div>
 
-        <div className="flex overflow-x-auto pb-4 gap-2 scrollbar-hide mb-8">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`whitespace-nowrap px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
-                activeCategory === category
-                  ? 'bg-amber-500 text-neutral-950 border-amber-500 shadow-lg shadow-amber-500/20'
-                  : 'bg-neutral-900 text-slate-400 border-neutral-800/80 hover:border-neutral-700 hover:text-slate-200'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+        {/* Toutes les catégories se suivent dans un seul parcours vertical */}
+        {orderedCategories.map((category) => {
+          const categoryItems = items.filter(
+            (item) => item.category === category && (!isSearching || matches(item))
+          );
+          if (categoryItems.length === 0) return null;
+          totalResults += categoryItems.length;
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="group bg-neutral-900/40 hover:bg-neutral-900 border border-neutral-800/60 hover:border-neutral-700 p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between shadow-md"
-            >
-              {/* Photo du plat (placeholder élégant si l'image n'existe pas encore) */}
-              <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-neutral-800/60 mb-4 bg-neutral-900">
-                <DishImage
-                  src={item.image}
-                  alt={item.name}
-                  emoji={CATEGORY_EMOJIS[item.category] ?? '🍽️'}
-                />
-              </div>
+          return (
+            <div key={category} className="mb-10">
+              <h3 className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2">
+                <span className="text-2xl">{CATEGORY_EMOJIS[category] ?? '•'}</span>
+                {category}
+              </h3>
 
-              <div>
-                <div className="flex justify-between items-start gap-2">
-                  <h3 className="font-bold text-lg text-slate-100 group-hover:text-white transition-colors">
-                    {item.name}
-                  </h3>
-                </div>
-                {item.description && (
-                  <p className="text-neutral-400 text-xs mt-1 leading-relaxed">
-                    {item.description}
-                  </p>
-                )}
-                {item.composants && (
-                  <p className="text-amber-500/80 text-xs mt-2 leading-relaxed border-t border-neutral-800/50 pt-2">
-                    📋 {item.composants}
-                  </p>
-                )}
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                {categoryItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group bg-neutral-900/40 hover:bg-neutral-900 border border-neutral-800/60 hover:border-neutral-700 p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between shadow-md"
+                  >
+                    {/* Photo du plat (placeholder élégant si l'image n'existe pas encore) */}
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-neutral-800/60 mb-4 bg-neutral-900">
+                      <DishImage
+                        src={item.image}
+                        alt={item.name}
+                        emoji={CATEGORY_EMOJIS[item.category] ?? '🍽️'}
+                      />
+                    </div>
 
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-800/40">
-                <div className="flex flex-col">
-                  <span className="text-xl font-bold text-amber-400">
-                    {item.price.toLocaleString()} F
-                  </span>
-                  <span className="text-[10px] text-neutral-500 font-medium">F CFA</span>
-                </div>
+                    <div>
+                      <div className="flex justify-between items-start gap-2">
+                        <h3 className="font-bold text-lg text-slate-100 group-hover:text-white transition-colors">
+                          {item.name}
+                        </h3>
+                      </div>
+                      {item.description && (
+                        <p className="text-neutral-400 text-xs mt-1 leading-relaxed">
+                          {item.description}
+                        </p>
+                      )}
+                      {item.composants && (
+                        <p className="text-amber-500/80 text-xs mt-2 leading-relaxed border-t border-neutral-800/50 pt-2">
+                          📋 {item.composants}
+                        </p>
+                      )}
+                    </div>
 
-                <button
-                  onClick={() => onAddToCart(item)}
-                  className={`flex items-center gap-2 text-xs font-extrabold py-3 px-5 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 text-neutral-950 ${
-                    isRooftop && (item.category === 'Cocktails' || item.category === 'Suggestions')
-                      ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)]'
-                      : item.category === 'Pizzas'
-                      ? 'bg-amber-500 hover:bg-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]'
-                      : 'bg-amber-500 hover:bg-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-                  }`}
-                >
-                  <Plus className="w-4 h-4 stroke-[2.5]" />
-                  <span>Commander</span>
-                </button>
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-800/40">
+                      <div className="flex flex-col">
+                        <span className="text-xl font-bold text-amber-400">
+                          {item.price.toLocaleString()} F
+                        </span>
+                        <span className="text-[10px] text-neutral-500 font-medium">F CFA</span>
+                      </div>
+
+                      <button
+                        onClick={() => onAddToCart(item)}
+                        className={`flex items-center gap-2 text-xs font-extrabold py-3 px-5 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 text-neutral-950 ${
+                          isRooftop && (item.category === 'Cocktails' || item.category === 'Suggestions')
+                            ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)]'
+                            : item.category === 'Pizzas'
+                            ? 'bg-amber-500 hover:bg-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]'
+                            : 'bg-amber-500 hover:bg-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                        }`}
+                      >
+                        <Plus className="w-4 h-4 stroke-[2.5]" />
+                        <span>Commander</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
 
-        {filteredItems.length === 0 && (
+        {isSearching && totalResults === 0 && (
           <div className="text-center py-12 text-neutral-400">
-            Aucun article trouvé dans cette catégorie.
+            Aucun article trouvé pour « {searchQuery.trim()} ».
           </div>
         )}
       </div>
