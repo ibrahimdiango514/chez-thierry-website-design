@@ -19,6 +19,7 @@ import { RESTAURANT_MENU, ROOFTOP_MENU, RESTAURANT_SPECIAL_DISH } from '../data'
 import { MenuItem, OrderMode } from '../types';
 import { Footer } from '../components/Footer';
 import { DishImage, CATEGORY_EMOJIS } from '../components/DishImage';
+import { Assistant } from '../components/Assistant';
 
 type Establishment = 'restaurant' | 'rooftop';
 
@@ -135,6 +136,16 @@ function filterBlocks(blocks: MenuBlock[], q: string): MenuBlock[] {
   return res;
 }
 
+/** Transforme un titre de catégorie en id de navigation (ex: "5 Fromages" → "5-fromages") */
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 /** Nombre total d'articles dans une liste de blocs */
 function countBlockItems(blocks: MenuBlock[]): number {
   return blocks.reduce((s, b) => {
@@ -185,7 +196,16 @@ function DishCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
 
 /* ─────────────────────── Bloc de menu (titre + cartes) ─────────────────────── */
 
-function MenuBlockView({ block, onAdd }: { block: MenuBlock; onAdd: (item: MenuItem) => void }) {
+function MenuBlockView({
+  block,
+  onAdd,
+  anchor,
+}: {
+  block: MenuBlock;
+  onAdd: (item: MenuItem) => void;
+  anchor?: string;
+}) {
+  const anchorId = (title: string) => `cat-${anchor ?? 'menu'}-${slugify(title)}`;
   // Groupe avec sous-catégories (ex: Boissons → Vins / Pichets / Cocktails)
   if ('subs' in block) {
     return (
@@ -196,7 +216,10 @@ function MenuBlockView({ block, onAdd }: { block: MenuBlock; onAdd: (item: MenuI
         </h3>
         {block.subs.map((sub) => (
           <div key={sub.title} className="mt-6">
-            <h4 className="flex items-center gap-2 text-base md:text-lg font-bold text-slate-200 border-l-4 border-amber-500/50 pl-3 mb-3">
+            <h4
+              id={anchorId(sub.title)}
+              className="flex items-center gap-2 text-base md:text-lg font-bold text-slate-200 border-l-4 border-amber-500/50 pl-3 mb-3 scroll-mt-40"
+            >
               <span>{CATEGORY_EMOJIS[sub.title] ?? '•'}</span>
               {sub.title}
             </h4>
@@ -214,7 +237,10 @@ function MenuBlockView({ block, onAdd }: { block: MenuBlock; onAdd: (item: MenuI
   // Catégorie simple
   return (
     <div className="mb-10">
-      <h3 className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2">
+      <h3
+        id={anchorId(block.title)}
+        className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2 scroll-mt-40"
+      >
         <span className="text-2xl">{CATEGORY_EMOJIS[block.title] ?? '•'}</span>
         {block.title}
       </h3>
@@ -634,6 +660,12 @@ export default function Menu() {
   const isSearching = searchQuery.trim().length > 0;
   const query = searchQuery.trim().toLowerCase();
 
+  /* Catégories de raccourci (ordre naturel, affichées dans la barre sticky) */
+  const restaurantQuickCats = restaurantBlocks.flatMap((b) =>
+    'subs' in b ? b.subs.map((s) => s.title) : [b.title]
+  );
+  const rooftopQuickCats = rooftopBlocks.map((b) => b.title);
+
   const visibleRestaurant = useMemo(
     () => (isSearching ? filterBlocks(restaurantBlocks, query) : restaurantBlocks),
     [isSearching, query, restaurantBlocks]
@@ -740,24 +772,44 @@ export default function Menu() {
         </div>
       </section>
 
-      {/* 🧭 Navigation rapide (restaurant / rooftop) */}
+      {/* 🧭 Navigation rapide — défilement complet + raccourcis par catégories */}
       <div className="sticky top-16 z-30 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900/60 py-2.5 px-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-center gap-3">
+        <div className="max-w-5xl mx-auto flex overflow-x-auto gap-2 scrollbar-hide">
           <button
             onClick={() => jumpTo('menu-restaurant')}
-            className="flex items-center gap-1.5 text-sm md:text-base font-extrabold px-5 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-200 hover:border-amber-500/50"
+            className="whitespace-nowrap flex items-center gap-1.5 text-sm font-extrabold px-4 py-2 rounded-xl border transition-all bg-amber-500 border-amber-500 text-neutral-950 shadow-lg shadow-amber-500/20"
           >
             🍽️ Restaurant
           </button>
+          {restaurantQuickCats.map((c) => (
+            <button
+              key={c}
+              onClick={() => jumpTo(`cat-restaurant-${slugify(c)}`)}
+              className="whitespace-nowrap flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-300 hover:border-amber-500/50 hover:text-white"
+            >
+              <span>{CATEGORY_EMOJIS[c] ?? '•'}</span>
+              {c}
+            </button>
+          ))}
           <button
             onClick={() => jumpTo('menu-rooftop')}
-            className="flex items-center gap-1.5 text-sm md:text-base font-extrabold px-5 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-200 hover:border-amber-500/50"
+            className="whitespace-nowrap flex items-center gap-1.5 text-sm font-extrabold px-4 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-200 hover:border-amber-500/50"
           >
             🌇 Rooftop
           </button>
+          {rooftopQuickCats.map((c) => (
+            <button
+              key={c}
+              onClick={() => jumpTo(`cat-rooftop-${slugify(c)}`)}
+              className="whitespace-nowrap flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-300 hover:border-amber-500/50 hover:text-white"
+            >
+              <span>{CATEGORY_EMOJIS[c] ?? '•'}</span>
+              {c}
+            </button>
+          ))}
         </div>
-        <p className="text-center text-[11px] text-neutral-500 mt-1">
-          👆 Faites défiler pour découvrir tout le menu
+        <p className="text-center text-[11px] text-neutral-500 mt-1.5">
+          👆 Faites défiler pour tout voir — ou touchez une catégorie pour y aller directement
         </p>
       </div>
 
@@ -795,6 +847,7 @@ export default function Menu() {
             <MenuBlockView
               key={b.title}
               block={b}
+              anchor="restaurant"
               onAdd={(item) => addToCart(item, 'restaurant')}
             />
           ))}
@@ -812,7 +865,7 @@ export default function Menu() {
           </div>
 
           {visibleRooftop.map((b) => (
-            <MenuBlockView key={b.title} block={b} onAdd={(item) => addToCart(item, 'rooftop')} />
+            <MenuBlockView key={b.title} block={b} anchor="rooftop" onAdd={(item) => addToCart(item, 'rooftop')} />
           ))}
         </section>
 
@@ -864,6 +917,9 @@ export default function Menu() {
           onClearCart={() => setCart([])}
         />
       )}
+
+      {/* 🤖 Assistant IA — Chez Thierry */}
+      <Assistant cartInfo={{ cartCount: totalQty, cartTotal: totalPrice, page: 'menu' }} />
     </div>
   );
 }

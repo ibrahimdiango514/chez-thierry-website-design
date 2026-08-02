@@ -8,6 +8,7 @@ import { MenuSection } from '../components/MenuSection';
 import { Cart } from '../components/Cart';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { Footer } from '../components/Footer';
+import { Assistant } from '../components/Assistant';
 
 export default function Home() {
   const [activeSection] = useState<SectionType>('restaurant');
@@ -464,6 +465,15 @@ export default function Home() {
         cartItems={cartItems}
         currentSection={activeSection}
         onClearCart={handleClearCart}
+      />
+
+      {/* 🤖 Assistant IA — Chez Thierry */}
+      <Assistant
+        cartInfo={{
+          cartCount: cartItems.reduce((s, ci) => s + ci.quantity, 0),
+          cartTotal: cartItems.reduce((s, ci) => s + ci.item.price * ci.quantity, 0),
+          page: 'home',
+        }}
       />
 
       {/* QR Code Section */}

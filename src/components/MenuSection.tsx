@@ -55,7 +55,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
   return (
     <div className="w-full bg-neutral-950 text-white py-12 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
           <h2 className="text-2xl md:text-3xl font-bold font-playfair border-l-4 border-amber-500 pl-4 text-white">
             {isRooftop ? 'Menu Rooftop Le Palmier' : 'Menu Restaurant Chez Thierry'}
           </h2>
@@ -71,8 +71,28 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
           </div>
         </div>
 
+        {/* 🔎 Accès rapide par catégories (raccourci — le défilement complet reste disponible) */}
+        <div className="sticky top-[68px] z-30 -mx-1 mb-8 bg-neutral-950/95 backdrop-blur-md py-2.5 px-1 rounded-xl">
+          <div className="flex overflow-x-auto gap-2 scrollbar-hide">
+            {orderedCategories.map((category, i) => (
+              <button
+                key={category}
+                onClick={() =>
+                  document
+                    .getElementById(`ms-${sectionType}-${i}`)
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+                className="whitespace-nowrap px-4 py-2 rounded-xl text-sm font-semibold transition-all border bg-neutral-900 text-slate-300 border-neutral-800/80 hover:border-amber-500/60 hover:text-white"
+              >
+                <span className="mr-1">{CATEGORY_EMOJIS[category] ?? '•'}</span>
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Toutes les catégories se suivent dans un seul parcours vertical */}
-        {orderedCategories.map((category) => {
+        {orderedCategories.map((category, i) => {
           const categoryItems = items.filter(
             (item) => item.category === category && (!isSearching || matches(item))
           );
@@ -80,7 +100,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
           totalResults += categoryItems.length;
 
           return (
-            <div key={category} className="mb-10">
+            <div key={category} id={`ms-${sectionType}-${i}`} className="mb-10 scroll-mt-36">
               <h3 className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2">
                 <span className="text-2xl">{CATEGORY_EMOJIS[category] ?? '•'}</span>
                 {category}
