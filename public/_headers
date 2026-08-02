@@ -1,0 +1,22 @@
+# ─────────────────────────────────────────────────────────────
+# CHEZ THIERRY X LE PALMIER — En-têtes HTTP (Netlify _headers)
+# Améliorations de robustesse : cache images + sécurité de base
+# Ne modifie ni le design, ni les fonctionnalités.
+# ─────────────────────────────────────────────────────────────
+
+# Images : cache long (30 jours) → performance mobile
+# (le HTML reste en no-cache/must-revalidate par défaut pour propager les déploiements)
+/images/*
+  Cache-Control: public, max-age=2592000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+
+# Tout le reste : headers de sécurité de base
+# geolocation=(self) autorise la localisation GPS (checkout / commande WhatsApp)
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
