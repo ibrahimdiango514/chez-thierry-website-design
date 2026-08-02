@@ -13,6 +13,7 @@ export const CATEGORY_EMOJIS: Record<string, string> = {
   'Vins bouteilles': '🍷',
   'Vins en pichet et au verre': '🥂',
   'Cocktails alcoolisés': '🍹',
+  Boissons: '🍹',
   // Rooftop
   'Burgers & Fried Food': '🍔',
   'Grill & African Touch': '🍢',

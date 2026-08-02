@@ -29,10 +29,30 @@ interface CartLine {
   qty: number;
 }
 
-interface Group {
-  category: string;
-  items: MenuItem[];
-}
+/** Un bloc de menu : catégorie simple, ou groupe de sous-catégories (ex: Boissons) */
+type MenuBlock =
+  | { title: string; items: MenuItem[] }
+  | { title: string; subs: { title: string; items: MenuItem[] }[] };
+
+/* Ordre naturel du menu (parcours vertical) */
+const RESTAURANT_CATEGORY_ORDER = [
+  'Entrées',
+  'Plats',
+  'Les plus de chez Thierry',
+  'Les temporelles',
+  "Suppléments d'accompagnement",
+  'Desserts',
+  'Pizzas',
+];
+const RESTAURANT_BOISSONS = ['Vins bouteilles', 'Vins en pichet et au verre', 'Cocktails alcoolisés'];
+
+const ROOFTOP_CATEGORY_ORDER = [
+  'Burgers & Fried Food',
+  'Grill & African Touch',
+  'Mocktails - Sans alcool',
+  'Cocktails - Avec alcool',
+  'Desserts',
+];
 
 const ESTABLISHMENT_LABELS: Record<Establishment, string> = {
   restaurant: 'Restaurant Chez Thierry',
@@ -66,21 +86,61 @@ const matchesQuery = (item: MenuItem, q: string) =>
   (item.description ?? '').toLowerCase().includes(q) ||
   (item.composants ?? '').toLowerCase().includes(q);
 
-/** Regroupe les plats par catégorie en conservant l'ordre du menu */
-function groupByCategory(items: MenuItem[]): Group[] {
-  const map = new Map<string, MenuItem[]>();
+/**
+ * Construit les blocs du menu dans l'ordre naturel du parcours vertical.
+ * - Les catégories sont placées selon `order`.
+ * - `boissons` (si fourni) regroupe plusieurs catégories sous un seul titre « Boissons ».
+ */
+function buildMenuBlocks(
+  items: MenuItem[],
+  order: string[],
+  boissons?: string[]
+): MenuBlock[] {
+  const byCat = new Map<string, MenuItem[]>();
   for (const item of items) {
-    const list = map.get(item.category) ?? [];
+    const list = byCat.get(item.category) ?? [];
     list.push(item);
-    map.set(item.category, list);
+    byCat.set(item.category, list);
   }
-  return Array.from(map.entries()).map(([category, list]) => ({ category, items: list }));
+
+  const blocks: MenuBlock[] = [];
+  for (const cat of order) {
+    const list = byCat.get(cat);
+    if (list && list.length) blocks.push({ title: cat, items: list });
+  }
+
+  if (boissons) {
+    const subs = boissons
+      .map((b) => ({ title: b, items: byCat.get(b) ?? [] }))
+      .filter((s) => s.items.length > 0);
+    if (subs.length) blocks.push({ title: 'Boissons', subs });
+  }
+  return blocks;
 }
 
-function filterGroups(groups: Group[], q: string): Group[] {
-  return groups
-    .map((g) => ({ ...g, items: g.items.filter((i) => matchesQuery(i, q)) }))
-    .filter((g) => g.items.length > 0);
+/** Filtre les blocs selon la recherche (garde l'ordre naturel) */
+function filterBlocks(blocks: MenuBlock[], q: string): MenuBlock[] {
+  const res: MenuBlock[] = [];
+  for (const b of blocks) {
+    if ('subs' in b) {
+      const subs = b.subs
+        .map((s) => ({ ...s, items: s.items.filter((i) => matchesQuery(i, q)) }))
+        .filter((s) => s.items.length > 0);
+      if (subs.length) res.push({ title: b.title, subs });
+    } else {
+      const items = b.items.filter((i) => matchesQuery(i, q));
+      if (items.length) res.push({ title: b.title, items });
+    }
+  }
+  return res;
+}
+
+/** Nombre total d'articles dans une liste de blocs */
+function countBlockItems(blocks: MenuBlock[]): number {
+  return blocks.reduce((s, b) => {
+    if ('subs' in b) return s + b.subs.reduce((x, sb) => x + sb.items.length, 0);
+    return s + b.items.length;
+  }, 0);
 }
 
 /* ─────────────────────────── Carte d'un plat ─────────────────────────── */
@@ -123,23 +183,43 @@ function DishCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
   );
 }
 
-/* ─────────────────────── Bloc de catégorie (titre) ─────────────────────── */
+/* ─────────────────────── Bloc de menu (titre + cartes) ─────────────────────── */
 
-function CategoryBlock({
-  group,
-  onAdd,
-}: {
-  group: Group;
-  onAdd: (item: MenuItem) => void;
-}) {
+function MenuBlockView({ block, onAdd }: { block: MenuBlock; onAdd: (item: MenuItem) => void }) {
+  // Groupe avec sous-catégories (ex: Boissons → Vins / Pichets / Cocktails)
+  if ('subs' in block) {
+    return (
+      <div className="mb-10">
+        <h3 className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2">
+          <span className="text-2xl">{CATEGORY_EMOJIS[block.title] ?? '🍹'}</span>
+          {block.title}
+        </h3>
+        {block.subs.map((sub) => (
+          <div key={sub.title} className="mt-6">
+            <h4 className="flex items-center gap-2 text-base md:text-lg font-bold text-slate-200 border-l-4 border-amber-500/50 pl-3 mb-3">
+              <span>{CATEGORY_EMOJIS[sub.title] ?? '•'}</span>
+              {sub.title}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {sub.items.map((item) => (
+                <DishCard key={item.id} item={item} onAdd={() => onAdd(item)} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Catégorie simple
   return (
     <div className="mb-10">
       <h3 className="flex items-center gap-2 text-xl md:text-2xl font-playfair font-bold text-amber-400 border-b border-neutral-800/60 pb-2">
-        <span className="text-2xl">{CATEGORY_EMOJIS[group.category] ?? '•'}</span>
-        {group.category}
+        <span className="text-2xl">{CATEGORY_EMOJIS[block.title] ?? '•'}</span>
+        {block.title}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
-        {group.items.map((item) => (
+        {block.items.map((item) => (
           <DishCard key={item.id} item={item} onAdd={() => onAdd(item)} />
         ))}
       </div>
@@ -542,19 +622,25 @@ export default function Menu() {
     window.scrollTo(0, 0);
   }, []);
 
-  const restaurantGroups = useMemo(() => groupByCategory(RESTAURANT_MENU), []);
-  const rooftopGroups = useMemo(() => groupByCategory(ROOFTOP_MENU), []);
+  const restaurantBlocks = useMemo(
+    () => buildMenuBlocks(RESTAURANT_MENU, RESTAURANT_CATEGORY_ORDER, RESTAURANT_BOISSONS),
+    []
+  );
+  const rooftopBlocks = useMemo(
+    () => buildMenuBlocks(ROOFTOP_MENU, ROOFTOP_CATEGORY_ORDER),
+    []
+  );
 
   const isSearching = searchQuery.trim().length > 0;
   const query = searchQuery.trim().toLowerCase();
 
   const visibleRestaurant = useMemo(
-    () => (isSearching ? filterGroups(restaurantGroups, query) : restaurantGroups),
-    [isSearching, query, restaurantGroups]
+    () => (isSearching ? filterBlocks(restaurantBlocks, query) : restaurantBlocks),
+    [isSearching, query, restaurantBlocks]
   );
   const visibleRooftop = useMemo(
-    () => (isSearching ? filterGroups(rooftopGroups, query) : rooftopGroups),
-    [isSearching, query, rooftopGroups]
+    () => (isSearching ? filterBlocks(rooftopBlocks, query) : rooftopBlocks),
+    [isSearching, query, rooftopBlocks]
   );
   const showSpecial = useMemo(
     () => !isSearching || matchesQuery(RESTAURANT_SPECIAL_DISH, query),
@@ -562,8 +648,8 @@ export default function Menu() {
   );
 
   const resultCount =
-    visibleRestaurant.reduce((s, g) => s + g.items.length, 0) +
-    visibleRooftop.reduce((s, g) => s + g.items.length, 0) +
+    countBlockItems(visibleRestaurant) +
+    countBlockItems(visibleRooftop) +
     (showSpecial ? 1 : 0);
 
   const totalQty = cart.reduce((s, l) => s + l.qty, 0);
@@ -705,10 +791,10 @@ export default function Menu() {
 
           {showSpecial && <SpecialDishBanner onAdd={() => addToCart(RESTAURANT_SPECIAL_DISH, 'restaurant')} />}
 
-          {visibleRestaurant.map((g) => (
-            <CategoryBlock
-              key={g.category}
-              group={g}
+          {visibleRestaurant.map((b) => (
+            <MenuBlockView
+              key={b.title}
+              block={b}
               onAdd={(item) => addToCart(item, 'restaurant')}
             />
           ))}
@@ -725,8 +811,8 @@ export default function Menu() {
             </span>
           </div>
 
-          {visibleRooftop.map((g) => (
-            <CategoryBlock key={g.category} group={g} onAdd={(item) => addToCart(item, 'rooftop')} />
+          {visibleRooftop.map((b) => (
+            <MenuBlockView key={b.title} block={b} onAdd={(item) => addToCart(item, 'rooftop')} />
           ))}
         </section>
 
