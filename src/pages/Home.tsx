@@ -9,6 +9,7 @@ import { Cart } from '../components/Cart';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { Footer } from '../components/Footer';
 import { Assistant } from '../components/Assistant';
+import { QRCodeSection } from '../components/QRCodeSection';
 
 export default function Home() {
   const [activeSection] = useState<SectionType>('restaurant');
@@ -495,30 +496,8 @@ export default function Home() {
         onClearCart={handleClearCart}
       />
 
-      {/* QR Code Section */}
-      <section className="bg-neutral-950 text-white py-10 px-4 text-center border-t border-neutral-900">
-        <h2 className="text-xl font-bold text-amber-400 mb-4">
-          📱 Scannez pour accéder rapidement au site
-        </h2>
-
-        <p className="text-neutral-500 text-xs mb-5">
-          Accès direct au Restaurant & Rooftop Chez Thierry x Le Palmier
-        </p>
-
-        <div className="flex justify-center">
-          <div className="bg-white p-4 rounded-2xl shadow-lg">
-            <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://chezthierryxlepalmier.com"
-              alt="QR Code Chez Thierry x Le Palmier"
-              className="rounded-lg"
-            />
-          </div>
-        </div>
-
-        <p className="text-neutral-600 text-[11px] mt-4">
-          https://chezthierryxlepalmier.com
-        </p>
-      </section>
+      {/* 📱 Section QR Codes — Site Officiel + Menu Digital */}
+      <QRCodeSection />
 
       {/* Footer */}
       <Footer />
