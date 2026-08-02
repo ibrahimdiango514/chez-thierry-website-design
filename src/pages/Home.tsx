@@ -122,8 +122,8 @@ export default function Home() {
               <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-amber-500/20 via-neutral-900 to-neutral-950 p-[3px] shadow-[0_0_40px_rgba(245,158,11,0.15)]">
                 <div className="relative rounded-[20px] overflow-hidden border border-amber-500/10 bg-neutral-900">
                   <img 
-                    src="/images/steak-restaurant.jpg" 
-                    alt="Plat signature Chez Thierry" 
+                    src="/images/menu/restaurant/pave-de-b-uf.jpg" 
+                    alt="Pavé de Bœuf — plat signature Chez Thierry" 
                     className="w-full h-auto max-h-[60vh] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -167,8 +167,8 @@ export default function Home() {
               <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-amber-500/20 via-neutral-900 to-neutral-950 p-[3px] shadow-[0_0_40px_rgba(245,158,11,0.15)]">
                 <div className="relative rounded-[20px] overflow-hidden border border-amber-500/10 bg-neutral-900">
                   <img 
-                    src="/images/dessert-coulant.jpg" 
-                    alt="Coulant au chocolat Chez Thierry" 
+                    src="/images/menu/restaurant/coulant-au-chocolat-et-sa-boule-de-glace-vanille.jpg" 
+                    alt="Coulant au chocolat et glace vanille — Chez Thierry" 
                     className="w-full h-auto max-h-[60vh] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -305,8 +305,8 @@ export default function Home() {
                 {/* Bordure intérieure */}
                 <div className="relative rounded-[20px] overflow-hidden border border-amber-500/10 bg-neutral-900">
                   <img 
-                    src="/images/rooftop-food.jpg" 
-                    alt="Plats phares Rooftop Le Palmier" 
+                    src="/images/menu/rooftop/smash-burger.jpg" 
+                    alt="Smash Burger — plat phare Rooftop Le Palmier" 
                     className="w-full h-auto max-h-[60vh] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -317,13 +317,13 @@ export default function Home() {
                   {/* Labels produits */}
                   <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 px-4">
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🍔 Double Smash
+                      🍔 Smash Burger
                     </span>
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🍗 Tenders
+                      🧀 Cheddar Fondant
                     </span>
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🥩 Brochettes
+                      🍟 Frites Maison
                     </span>
                   </div>
                 </div>

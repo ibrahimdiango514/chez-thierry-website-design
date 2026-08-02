@@ -88,7 +88,7 @@ export const ROOFTOP_MENU: MenuItem[] = [
   { id: 'rm3', name: 'Palmier Fresh (Signature)', image: '/images/menu/rooftop/palmier-fresh-signature.jpg', price: 2500, category: 'Mocktails - Sans alcool', description: 'Mangue, Bissap, Citron, Menthe, Eau gazeuse.' },
   { id: 'rm4', name: 'Blue Mango', image: '/images/menu/rooftop/blue-mango.jpg', price: 2500, category: 'Mocktails - Sans alcool', description: 'Sirop blue curaçao (sans alcool), Mangue, Citron, Eau gazeuse.' },
   { id: 'rm5', name: 'Piña Fresh', image: '/images/menu/rooftop/pina-fresh.jpg', price: 3000, category: 'Mocktails - Sans alcool', description: 'Ananas, Lait de coco, Crème légère.' },
-  { id: 'rm6', name: 'Blue Hawaii', image: '/images/menu/rooftop/blue-hawaii.jpg', price: 3500, category: 'Mocktails - Sans alcool', description: 'Jus d\'ananas, Jus de citron, Sirop blue curaçao (sans alcool), Eau gazeuse.' },
+  { id: 'rm6', name: 'Blue Hawaii', image: '/images/menu/rooftop/blue-hawaii-sans-alcool.jpg', price: 3500, category: 'Mocktails - Sans alcool', description: 'Jus d\'ananas, Jus de citron, Sirop blue curaçao (sans alcool), Eau gazeuse.' },
 
   // COCKTAILS - AVEC ALCOOL
   { id: 'rc1', name: 'Gingembre Sunrise', image: '/images/menu/rooftop/gingembre-sunrise.jpg', price: 4000, category: 'Cocktails - Avec alcool', description: 'Gingembre, Citron, Jus d\'ananas, Grenadine, Rhum.' },
@@ -96,7 +96,7 @@ export const ROOFTOP_MENU: MenuItem[] = [
   { id: 'rc3', name: 'Palmier Signature', image: '/images/menu/rooftop/palmier-signature.jpg', price: 4000, category: 'Cocktails - Avec alcool', description: 'Mangue, Bissap, Citron, Menthe, Rhum.' },
   { id: 'rc4', name: 'Blue Sunset', image: '/images/menu/rooftop/blue-sunset.jpg', price: 4000, category: 'Cocktails - Avec alcool', description: 'Blue curaçao, Jus d\'orange, Citron, Vodka.' },
   { id: 'rc5', name: 'Piña Colada', image: '/images/menu/rooftop/pina-colada.jpg', price: 5000, category: 'Cocktails - Avec alcool', description: 'Ananas, Lait de coco, Crème légère, Malibu.' },
-  { id: 'rc6', name: 'Blue Hawaii', image: '/images/menu/rooftop/blue-hawaii.jpg', price: 5000, category: 'Cocktails - Avec alcool', description: 'Malibu, Blue curaçao, Jus d\'ananas, Jus de citron.' },
+  { id: 'rc6', name: 'Blue Hawaii', image: '/images/menu/rooftop/blue-hawaii-cocktail.jpg', price: 5000, category: 'Cocktails - Avec alcool', description: 'Malibu, Blue curaçao, Jus d\'ananas, Jus de citron.' },
 
   // DESSERTS
   { id: 'rd1', name: 'Dame Blanche - Chocolat', image: '/images/menu/rooftop/dame-blanche-chocolat.jpg', price: 5000, category: 'Desserts', description: '2 boules de glace vanille, sauce chocolat chaud, éclats d\'Oreo, chantilly.' },
