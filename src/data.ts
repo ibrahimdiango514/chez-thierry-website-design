@@ -1,4 +1,4 @@
-import { MenuItem } from './types';
+import { DailyDish, MenuItem } from './types';
 
 export const RESTAURANT_MENU: MenuItem[] = [
   // PIZZAS
@@ -123,3 +123,78 @@ export const RESTAURANT_SPECIAL_DISH: SpecialDish = {
   image: '/images/couscous-royal.jpg',
   availability: 'Disponible uniquement les dimanches de 12h à 15h',
 };
+
+
+// ─── PLAT DU JOUR (semaine & weekend) ─────────────────────────────────────
+// Affiché sur la page d'accueil, juste après le hero, dans la section
+// « Plat du jour » (composant src/components/DailyDishes.tsx).
+//
+// 👉 Pour changer les plats affichés, il suffit de modifier les deux listes
+//    ci-dessous : aucun autre fichier n'est à toucher.
+//
+// Les plats proposés ici sont issus de la carte du restaurant
+// (RESTAURANT_MENU) et sont servis selon la disponibilité du marché.
+
+/** Plats de la semaine — du lundi au vendredi */
+export const WEEK_DAILY_DISHES: DailyDish[] = [
+  {
+    id: 'dj-lundi',
+    price: 7500,
+    day: 'Lundi',
+    name: 'Poulet local braisé',
+    description:
+      "Poulet local braisé au feu de bois, servi avec ses frites fraîches maison et une petite salade verte.",
+  },
+  {
+    id: 'dj-mardi',
+    price: 9000,
+    day: 'Mardi',
+    name: 'Escalope milanaise',
+    description:
+      "Fine escalope de poulet panée à l'italienne, accompagnée de frites, de sauce tomate et d'un quartier de citron.",
+  },
+  {
+    id: 'dj-mercredi',
+    price: 8000,
+    day: 'Mercredi',
+    name: 'Pavé de Bœuf',
+    description:
+      'Filet de bœuf en pavé, servi avec frites croustillantes et salade verte, sauce au poivre crémeuse.',
+  },
+  {
+    id: 'dj-jeudi',
+    price: 9000,
+    day: 'Jeudi',
+    name: 'Poisson au curry',
+    description:
+      'Filet de capitaine sauté à la crème de coco et au curry, accompagné de pommes de terre vapeur.',
+  },
+  {
+    id: 'dj-vendredi',
+    price: 9000,
+    day: 'Vendredi',
+    name: 'Côte de bœuf',
+    description:
+      "Côte de bœuf servie avec frites croustillantes et salade verte, sauce beurre à l'ail.",
+  },
+];
+
+/** Plats du weekend — samedi et dimanche */
+export const WEEKEND_DAILY_DISHES: DailyDish[] = [
+  {
+    id: 'dj-samedi',
+    price: 10000,
+    day: 'Samedi',
+    name: "Mijoté de côtes d'agneau",
+    description:
+      "Côtes d'agneau mijotées façon ragoût dans un bouillon de légumes et d'herbes fraîches, servies avec une purée de patate douce selon saison.",
+  },
+  {
+    id: 'dj-dimanche',
+    price: 7000,
+    day: 'Dimanche',
+    name: 'Couscous Royal',
+    description:
+      'Couscous royal généreux composé de poulet, merguez et mouton — servi le dimanche midi de 12h à 15h.',
+  },
+];
