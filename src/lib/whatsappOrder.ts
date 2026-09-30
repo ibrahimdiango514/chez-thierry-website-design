@@ -105,7 +105,16 @@ export const buildDishOrderMessage = ({
 export const buildWhatsAppUrl = (number: string, message: string): string =>
   `https://api.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(message)}`;
 
-/** Ouvre WhatsApp dans un nouvel onglet (même comportement que les autres menus) */
-export const openWhatsAppOrder = (number: string, message: string): void => {
-  window.open(buildWhatsAppUrl(number, message), '_blank');
-};
+/**
+ * URL WhatsApp complète pour la commande d'un plat.
+ * ⚠️ Sert directement d'attribut `href` aux boutons : la redirection est ainsi
+ * native (comme les autres boutons WhatsApp du site) et n'est jamais bloquée
+ * par les bloqueurs de pop-up ni par les navigateurs intégrés.
+ */
+export const buildDishOrderUrl = ({
+  dish,
+  mode,
+  quantity = 1,
+  establishment = 'restaurant',
+}: DishOrderMessageParams): string =>
+  buildWhatsAppUrl(WHATSAPP_NUMBERS[establishment], buildDishOrderMessage({ dish, mode, quantity, establishment }));
