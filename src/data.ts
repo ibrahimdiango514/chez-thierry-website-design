@@ -139,43 +139,33 @@ export const RESTAURANT_SPECIAL_DISH: SpecialDish = {
 export const WEEK_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-lundi',
-    price: 7500,
     day: 'Lundi',
-    name: 'Poulet local braisé',
-    description:
-      "Poulet local braisé au feu de bois, servi avec ses frites fraîches maison et une petite salade verte.",
+    name: 'Bientôt disponible',
+    description: 'Le plat du lundi sera bientôt annoncé par le restaurant.',
   },
   {
     id: 'dj-mardi',
-    price: 9000,
     day: 'Mardi',
-    name: 'Escalope milanaise',
-    description:
-      "Fine escalope de poulet panée à l'italienne, accompagnée de frites, de sauce tomate et d'un quartier de citron.",
+    name: 'Bientôt disponible',
+    description: 'Le plat du mardi sera bientôt annoncé par le restaurant.',
   },
   {
     id: 'dj-mercredi',
-    price: 8000,
     day: 'Mercredi',
-    name: 'Pavé de Bœuf',
-    description:
-      'Filet de bœuf en pavé, servi avec frites croustillantes et salade verte, sauce au poivre crémeuse.',
+    name: 'Bientôt disponible',
+    description: 'Le plat du mercredi sera bientôt annoncé par le restaurant.',
   },
   {
     id: 'dj-jeudi',
-    price: 9000,
     day: 'Jeudi',
-    name: 'Poisson au curry',
-    description:
-      'Filet de capitaine sauté à la crème de coco et au curry, accompagné de pommes de terre vapeur.',
+    name: 'Bientôt disponible',
+    description: 'Le plat du jeudi sera bientôt annoncé par le restaurant.',
   },
   {
     id: 'dj-vendredi',
-    price: 9000,
     day: 'Vendredi',
-    name: 'Côte de bœuf',
-    description:
-      "Côte de bœuf servie avec frites croustillantes et salade verte, sauce beurre à l'ail.",
+    name: 'Bientôt disponible',
+    description: 'Le plat du vendredi sera bientôt annoncé par le restaurant.',
   },
 ];
 
@@ -183,18 +173,14 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
 export const WEEKEND_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-samedi',
-    price: 10000,
     day: 'Samedi',
-    name: "Mijoté de côtes d'agneau",
-    description:
-      "Côtes d'agneau mijotées façon ragoût dans un bouillon de légumes et d'herbes fraîches, servies avec une purée de patate douce selon saison.",
+    name: 'Bientôt disponible',
+    description: 'Le plat du samedi sera bientôt annoncé par le restaurant.',
   },
   {
     id: 'dj-dimanche',
-    price: 7000,
     day: 'Dimanche',
-    name: 'Couscous Royal',
-    description:
-      'Couscous royal généreux composé de poulet, merguez et mouton — servi le dimanche midi de 12h à 15h.',
+    name: 'Bientôt disponible',
+    description: 'Le plat du dimanche sera bientôt annoncé par le restaurant.',
   },
 ];
