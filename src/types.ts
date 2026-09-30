@@ -39,6 +39,12 @@ export interface DailyDish {
   name: string;
   /** Courte description du plat (une phrase) */
   description: string;
+  /**
+   * Prix du plat en F CFA (issu de la carte du restaurant).
+   * Utilisé dans le message WhatsApp de commande.
+   * Si absent, le message est envoyé sans prix.
+   */
+  price?: number;
 }
 
 export type OrderMode = 'sur_place' | 'emporter' | 'livraison';

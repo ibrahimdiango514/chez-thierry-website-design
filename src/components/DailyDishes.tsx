@@ -1,6 +1,13 @@
 import React from 'react';
-import { DailyDish, DailyDishPeriod } from '../types';
+import { DailyDish, DailyDishPeriod, OrderMode } from '../types';
 import { WEEK_DAILY_DISHES, WEEKEND_DAILY_DISHES } from '../data';
+import { OrderModeButtons } from './OrderModeButtons';
+import {
+  buildDishOrderMessage,
+  openWhatsAppOrder,
+  WHATSAPP_NUMBERS,
+  type Establishment,
+} from '../lib/whatsappOrder';
 
 /* ─────────────────────────────────────────────────────────────
    🍽️ SECTION « PLAT DU JOUR » — Page d'accueil (juste après le hero)
@@ -16,8 +23,11 @@ import { WEEK_DAILY_DISHES, WEEKEND_DAILY_DISHES } from '../data';
    WEEKEND_DAILY_DISHES) — ce composant ne contient aucune donnée en dur.
    ───────────────────────────────────────────────────────────── */
 
-/** Liste des plats d'une catégorie (nom + courte description) */
-const DishList: React.FC<{ dishes: DailyDish[] }> = ({ dishes }) => (
+/** Liste des plats d'une catégorie (nom + courte description + commande) */
+const DishList: React.FC<{
+  dishes: DailyDish[];
+  onOrder: (dish: DailyDish, mode: OrderMode) => void;
+}> = ({ dishes, onOrder }) => (
   <ul className="flex flex-col">
     {dishes.map((dish) => (
       <li
@@ -30,14 +40,29 @@ const DishList: React.FC<{ dishes: DailyDish[] }> = ({ dishes }) => (
             {dish.day}
           </span>
 
-          {/* Plat + description */}
-          <div className="mt-2 sm:mt-0 min-w-0">
+          {/* Plat + description + prix */}
+          <div className="mt-2 sm:mt-0 min-w-0 flex-1">
             <h4 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold leading-snug text-white break-words transition-colors group-hover:text-amber-400">
               {dish.name}
             </h4>
             <p className="mt-1 text-xs sm:text-sm font-light leading-relaxed text-slate-400 break-words">
               {dish.description}
             </p>
+            {dish.price !== undefined && (
+              <p className="mt-2 flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-bold text-amber-400">
+                  {dish.price.toLocaleString()} F
+                </span>
+                <span className="text-[10px] font-medium text-neutral-500">F CFA</span>
+              </p>
+            )}
+
+            {/* Boutons de commande — Sur place / À emporter / Livraison */}
+            <OrderModeButtons
+              className="mt-3 max-w-sm"
+              dishName={dish.name}
+              onSelect={(mode) => onOrder(dish, mode)}
+            />
           </div>
         </div>
       </li>
@@ -53,6 +78,8 @@ interface DishCategoryProps {
   dishes: DailyDish[];
   /** Accent plus marqué pour la catégorie weekend (mise en avant) */
   highlighted?: boolean;
+  /** Commande d'un plat — déclenche l'envoi du message WhatsApp */
+  onOrder: (dish: DailyDish, mode: OrderMode) => void;
 }
 
 /** Carte d'une catégorie (semaine ou weekend) */
@@ -63,6 +90,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
   emoji,
   dishes,
   highlighted = false,
+  onOrder,
 }) => (
   <div
     className={`relative flex h-full flex-col rounded-3xl border bg-gradient-to-b p-5 sm:p-6 md:p-8 shadow-2xl ${
@@ -85,7 +113,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
       </p>
     </div>
 
-    <DishList dishes={dishes} />
+    <DishList dishes={dishes} onOrder={onOrder} />
 
     {/* Nombre de plats proposés */}
     <p className="mt-5 text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
@@ -95,8 +123,19 @@ const DishCategory: React.FC<DishCategoryProps> = ({
 );
 
 export const DailyDishes: React.FC = () => {
-  /* Les deux catégories demandées, définies dans l'ordre d'affichage */
-  const categories: (DishCategoryProps & { id: DailyDishPeriod })[] = [
+  /**
+   * Commande d'un plat du jour : ouvre directement le WhatsApp du Restaurant
+   * avec le même format de message que les autres menus, adapté au plat.
+   */
+  const handleOrder = (dish: DailyDish, mode: OrderMode) => {
+    const establishment: Establishment = 'restaurant';
+    const message = buildDishOrderMessage({ dish, mode, establishment });
+    openWhatsAppOrder(WHATSAPP_NUMBERS[establishment], message);
+  };
+
+  /* Les deux catégories demandées, définies dans l'ordre d'affichage
+     (onOrder est ajouté au rendu : un seul gestionnaire pour toute la section) */
+  const categories: (Omit<DishCategoryProps, 'onOrder'> & { id: DailyDishPeriod })[] = [
     {
       id: 'semaine',
       badge: '🗓️ Lundi → Vendredi',
@@ -149,7 +188,7 @@ export const DailyDishes: React.FC = () => {
         {/* Les deux catégories, affichées séparément */}
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
           {categories.map((category) => (
-            <DishCategory key={category.id} {...category} />
+            <DishCategory key={category.id} {...category} onOrder={handleOrder} />
           ))}
         </div>
 

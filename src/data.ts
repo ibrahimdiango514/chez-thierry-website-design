@@ -139,6 +139,7 @@ export const RESTAURANT_SPECIAL_DISH: SpecialDish = {
 export const WEEK_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-lundi',
+    price: 7500,
     day: 'Lundi',
     name: 'Poulet local braisé',
     description:
@@ -146,6 +147,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
   },
   {
     id: 'dj-mardi',
+    price: 9000,
     day: 'Mardi',
     name: 'Escalope milanaise',
     description:
@@ -153,6 +155,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
   },
   {
     id: 'dj-mercredi',
+    price: 8000,
     day: 'Mercredi',
     name: 'Pavé de Bœuf',
     description:
@@ -160,6 +163,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
   },
   {
     id: 'dj-jeudi',
+    price: 9000,
     day: 'Jeudi',
     name: 'Poisson au curry',
     description:
@@ -167,6 +171,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
   },
   {
     id: 'dj-vendredi',
+    price: 9000,
     day: 'Vendredi',
     name: 'Côte de bœuf',
     description:
@@ -178,6 +183,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
 export const WEEKEND_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-samedi',
+    price: 10000,
     day: 'Samedi',
     name: "Mijoté de côtes d'agneau",
     description:
@@ -185,6 +191,7 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
   },
   {
     id: 'dj-dimanche',
+    price: 7000,
     day: 'Dimanche',
     name: 'Couscous Royal',
     description:
