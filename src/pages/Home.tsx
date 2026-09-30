@@ -507,7 +507,6 @@ export default function Home() {
         onRemoveFromCart={handleRemoveItem}
         onUpdateQuantity={handleUpdateQuantity}
         onClearCart={handleClearCart}
-        initialMode={checkoutMode}
       />
 
       {/* 📱 QR Code — Site Officiel Chez Thierry (uniquement sur le site principal) */}
