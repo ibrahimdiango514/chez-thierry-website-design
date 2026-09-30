@@ -321,7 +321,7 @@ function OrderModal({
 }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [mode, setMode] = useState<OrderMode>('sur_place');
+  const [mode, setMode] = useState<OrderMode | ''>('');
   const [useManual, setUseManual] = useState(false);
   const [manualAddress, setManualAddress] = useState('');
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -385,7 +385,8 @@ function OrderModal({
   };
 
   const validate = () => {
-    if (!name.trim()) return 'Veuillez entrer votre nom.';
+    if (!mode) return 'Veuillez choisir un mode de commande.';
+    if (!name.trim()) return 'Veuillez entrer votre nom complet.';
     if (!phone.trim()) return 'Veuillez entrer votre numéro de téléphone.';
     if (mode === 'livraison') {
       if (!useManual && !location)

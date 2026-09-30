@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CartItem, OrderMode, SectionType } from '../types';
 import { X, MapPin, Smartphone, User, CheckCircle, Navigation } from 'lucide-react';
 
@@ -8,6 +8,7 @@ interface CheckoutModalProps {
   cartItems: CartItem[];
   currentSection: SectionType;
   onClearCart: () => void;
+  initialMode?: OrderMode | '';
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -16,9 +17,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cartItems,
   currentSection,
   onClearCart,
+  initialMode = '',
 }) => {
   const [section, setSection] = useState<SectionType>(currentSection);
-  const [mode, setMode] = useState<OrderMode | ''>('');
+  const [mode, setMode] = useState<OrderMode | ''>(initialMode);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -28,6 +30,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [useManualAddress, setUseManualAddress] = useState(false);
   const [geoAddress, setGeoAddress] = useState('');
   const [geoSource, setGeoSource] = useState<'gps' | 'ip' | null>(null);
+
+  useEffect(() => {
+    if (isOpen) setMode(initialMode);
+  }, [isOpen, initialMode]);
 
   if (!isOpen) return null;
 
@@ -107,11 +113,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       return;
     }
 
+    if (!customerName.trim() || !customerPhone.trim()) {
+      alert("Veuillez remplir votre nom complet et votre numéro de téléphone.");
+      return;
+    }
+
     if (mode === 'livraison') {
-      if (!customerName.trim() || !customerPhone.trim()) {
-        alert("Veuillez remplir vos informations de livraison.");
-        return;
-      }
       if (!location && !useManualAddress) {
         alert("Veuillez activer la localisation GPS ou saisir une adresse manuelle.");
         return;
@@ -136,9 +143,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     message += `📝 Commande :\n${orderDetailsText}\n\n`;
     message += `💰 Total : ${total.toLocaleString()} F CFA`;
 
+    message += `\n\n👤 Client : ${customerName}`;
+    message += `\n📞 Téléphone : ${customerPhone}`;
     if (mode === 'livraison') {
-      message += `\n\n👤 Client : ${customerName}`;
-      message += `\n📞 Téléphone : ${customerPhone}`;
       if (location && !useManualAddress) {
         message += `\n🗺️ Localisation : https://www.google.com/maps?q=${location.lat},${location.lng}`;
         if (geoAddress) {
@@ -226,12 +233,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
         </div>
 
-        {/* 3. Delivery Details */}
-        {mode === 'livraison' && (
-          <div className="mb-6 p-4 bg-neutral-900 border border-neutral-800 rounded-2xl space-y-4">
-            <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
-              <MapPin className="w-4 h-4" /> Coordonnées de Livraison
-            </h4>
+        {/* 3. Informations client (requises pour tous les modes) */}
+        {mode && (
+          <div className="mb-6 space-y-4">
+            <h4 className="text-sm font-bold text-amber-400">Vos coordonnées</h4>
             
             <div className="relative">
               <User className="absolute left-3 top-3.5 w-4 h-4 text-neutral-500" />
@@ -255,6 +260,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               />
             </div>
 
+          </div>
+        )}
+
+        {/* Adresse demandée uniquement pour une livraison */}
+        {mode === 'livraison' && (
+          <div className="mb-6 p-4 bg-neutral-900 border border-neutral-800 rounded-2xl space-y-4">
+            <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
+              <MapPin className="w-4 h-4" /> Coordonnées de Livraison
+            </h4>
             <div className="flex items-center gap-4 py-1">
               <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-300">
                 <input
