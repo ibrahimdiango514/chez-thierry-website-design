@@ -20,6 +20,27 @@ export interface CartItem {
   quantity: number;
 }
 
+/**
+ * Catégorie de la section « Plat du jour » affichée sur la page d'accueil :
+ * - 'semaine' : du lundi au vendredi
+ * - 'weekend' : samedi et dimanche
+ */
+export type DailyDishPeriod = 'semaine' | 'weekend';
+
+/**
+ * Plat du jour (semaine / weekend).
+ * Affiché sans photo : uniquement le nom du plat et une courte description.
+ */
+export interface DailyDish {
+  id: string;
+  /** Jour concerné (ex: "Lundi", "Samedi") */
+  day: string;
+  /** Nom du plat (ex: "Poulet local braisé") */
+  name: string;
+  /** Courte description du plat (une phrase) */
+  description: string;
+}
+
 export type OrderMode = 'sur_place' | 'emporter' | 'livraison';
 export type SectionType = 'restaurant' | 'rooftop';
 

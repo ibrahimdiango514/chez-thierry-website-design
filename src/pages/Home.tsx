@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SectionType, CartItem, MenuItem } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
+import { DailyDishes } from '../components/DailyDishes';
 import { SignatureDish } from '../components/SignatureDish';
 import { MenuSection } from '../components/MenuSection';
 import { Cart } from '../components/Cart';
@@ -126,6 +127,9 @@ export default function Home() {
         <div id="restaurant" className="scroll-mt-20">
           {/* 1. Hero restaurant */}
           <Hero type="restaurant" />
+
+          {/* 1 bis. Plat du jour — plats de la semaine & du weekend (juste après le hero) */}
+          <DailyDishes />
 
           {/* Visuel Restaurant — Présentation Premium */}
           <section className="bg-neutral-950 py-8 px-4 sm:px-6 md:px-8 overflow-hidden w-full max-w-full">
