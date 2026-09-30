@@ -398,8 +398,8 @@ function OrderModal({
 
   const handleSubmit = () => {
     const err = validate();
-    if (err) {
-      setError(err);
+    if (err || !mode) {
+      setError(err || 'Veuillez choisir un mode de commande.');
       return;
     }
 

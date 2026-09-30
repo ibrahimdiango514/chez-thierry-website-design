@@ -1,5 +1,5 @@
 import React from 'react';
-import { DailyDish, DailyDishPeriod } from '../types';
+import { DailyDish, DailyDishPeriod, OrderMode } from '../types';
 import { WEEK_DAILY_DISHES, WEEKEND_DAILY_DISHES } from '../data';
 import { OrderModeButtons } from './OrderModeButtons';
 
@@ -18,7 +18,10 @@ import { OrderModeButtons } from './OrderModeButtons';
    ───────────────────────────────────────────────────────────── */
 
 /** Liste des plats d'une catégorie (nom + courte description + boutons de commande) */
-const DishList: React.FC<{ dishes: DailyDish[]; onSelectMode?: (dish: DailyDish, mode: import('../types').OrderMode) => void }> = ({ dishes, onSelectMode }) => (
+const DishList: React.FC<{
+  dishes: DailyDish[];
+  onSelectMode?: (dish: DailyDish, mode: OrderMode) => void;
+}> = ({ dishes, onSelectMode }) => (
   <ul className="flex flex-col">
     {dishes.map((dish) => (
       <li
@@ -50,7 +53,11 @@ const DishList: React.FC<{ dishes: DailyDish[]; onSelectMode?: (dish: DailyDish,
 
             {/* Boutons de commande — Sur place / À emporter / Livraison
                 (liens WhatsApp directs, message pré-rempli pour ce plat) */}
-            <OrderModeButtons dish={dish} className="mt-3 max-w-sm" onSelectMode={onSelectMode} />
+            <OrderModeButtons
+              dish={dish}
+              className="mt-3 max-w-sm"
+              onSelectMode={onSelectMode ? (_dish, mode) => onSelectMode(dish, mode) : undefined}
+            />
           </div>
         </div>
       </li>
@@ -66,6 +73,7 @@ interface DishCategoryProps {
   dishes: DailyDish[];
   /** Accent plus marqué pour la catégorie weekend (mise en avant) */
   highlighted?: boolean;
+  onSelectMode?: (dish: DailyDish, mode: OrderMode) => void;
 }
 
 /** Carte d'une catégorie (semaine ou weekend) */
@@ -76,6 +84,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
   emoji,
   dishes,
   highlighted = false,
+  onSelectMode,
 }) => (
   <div
     className={`relative flex h-full flex-col rounded-3xl border bg-gradient-to-b p-5 sm:p-6 md:p-8 shadow-2xl ${
@@ -107,9 +116,11 @@ const DishCategory: React.FC<DishCategoryProps> = ({
   </div>
 );
 
-export const DailyDishes: React.FC<{ onSelectMode?: (dish: DailyDish, mode: import('../types').OrderMode) => void }> = ({ onSelectMode }) => {
+export const DailyDishes: React.FC<{ onSelectMode?: (dish: DailyDish, mode: OrderMode) => void }> = ({
+  onSelectMode,
+}) => {
   /* Les deux catégories demandées, définies dans l'ordre d'affichage */
-  const categories: (DishCategoryProps & { id: DailyDishPeriod })[] = [
+  const categories: (Omit<DishCategoryProps, 'onSelectMode'> & { id: DailyDishPeriod })[] = [
     {
       id: 'semaine',
       badge: '🗓️ Lundi → Vendredi',
@@ -162,7 +173,7 @@ export const DailyDishes: React.FC<{ onSelectMode?: (dish: DailyDish, mode: impo
         {/* Les deux catégories, affichées séparément */}
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
           {categories.map((category) => (
-            <DishCategory key={category.id} {...category} />
+            <DishCategory key={category.id} {...category} onSelectMode={onSelectMode} />
           ))}
         </div>
 
