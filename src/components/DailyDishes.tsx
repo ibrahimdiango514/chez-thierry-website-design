@@ -18,7 +18,7 @@ import { OrderModeButtons } from './OrderModeButtons';
    ───────────────────────────────────────────────────────────── */
 
 /** Liste des plats d'une catégorie (nom + courte description + boutons de commande) */
-const DishList: React.FC<{ dishes: DailyDish[] }> = ({ dishes }) => (
+const DishList: React.FC<{ dishes: DailyDish[]; onSelectMode?: (dish: DailyDish, mode: import('../types').OrderMode) => void }> = ({ dishes, onSelectMode }) => (
   <ul className="flex flex-col">
     {dishes.map((dish) => (
       <li
@@ -50,7 +50,7 @@ const DishList: React.FC<{ dishes: DailyDish[] }> = ({ dishes }) => (
 
             {/* Boutons de commande — Sur place / À emporter / Livraison
                 (liens WhatsApp directs, message pré-rempli pour ce plat) */}
-            <OrderModeButtons dish={dish} className="mt-3 max-w-sm" />
+            <OrderModeButtons dish={dish} className="mt-3 max-w-sm" onSelectMode={onSelectMode} />
           </div>
         </div>
       </li>
@@ -98,7 +98,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
       </p>
     </div>
 
-    <DishList dishes={dishes} />
+    <DishList dishes={dishes} onSelectMode={onSelectMode} />
 
     {/* Nombre de plats proposés */}
     <p className="mt-5 text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
@@ -107,7 +107,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
   </div>
 );
 
-export const DailyDishes: React.FC = () => {
+export const DailyDishes: React.FC<{ onSelectMode?: (dish: DailyDish, mode: import('../types').OrderMode) => void }> = ({ onSelectMode }) => {
   /* Les deux catégories demandées, définies dans l'ordre d'affichage */
   const categories: (DishCategoryProps & { id: DailyDishPeriod })[] = [
     {

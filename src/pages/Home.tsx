@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SectionType, CartItem, MenuItem } from '../types';
+import { SectionType, CartItem, MenuItem, OrderMode, DailyDish } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
 import { DailyDishes } from '../components/DailyDishes';
@@ -17,6 +17,7 @@ export default function Home() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutMode, setCheckoutMode] = useState<OrderMode | ''>('');
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
 
   const handleAddToCart = (item: MenuItem) => {
@@ -67,6 +68,13 @@ export default function Home() {
 
   const handleDirectOrder = (item: MenuItem) => {
     setCartItems([{ item, quantity: 1 }]);
+    setCheckoutMode('');
+    setIsCheckoutOpen(true);
+  };
+
+  const handleDailyDishOrder = (dish: DailyDish, mode: OrderMode) => {
+    setCartItems([{ item: { id: dish.id, name: dish.name, price: dish.price ?? 0, category: 'Plat du jour', description: dish.description }, quantity: 1 }]);
+    setCheckoutMode(mode);
     setIsCheckoutOpen(true);
   };
 
@@ -129,7 +137,7 @@ export default function Home() {
           <Hero type="restaurant" />
 
           {/* 1 bis. Plat du jour — plats de la semaine & du weekend (juste après le hero) */}
-          <DailyDishes />
+          <DailyDishes onSelectMode={handleDailyDishOrder} />
 
           {/* Visuel Restaurant — Présentation Premium */}
           <section className="bg-neutral-950 py-8 px-4 sm:px-6 md:px-8 overflow-hidden w-full max-w-full">
@@ -484,6 +492,7 @@ export default function Home() {
         cartItems={cartItems}
         currentSection={activeSection}
         onClearCart={handleClearCart}
+        initialMode={checkoutMode}
       />
 
       {/* 🤖 Assistant IA — Chez Thierry */}
@@ -498,6 +507,7 @@ export default function Home() {
         onRemoveFromCart={handleRemoveItem}
         onUpdateQuantity={handleUpdateQuantity}
         onClearCart={handleClearCart}
+        initialMode={checkoutMode}
       />
 
       {/* 📱 QR Code — Site Officiel Chez Thierry (uniquement sur le site principal) */}

@@ -36,6 +36,7 @@ interface OrderModeButtonsProps {
   /** Quantité commandée (1 par défaut) */
   quantity?: number;
   className?: string;
+  onSelectMode?: (dish: { name: string; price?: number }, mode: OrderMode) => void;
 }
 
 export const OrderModeButtons: React.FC<OrderModeButtonsProps> = ({
@@ -43,6 +44,7 @@ export const OrderModeButtons: React.FC<OrderModeButtonsProps> = ({
   establishment = 'restaurant',
   quantity = 1,
   className = '',
+  onSelectMode,
 }) => (
   <div className={`grid grid-cols-3 gap-1.5 sm:gap-2 ${className}`}>
     {ORDER_MODES.map((mode) => {
@@ -52,18 +54,24 @@ export const OrderModeButtons: React.FC<OrderModeButtonsProps> = ({
       const href = buildDishOrderUrl({ dish, mode, quantity, establishment });
 
       return (
-        <a
+        onSelectMode ? (
+        <button
           key={mode}
-          href={href}
-          target="_blank"
-          rel="noreferrer"
+          type="button"
+          onClick={() => onSelectMode(dish, mode)}
           aria-label={`Commander ${dish.name} — ${label}`}
           title={`Commander : ${label}`}
           className="group/order flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-1 py-2.5 sm:py-3 rounded-xl border border-neutral-800 bg-neutral-900 text-slate-300 text-[10px] sm:text-xs font-extrabold transition-all duration-300 hover:bg-amber-500 hover:text-neutral-950 hover:border-amber-500 active:scale-95 cursor-pointer"
         >
           <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-amber-400 transition-colors group-hover/order:text-neutral-950" />
           <span className="whitespace-nowrap">{label}</span>
-        </a>
+        </button>
+        ) : (
+          <a key={mode} href={href} target="_blank" rel="noreferrer" aria-label={`Commander ${dish.name} — ${label}`} title={`Commander : ${label}`} className="group/order flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-1 py-2.5 sm:py-3 rounded-xl border border-neutral-800 bg-neutral-900 text-slate-300 text-[10px] sm:text-xs font-extrabold transition-all duration-300 hover:bg-amber-500 hover:text-neutral-950 hover:border-amber-500 active:scale-95 cursor-pointer">
+            <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-amber-400 transition-colors group-hover/order:text-neutral-950" />
+            <span className="whitespace-nowrap">{label}</span>
+          </a>
+        )
       );
     })}
   </div>
