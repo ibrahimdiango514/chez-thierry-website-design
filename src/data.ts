@@ -47,8 +47,16 @@ export const RESTAURANT_MENU: MenuItem[] = [
   { id: 'lt2', name: 'Cuisses de grenouilles', image: '/images/menu/restaurant/cuisses-de-grenouilles.jpg', price: 7500, category: 'Les temporelles', description: "Cuisses de grenouilles sautées au beurre, à l'ail et au persil, déglacées au jus de citron, servies avec frites et salade" },
   { id: 'lt3', name: 'Jarret d\'agneau rôti au romarin', image: '/images/menu/restaurant/jarret-dagneau-roti-au-romarin.jpg', price: 10000, category: 'Les temporelles', description: "Jarret d'agneau rôti au four au romarin, servi avec une poêlée de légumes de saison" },
 
-  // SUPPLÉMENT D'ACCOMPAGNEMENT
-  { id: 'su1', name: 'Supplément d\'accompagnement', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Frites, Légumes sautés, aloco, Purée Maison, Pâtes, Riz' },
+  // SUPPLÉMENTS D'ACCOMPAGNEMENT & EXTRA
+  { id: 'su1', name: 'Supplément Frites', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Portion généreuse de frites croustillantes dorées' },
+  { id: 'su2', name: 'Supplément Légumes sautés', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Poêlée de légumes frais croquants et assaisonnés' },
+  { id: 'su3', name: 'Supplément Aloco', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Bananes plantains mûres frites et fondantes' },
+  { id: 'su4', name: 'Supplément Purée Maison', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Onctueuse purée de pommes de terre au beurre' },
+  { id: 'su5', name: 'Supplément Pâtes', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Tagliatelles ou spaghetti cuits al dente' },
+  { id: 'su6', name: 'Supplément Riz', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Portion de riz blanc parfumé' },
+  { id: 'su7', name: 'Supplément Fruits frais', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Assortiment de fruits frais découpés' },
+  { id: 'su8', name: 'Supplément Chantilly', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1000, category: 'Suppléments d\'accompagnement', description: 'Généreux dôme de crème chantilly maison' },
+  { id: 'su9', name: 'Supplément Glace (1 boule)', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Boule de glace artisanale au choix' },
 
   // DESSERTS
   { id: 'd1', name: 'Profiterole au chocolat', image: '/images/menu/restaurant/profiterole-au-chocolat.jpg', price: 5000, category: 'Desserts', description: 'Duo de chouquettes glace vanille, sauce chocolat' },

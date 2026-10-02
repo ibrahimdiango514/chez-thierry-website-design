@@ -16,9 +16,10 @@ import { Clock, Coffee, Sparkles, PlusCircle } from 'lucide-react';
 
 interface PauseGourmandeProps {
   onSelectMode?: (item: { name: string; price: number; description?: string }, mode: OrderMode) => void;
+  onAddToCart?: (item: MenuItem) => void;
 }
 
-export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) => {
+export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, onAddToCart }) => {
   return (
     <section
       id="pause-gourmande"
@@ -91,13 +92,31 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) 
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-neutral-800/60">
-                  <div className="flex items-baseline justify-between mb-2">
+                <div className="mt-5 pt-3 border-t border-neutral-800/60 flex flex-col gap-2.5">
+                  <div className="flex items-baseline justify-between">
                     <span className="text-[11px] font-semibold text-neutral-400">Prix</span>
                     <span className="text-base font-extrabold text-amber-400">
                       {dessert.price.toLocaleString()} F CFA
                     </span>
                   </div>
+                  {onAddToCart && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onAddToCart({
+                          id: dessert.id,
+                          name: dessert.name,
+                          price: dessert.price,
+                          category: 'Pause Gourmande',
+                          description: 'Servi avec glace et chantilly',
+                          image: dessert.image,
+                        })
+                      }
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                    >
+                      <span>🛒</span> Ajouter au panier
+                    </button>
+                  )}
                   <OrderModeButtons
                     dish={{ name: dessert.name, price: dessert.price }}
                     className="w-full"
@@ -106,6 +125,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) 
                         ? (_d, mode) =>
                             onSelectMode(
                               {
+                                id: dessert.id,
                                 name: dessert.name,
                                 price: dessert.price,
                                 description: 'Pause Gourmande',
@@ -156,7 +176,24 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) 
                   </p>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-neutral-800/80">
+                <div className="mt-6 pt-3 border-t border-neutral-800/80 flex flex-col gap-2.5">
+                  {onAddToCart && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onAddToCart({
+                          id: formula.id,
+                          name: `${formula.name} — ${formula.description}`,
+                          price: formula.price,
+                          category: 'Pause Gourmande',
+                          description: formula.description,
+                        })
+                      }
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                    >
+                      <span>🛒</span> Ajouter au panier
+                    </button>
+                  )}
                   <OrderModeButtons
                     dish={{ name: `${formula.name} (${formula.description})`, price: formula.price }}
                     className="w-full"
@@ -165,6 +202,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) 
                         ? (_d, mode) =>
                             onSelectMode(
                               {
+                                id: formula.id,
                                 name: formula.name,
                                 price: formula.price,
                                 description: formula.description,
@@ -205,26 +243,47 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode }) 
             </p>
           </div>
 
-          {/* Suppléments */}
+          {/* Suppléments avec bouton « Ajouter au panier » individuel */}
           <div className="rounded-3xl border border-neutral-800 bg-neutral-900/60 p-6 sm:p-7 shadow-xl">
             <h4 className="font-playfair text-xl font-bold text-amber-400 flex items-center gap-2 mb-3">
               <PlusCircle className="w-5 h-5" /> Suppléments
             </h4>
             <p className="text-xs text-neutral-400 font-light mb-4">
-              Ajoutez une touche de gourmandise supplémentaire :
+              Ajoutez une touche de gourmandise supplémentaire à votre commande :
             </p>
             <div className="space-y-3">
               {PAUSE_GOURMANDE_SUPPLEMENTS.map((supp) => (
                 <div
                   key={supp.id}
-                  className="flex items-center justify-between rounded-xl border border-neutral-800/80 bg-neutral-950 px-4 py-2.5"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-2xl border border-neutral-800/80 bg-neutral-950 p-3.5 hover:border-amber-500/30 transition-colors"
                 >
-                  <span className="text-xs sm:text-sm font-semibold text-slate-200">
-                    {supp.name}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-amber-400">
-                    {supp.price.toLocaleString()} F CFA
-                  </span>
+                  <div>
+                    <span className="text-sm font-bold text-white block">
+                      {supp.name}
+                    </span>
+                    <span className="text-xs font-extrabold text-amber-400">
+                      {supp.price.toLocaleString()} F CFA
+                    </span>
+                  </div>
+
+                  {onAddToCart && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onAddToCart({
+                          id: supp.id,
+                          name: `Supplément ${supp.name}`,
+                          price: supp.price,
+                          category: 'Suppléments',
+                          description: `Supplément ${supp.name}`,
+                          image: '/images/menu/restaurant/supplement-daccompagnement.jpg',
+                        })
+                      }
+                      className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer self-end sm:self-auto"
+                    >
+                      <span>+</span> Ajouter au panier
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

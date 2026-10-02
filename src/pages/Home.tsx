@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { SectionType, CartItem, MenuItem, OrderMode, DailyDish, MenuFormula } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
+import { GeneralInfo } from '../components/GeneralInfo';
 import { DailyDishes } from '../components/DailyDishes';
 import { PauseGourmande } from '../components/PauseGourmande';
 import { ApresMidisApero } from '../components/ApresMidisApero';
@@ -46,15 +47,30 @@ export default function Home() {
     }
   }, [location.pathname, location.hash]);
 
-  const handleAddToCart = (item: MenuItem) => {
+  const handleAddToCart = (item: MenuItem, section?: SectionType) => {
     setCartItems((prevItems) => {
-      const existingItemIndex = prevItems.findIndex((ci) => ci.item.id === item.id);
-      if (existingItemIndex > -1) {
-        const newItems = [...prevItems];
-        newItems[existingItemIndex].quantity += 1;
-        return newItems;
+      const existing = prevItems.find((ci) => ci.item.id === item.id);
+      if (existing) {
+        return prevItems.map((ci) =>
+          ci.item.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci
+        );
       }
-      return [...prevItems, { item, quantity: 1 }];
+      return [
+        ...prevItems,
+        {
+          item,
+          quantity: 1,
+          section:
+            section ||
+            (item.category.includes('Rooftop') ||
+            item.category.includes('Burgers') ||
+            item.category.includes('Grill') ||
+            item.category.includes('Mocktails') ||
+            item.category.includes('Cocktails - Avec alcool')
+              ? 'rooftop'
+              : 'restaurant'),
+        },
+      ];
     });
     // Open cart drawer for feedback
     setIsCartOpen(true);
@@ -62,7 +78,7 @@ export default function Home() {
 
   /* Ajout silencieux (utilisé par l'assistant) : ajoute au panier sans
      ouvrir le drawer, pour ne pas interrompre la conversation. */
-  const handleAssistantAddToCart = (item: MenuItem, _section?: string, quantity = 1) => {
+  const handleAssistantAddToCart = (item: MenuItem, section?: string, quantity = 1) => {
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex((ci) => ci.item.id === item.id);
       if (existingItemIndex > -1) {
@@ -70,7 +86,7 @@ export default function Home() {
         newItems[existingItemIndex].quantity += quantity;
         return newItems;
       }
-      return [...prevItems, { item, quantity }];
+      return [...prevItems, { item, quantity, section: (section as SectionType) || 'restaurant' }];
     });
   };
 
@@ -93,24 +109,20 @@ export default function Home() {
   };
 
   const handleDirectOrder = (item: MenuItem) => {
-    setCartItems([{ item, quantity: 1 }]);
+    handleAddToCart(item, 'restaurant');
     setCheckoutMode('');
     setIsCheckoutOpen(true);
   };
 
   const handleDailyDishOrder = (dish: DailyDish, mode: OrderMode) => {
-    setCartItems([
-      {
-        item: {
-          id: dish.id,
-          name: `${dish.day} : ${dish.name}`,
-          price: dish.price ?? 5000,
-          category: 'Plat du jour',
-          description: dish.description,
-        },
-        quantity: 1,
-      },
-    ]);
+    const item: MenuItem = {
+      id: dish.id,
+      name: `${dish.day} : ${dish.name}`,
+      price: dish.price ?? 5000,
+      category: 'Plats du jour',
+      description: dish.description,
+    };
+    handleAddToCart(item, 'restaurant');
     setCheckoutMode(mode);
     setIsCheckoutOpen(true);
   };
@@ -119,35 +131,28 @@ export default function Home() {
     item: { name: string; price: number; description?: string; id?: string },
     mode: OrderMode
   ) => {
-    setCartItems([
-      {
-        item: {
-          id: item.id ?? `item-${Date.now()}`,
-          name: item.name,
-          price: item.price,
-          category: 'Offre Spéciale',
-          description: item.description,
-        },
-        quantity: 1,
-      },
-    ]);
+    const menuItem: MenuItem = {
+      id: item.id ?? `item-${Date.now()}`,
+      name: item.name,
+      price: item.price,
+      category: item.id?.startsWith('apero') ? 'Nos après-midis apéro' : 'Pause Gourmande',
+      description: item.description,
+    };
+    const sec: SectionType = item.id?.startsWith('apero') ? 'rooftop' : 'restaurant';
+    handleAddToCart(menuItem, sec);
     setCheckoutMode(mode);
     setIsCheckoutOpen(true);
   };
 
   const handleFormulaOrder = (formula: MenuFormula, mode: OrderMode) => {
-    setCartItems([
-      {
-        item: {
-          id: formula.id,
-          name: `${formula.name} — ${formula.description}`,
-          price: formula.price,
-          category: 'Menu du jour',
-          description: formula.description,
-        },
-        quantity: 1,
-      },
-    ]);
+    const item: MenuItem = {
+      id: formula.id,
+      name: `${formula.name} — ${formula.description}`,
+      price: formula.price,
+      category: 'Menu du jour',
+      description: formula.description,
+    };
+    handleAddToCart(item, 'restaurant');
     setCheckoutMode(mode);
     setIsCheckoutOpen(true);
   };
@@ -225,6 +230,9 @@ export default function Home() {
           {/* 1. Hero restaurant */}
           <Hero type="restaurant" />
 
+          {/* INFORMATIONS GÉNÉRALES : MISE EN AVANT DÈS L'ARRIVÉE */}
+          <GeneralInfo />
+
           {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend + Menu du jour */}
           <DailyDishes
             onSelectMode={handleDailyDishOrder}
@@ -232,10 +240,16 @@ export default function Home() {
           />
 
           {/* 1 ter. PARTIE 2 : NOUVEL ONGLET « Pause Gourmande / Sweet Break » (15h00 à 17h30) */}
-          <PauseGourmande onSelectMode={handleSpecialItemOrder} />
+          <PauseGourmande
+            onSelectMode={handleSpecialItemOrder}
+            onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
+          />
 
           {/* 1 quater. PARTIE 3 : NOUVEL ONGLET « Nos après-midis apéro » (17h30 à 19h30) */}
-          <ApresMidisApero onSelectMode={handleSpecialItemOrder} />
+          <ApresMidisApero
+            onSelectMode={handleSpecialItemOrder}
+            onAddToCart={(item) => handleAddToCart(item, 'rooftop')}
+          />
 
           {/* Visuel Restaurant — Présentation Premium */}
           <section className="bg-neutral-950 py-8 px-4 sm:px-6 md:px-8 overflow-hidden w-full max-w-full">

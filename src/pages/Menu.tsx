@@ -8,6 +8,7 @@ import {
   Minus,
   Navigation,
   Phone,
+  PhoneCall,
   Plus,
   Search,
   ShoppingCart,
@@ -329,9 +330,12 @@ function OrderModal({
   const [geoSource, setGeoSource] = useState<'gps' | 'ip' | null>(null);
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState('');
+  const [showPhoneRecap, setShowPhoneRecap] = useState(false);
 
   const sections = Array.from(new Set(lines.map((l) => l.section)));
   const mixed = sections.length > 1;
+  const hasRestaurant = sections.includes('restaurant');
+  const hasRooftop = sections.includes('rooftop');
   const totalQty = lines.reduce((s, l) => s + l.qty, 0);
 
   const fallbackIP = async () => {
@@ -396,7 +400,7 @@ function OrderModal({
     return '';
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (targetEst?: Establishment) => {
     const err = validate();
     if (err || !mode) {
       setError(err || 'Veuillez choisir un mode de commande.');
@@ -406,7 +410,7 @@ function OrderModal({
     const salutation = getSalutation();
     const sectionLine = mixed
       ? `📍 Sections : ${sections.map((s) => ESTABLISHMENT_LABELS[s]).join(' + ')}`
-      : `📍 Section : ${ESTABLISHMENT_LABELS[sections[0]]}`;
+      : `📍 Section : ${ESTABLISHMENT_LABELS[targetEst || sections[0] || 'restaurant']}`;
 
     let msg = `${salutation}\n\n${sectionLine}\n`;
     msg += `🍽️ Mode : ${MODE_LABELS[mode]}\n\n`;
@@ -430,16 +434,33 @@ function OrderModal({
       }
     }
 
-    // Le message part vers le Restaurant s'il contient des articles du Restaurant,
-    // sinon vers le Rooftop.
-    const number = sections.includes('restaurant')
-      ? WHATSAPP_NUMBERS.restaurant
-      : WHATSAPP_NUMBERS.rooftop;
+    let number = targetEst === 'rooftop' ? WHATSAPP_NUMBERS.rooftop : WHATSAPP_NUMBERS.restaurant;
+    if (!targetEst) {
+      number = sections.includes('restaurant')
+        ? WHATSAPP_NUMBERS.restaurant
+        : WHATSAPP_NUMBERS.rooftop;
+    }
+
     const url = `https://api.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(msg)}`;
 
     window.open(url, '_blank');
     onClearCart();
     onClose();
+  };
+
+  const handlePhoneOrder = (targetEst?: Establishment) => {
+    const err = validate();
+    if (err || !mode) {
+      setError(err || 'Veuillez choisir un mode de commande.');
+      return;
+    }
+
+    setShowPhoneRecap(true);
+    const targetTel =
+      targetEst === 'rooftop' || (!targetEst && !hasRestaurant && hasRooftop)
+        ? '+22376222777'
+        : '+22366427777';
+    window.location.href = `tel:${targetTel}`;
   };
 
   return (
@@ -458,182 +479,352 @@ function OrderModal({
           </button>
         </div>
 
-        {mixed && (
-          <p className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 mb-4">
-            Votre commande contient des articles du Restaurant et du Rooftop — ils seront
-            indiqués dans le message.
-          </p>
-        )}
+        {!showPhoneRecap ? (
+          <>
+            {mixed && (
+              <p className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 mb-4">
+                Votre commande contient des articles du Restaurant et du Rooftop — vous pourrez choisir le service à contacter ci-dessous.
+              </p>
+            )}
 
-        {/* Articles */}
-        <div className="space-y-2 mb-5">
-          {lines.map((l) => (
-            <div
-              key={l.key}
-              className="flex items-center justify-between gap-3 bg-neutral-900 border border-neutral-800/60 rounded-xl p-3"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-sm md:text-base font-bold text-white truncate">{l.item.name}</p>
-                <p className="text-xs text-neutral-500">
-                  {mixed ? `${ESTABLISHMENT_SHORT[l.section]} · ` : ''}
-                  {(l.item.price * l.qty).toLocaleString()} F
-                </p>
-              </div>
-              <div className="flex items-center gap-2 bg-neutral-950 border border-neutral-800 rounded-xl px-1.5 py-1">
-                <button
-                  onClick={() => onUpdateQty(l.key, -1)}
-                  className="text-slate-300 hover:text-white p-1.5 transition-colors"
+            {/* Articles */}
+            <div className="space-y-2 mb-5">
+              {lines.map((l) => (
+                <div
+                  key={l.key}
+                  className="flex items-center justify-between gap-3 bg-neutral-900 border border-neutral-800/60 rounded-xl p-3"
                 >
-                  {l.qty === 1 ? (
-                    <Trash2 className="w-4 h-4 text-neutral-500 hover:text-red-400" />
-                  ) : (
-                    <Minus className="w-4 h-4" />
-                  )}
-                </button>
-                <span className="text-white font-bold text-sm w-5 text-center">{l.qty}</span>
-                <button
-                  onClick={() => onUpdateQty(l.key, 1)}
-                  className="text-slate-300 hover:text-white p-1.5 transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm md:text-base font-bold text-white truncate">{l.item.name}</p>
+                    <p className="text-xs text-neutral-500">
+                      {mixed ? `${ESTABLISHMENT_SHORT[l.section]} · ` : ''}
+                      {(l.item.price * l.qty).toLocaleString()} F
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 bg-neutral-950 border border-neutral-800 rounded-xl px-1.5 py-1">
+                    <button
+                      onClick={() => onUpdateQty(l.key, -1)}
+                      className="text-slate-300 hover:text-white p-1.5 transition-colors"
+                    >
+                      {l.qty === 1 ? (
+                        <Trash2 className="w-4 h-4 text-neutral-500 hover:text-red-400" />
+                      ) : (
+                        <Minus className="w-4 h-4" />
+                      )}
+                    </button>
+                    <span className="text-white font-bold text-sm w-5 text-center">{l.qty}</span>
+                    <button
+                      onClick={() => onUpdateQty(l.key, 1)}
+                      className="text-slate-300 hover:text-white p-1.5 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Nom + téléphone */}
-        <div className="space-y-3 mb-5">
-          <div className="relative">
-            <User className="absolute left-3.5 top-3.5 w-5 h-5 text-neutral-500" />
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Votre nom"
-              autoComplete="name"
-              className="w-full bg-neutral-900 border border-neutral-800 focus:border-amber-500 rounded-xl pl-11 pr-4 py-3.5 text-base text-white focus:outline-none transition-all"
-            />
-          </div>
-          <div className="relative">
-            <Phone className="absolute left-3.5 top-3.5 w-5 h-5 text-neutral-500" />
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Votre numéro de téléphone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              className="w-full bg-neutral-900 border border-neutral-800 focus:border-amber-500 rounded-xl pl-11 pr-4 py-3.5 text-base text-white focus:outline-none transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Mode de commande */}
-        <div className="mb-5">
-          <label className="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
-            Mode de commande
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {(Object.keys(MODE_LABELS) as OrderMode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMode(m)}
-                className={`py-3 rounded-xl text-sm font-extrabold border transition-all ${
-                  mode === m
-                    ? 'bg-amber-500 text-neutral-950 border-amber-500'
-                    : 'bg-neutral-900 border-neutral-800 text-slate-300 hover:text-white'
-                }`}
-              >
-                {MODE_LABELS[m]}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Livraison : position GPS ou adresse */}
-        {mode === 'livraison' && (
-          <div className="mb-5 p-4 bg-neutral-900 border border-neutral-800 rounded-2xl space-y-3">
-            <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
-              <MapPin className="w-4 h-4" /> Où livrer ?
-            </h4>
-            <div className="flex flex-wrap gap-4">
-              <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+            {/* Nom + téléphone */}
+            <div className="space-y-3 mb-5">
+              <div className="relative">
+                <User className="absolute left-3.5 top-3.5 w-5 h-5 text-neutral-500" />
                 <input
-                  type="radio"
-                  checked={!useManual}
-                  onChange={() => {
-                    setUseManual(false);
-                    if (!location) handleGetLocation();
-                  }}
-                  className="accent-amber-500"
-                />
-                Ma position GPS
-              </label>
-              <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                <input
-                  type="radio"
-                  checked={useManual}
-                  onChange={() => {
-                    setUseManual(true);
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
                     setError('');
                   }}
-                  className="accent-amber-500"
+                  placeholder="Votre nom"
+                  autoComplete="name"
+                  className="w-full bg-neutral-900 border border-neutral-800 focus:border-amber-500 rounded-xl pl-11 pr-4 py-3.5 text-base text-white focus:outline-none transition-all"
                 />
-                Mon adresse
-              </label>
+              </div>
+              <div className="relative">
+                <Phone className="absolute left-3.5 top-3.5 w-5 h-5 text-neutral-500" />
+                <input
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setError('');
+                  }}
+                  placeholder="Votre numéro de téléphone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  className="w-full bg-neutral-900 border border-neutral-800 focus:border-amber-500 rounded-xl pl-11 pr-4 py-3.5 text-base text-white focus:outline-none transition-all"
+                />
+              </div>
             </div>
 
-            {!useManual ? (
-              <div>
-                {location ? (
-                  <p className="text-green-400 text-sm font-semibold bg-green-500/10 border border-green-500/30 rounded-xl p-3">
-                    ✅ {geoAddress ? geoAddress : 'Localisation récupérée avec succès.'}
-                  </p>
-                ) : (
+            {/* Mode de commande */}
+            <div className="mb-5">
+              <label className="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
+                Mode de commande
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(MODE_LABELS) as OrderMode[]).map((m) => (
                   <button
+                    key={m}
                     type="button"
-                    onClick={handleGetLocation}
-                    disabled={fetching}
-                    className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold py-3.5 rounded-xl disabled:opacity-60 active:scale-95 transition-all"
+                    onClick={() => {
+                      setMode(m);
+                      setError('');
+                    }}
+                    className={`py-3 rounded-xl text-sm font-extrabold border transition-all cursor-pointer ${
+                      mode === m
+                        ? 'bg-amber-500 text-neutral-950 border-amber-500'
+                        : 'bg-neutral-900 border-neutral-800 text-slate-300 hover:text-white'
+                    }`}
                   >
-                    <Navigation className={`w-5 h-5 ${fetching ? 'animate-spin' : ''}`} />
-                    {fetching ? 'Récupération...' : '📍 Partager ma position'}
+                    {MODE_LABELS[m]}
                   </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Livraison : position GPS ou adresse */}
+            {mode === 'livraison' && (
+              <div className="mb-5 p-4 bg-neutral-900 border border-neutral-800 rounded-2xl space-y-3">
+                <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" /> Où livrer ?
+                </h4>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 text-sm font-bold text-slate-200 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={!useManual}
+                      onChange={() => {
+                        setUseManual(false);
+                        if (!location) handleGetLocation();
+                      }}
+                      className="accent-amber-500"
+                    />
+                    Ma position GPS
+                  </label>
+                  <label className="flex items-center gap-2 text-sm font-bold text-slate-200 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={useManual}
+                      onChange={() => {
+                        setUseManual(true);
+                        setError('');
+                      }}
+                      className="accent-amber-500"
+                    />
+                    Mon adresse
+                  </label>
+                </div>
+
+                {!useManual ? (
+                  <div>
+                    {location ? (
+                      <p className="text-green-400 text-sm font-semibold bg-green-500/10 border border-green-500/30 rounded-xl p-3">
+                        ✅ {geoAddress ? geoAddress : 'Localisation récupérée avec succès.'}
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleGetLocation}
+                        disabled={fetching}
+                        className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold py-3.5 rounded-xl disabled:opacity-60 active:scale-95 transition-all cursor-pointer"
+                      >
+                        <Navigation className={`w-5 h-5 ${fetching ? 'animate-spin' : ''}`} />
+                        {fetching ? 'Récupération...' : '📍 Partager ma position'}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <textarea
+                    value={manualAddress}
+                    onChange={(e) => {
+                      setManualAddress(e.target.value);
+                      setError('');
+                    }}
+                    rows={2}
+                    placeholder="Votre adresse complète (quartier, rue...)"
+                    className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500 rounded-xl p-3 text-base text-white resize-none focus:outline-none transition-all"
+                  />
                 )}
               </div>
-            ) : (
-              <textarea
-                value={manualAddress}
-                onChange={(e) => setManualAddress(e.target.value)}
-                rows={2}
-                placeholder="Votre adresse complète (quartier, rue...)"
-                className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500 rounded-xl p-3 text-base text-white resize-none focus:outline-none transition-all"
-              />
             )}
+
+            {/* Total */}
+            <div className="flex items-center justify-between border-t border-neutral-800 pt-4 mb-4">
+              <span className="text-slate-300 font-medium text-sm md:text-base">
+                {totalQty} article{totalQty > 1 ? 's' : ''} · Total
+              </span>
+              <span className="text-2xl font-extrabold text-amber-400">
+                {totalPrice.toLocaleString()} F CFA
+              </span>
+            </div>
+
+            {error && <p className="text-red-400 text-sm font-semibold mb-3">⚠️ {error}</p>}
+
+            {/* ─── DEUX CHOIX : WHATSAPP + TÉLÉPHONE ─── */}
+            <div className="space-y-3">
+              {mixed ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSubmit('restaurant')}
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm py-3.5 rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>WhatsApp Resto (66 42 77 77)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSubmit('rooftop')}
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm py-3.5 rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>WhatsApp Rooftop (76 22 27 77)</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base py-4 rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
+                >
+                  <MessageCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>Commander par WhatsApp ({hasRooftop && !hasRestaurant ? '76 22 27 77' : '66 42 77 77'})</span>
+                </button>
+              )}
+
+              {mixed ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handlePhoneOrder('restaurant')}
+                    className="w-full flex items-center justify-center gap-2 bg-neutral-900 hover:bg-amber-500/10 border border-amber-500/60 hover:border-amber-500 text-amber-400 font-extrabold text-xs sm:text-sm py-3.5 rounded-xl active:scale-95 transition-all cursor-pointer"
+                  >
+                    <PhoneCall className="w-4 h-4 flex-shrink-0" />
+                    <span>Appeler Resto (66 42 77 77)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePhoneOrder('rooftop')}
+                    className="w-full flex items-center justify-center gap-2 bg-neutral-900 hover:bg-amber-500/10 border border-amber-500/60 hover:border-amber-500 text-amber-400 font-extrabold text-xs sm:text-sm py-3.5 rounded-xl active:scale-95 transition-all cursor-pointer"
+                  >
+                    <PhoneCall className="w-4 h-4 flex-shrink-0" />
+                    <span>Appeler Rooftop (76 22 27 77)</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handlePhoneOrder()}
+                  className="w-full flex items-center justify-center gap-2.5 bg-neutral-900 hover:bg-amber-500/10 border border-amber-500/60 hover:border-amber-500 text-amber-400 font-extrabold text-base py-3.5 rounded-xl active:scale-95 transition-all cursor-pointer"
+                >
+                  <PhoneCall className="w-5 h-5 flex-shrink-0" />
+                  <span>Commander par téléphone ({hasRooftop && !hasRestaurant ? '76 22 27 77' : '66 42 77 77'})</span>
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          /* ─── VUE RÉCAPITULATIF POUR DICTÉE TÉLÉPHONIQUE ─── */
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 border-b border-neutral-800 pb-3">
+              <button
+                type="button"
+                onClick={() => setShowPhoneRecap(false)}
+                className="p-1.5 rounded-lg bg-neutral-900 text-slate-300 hover:text-white border border-neutral-800 cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <h3 className="text-lg sm:text-xl font-bold font-playfair text-amber-400 flex items-center gap-2">
+                <PhoneCall className="w-5 h-5" /> Commande par téléphone
+              </h3>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl text-xs text-amber-300 leading-relaxed">
+              📞 <strong>L'appel est en cours !</strong> Voici le récapitulatif complet de votre commande à dicter :
+            </div>
+
+            {/* Boutons d'appel direct */}
+            <div className="space-y-2">
+              {(hasRestaurant || !hasRooftop) && (
+                <a
+                  href="tel:+22366427777"
+                  className="w-full flex items-center justify-between bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
+                >
+                  <span className="flex items-center gap-2">
+                    <PhoneCall className="w-4 h-4" /> Appeler Restaurant
+                  </span>
+                  <span className="underline">+223 66 42 77 77</span>
+                </a>
+              )}
+
+              {(hasRooftop || mixed) && (
+                <a
+                  href="tel:+22376222777"
+                  className="w-full flex items-center justify-between bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
+                >
+                  <span className="flex items-center gap-2">
+                    <PhoneCall className="w-4 h-4" /> Appeler Rooftop
+                  </span>
+                  <span className="underline">+223 76 22 27 77</span>
+                </a>
+              )}
+            </div>
+
+            {/* Fiche récapitulative pour dictée */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 space-y-3 text-xs sm:text-sm">
+              <div className="flex justify-between items-center border-b border-neutral-800 pb-2">
+                <span className="text-neutral-400">Mode :</span>
+                <span className="font-bold text-amber-400 uppercase bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-md">
+                  {mode ? MODE_LABELS[mode] : 'Non spécifié'}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center border-b border-neutral-800 pb-2">
+                <span className="text-neutral-400">Client :</span>
+                <span className="font-semibold text-white">{name} ({phone})</span>
+              </div>
+
+              {mode === 'livraison' && (
+                <div className="border-b border-neutral-800 pb-2">
+                  <span className="text-neutral-400 block mb-1">Adresse de livraison :</span>
+                  <span className="font-medium text-slate-200">
+                    {useManual ? manualAddress : geoAddress || 'Position GPS'}
+                  </span>
+                </div>
+              )}
+
+              <div>
+                <span className="text-neutral-400 block mb-1.5 font-bold">Détail des plats &amp; suppléments :</span>
+                <div className="space-y-1.5 bg-neutral-950 p-2.5 rounded-xl border border-neutral-800">
+                  {lines.map((l) => (
+                    <div key={l.key} className="flex justify-between items-center text-slate-200">
+                      <span>• {l.qty}x {l.item.name}</span>
+                      <span className="font-bold text-amber-400">{(l.item.price * l.qty).toLocaleString()} F</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-2 text-base font-bold text-white">
+                <span>Total à régler :</span>
+                <span className="text-amber-400 font-playfair text-lg sm:text-xl">
+                  {totalPrice.toLocaleString()} F CFA
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                onClearCart();
+                onClose();
+              }}
+              className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-neutral-900 border border-neutral-700 hover:border-green-500 text-slate-200 hover:text-white transition-all cursor-pointer"
+            >
+              ✅ J'ai passé ma commande au téléphone (Terminer)
+            </button>
           </div>
         )}
-
-        {/* Total */}
-        <div className="flex items-center justify-between border-t border-neutral-800 pt-4 mb-4">
-          <span className="text-slate-300 font-medium text-sm md:text-base">
-            {totalQty} article{totalQty > 1 ? 's' : ''} · Total
-          </span>
-          <span className="text-2xl font-extrabold text-amber-400">
-            {totalPrice.toLocaleString()} F CFA
-          </span>
-        </div>
-
-        {error && <p className="text-red-400 text-sm font-semibold mb-3">⚠️ {error}</p>}
-
-        {/* Envoi WhatsApp */}
-        <button
-          onClick={handleSubmit}
-          className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-neutral-950 font-extrabold text-base md:text-lg py-4 rounded-2xl shadow-lg shadow-green-500/20 active:scale-95 transition-all"
-        >
-          <MessageCircle className="w-6 h-6" />
-          Valider et envoyer sur WhatsApp
-        </button>
       </div>
     </div>
   );

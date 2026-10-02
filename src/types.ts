@@ -18,6 +18,7 @@ export interface MenuItem {
 export interface CartItem {
   item: MenuItem;
   quantity: number;
+  section?: SectionType;
 }
 
 /**

@@ -11,10 +11,11 @@ import { Clock, Wine, Users } from 'lucide-react';
    ───────────────────────────────────────────────────────────── */
 
 interface ApresMidisAperoProps {
-  onSelectMode?: (item: { name: string; price: number; description?: string }, mode: OrderMode) => void;
+  onSelectMode?: (item: { name: string; price: number; description?: string; id?: string }, mode: OrderMode) => void;
+  onAddToCart?: (item: MenuItem) => void;
 }
 
-export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode }) => {
+export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode, onAddToCart }) => {
   return (
     <section
       id="apero"
@@ -105,7 +106,25 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode }
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-800/80">
+                <div className="mt-6 pt-4 border-t border-neutral-800/80 flex flex-col gap-2.5">
+                  {onAddToCart && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onAddToCart({
+                          id: planche.id,
+                          name: planche.name,
+                          price: planche.price,
+                          category: 'Nos après-midis apéro',
+                          description: planche.description,
+                          image: planche.image,
+                        })
+                      }
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                    >
+                      <span>🛒</span> Ajouter au panier
+                    </button>
+                  )}
                   <OrderModeButtons
                     dish={{ name: planche.name, price: planche.price }}
                     className="w-full"
@@ -114,6 +133,7 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode }
                         ? (_d, mode) =>
                             onSelectMode(
                               {
+                                id: planche.id,
                                 name: planche.name,
                                 price: planche.price,
                                 description: planche.description,
