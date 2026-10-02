@@ -1,4 +1,12 @@
-import { DailyDish, MenuItem } from './types';
+import {
+  DailyDish,
+  MenuItem,
+  MenuFormula,
+  PauseGourmandeDessert,
+  PauseGourmandeFormula,
+  PauseGourmandeSupplement,
+  AperoPlanche,
+} from './types';
 
 export const RESTAURANT_MENU: MenuItem[] = [
   // PIZZAS
@@ -126,46 +134,43 @@ export const RESTAURANT_SPECIAL_DISH: SpecialDish = {
 
 
 // ─── PLAT DU JOUR (semaine & weekend) ─────────────────────────────────────
-// Affiché sur la page d'accueil, juste après le hero, dans la section
-// « Plat du jour » (composant src/components/DailyDishes.tsx).
-//
-// 👉 Pour changer les plats affichés, il suffit de modifier les deux listes
-//    ci-dessous : aucun autre fichier n'est à toucher.
-//
-// Les plats proposés ici sont issus de la carte du restaurant
-// (RESTAURANT_MENU) et sont servis selon la disponibilité du marché.
+// Service continu : plats du jour de la semaine et du week-end (5 000 F CFA)
 
 /** Plats de la semaine — du lundi au vendredi */
 export const WEEK_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-lundi',
-    day: 'Lundi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du lundi sera bientôt annoncé par le restaurant.',
+    day: 'LUNDI',
+    name: 'Fermé',
+    description: '',
   },
   {
     id: 'dj-mardi',
-    day: 'Mardi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du mardi sera bientôt annoncé par le restaurant.',
+    day: 'MARDI',
+    name: 'Facou',
+    description: 'À base de viande de mouton',
+    price: 5000,
   },
   {
     id: 'dj-mercredi',
-    day: 'Mercredi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du mercredi sera bientôt annoncé par le restaurant.',
+    day: 'MERCREDI',
+    name: 'Mafé',
+    description: "Sauce à base d'arachide, viande de bœuf",
+    price: 5000,
   },
   {
     id: 'dj-jeudi',
-    day: 'Jeudi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du jeudi sera bientôt annoncé par le restaurant.',
+    day: 'JEUDI',
+    name: 'Yassa Poulet',
+    description: '',
+    price: 5000,
   },
   {
     id: 'dj-vendredi',
-    day: 'Vendredi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du vendredi sera bientôt annoncé par le restaurant.',
+    day: 'VENDREDI',
+    name: 'Tchep poisson',
+    description: '',
+    price: 5000,
   },
 ];
 
@@ -173,14 +178,149 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
 export const WEEKEND_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-samedi',
-    day: 'Samedi',
-    name: 'Bientôt disponible',
-    description: 'Le plat du samedi sera bientôt annoncé par le restaurant.',
+    day: 'SAMEDI',
+    name: "Spécialité d'ici & d'ailleurs de la Chef",
+    description: '',
+    price: 5000,
   },
   {
     id: 'dj-dimanche',
-    day: 'Dimanche',
-    name: 'Bientôt disponible',
-    description: 'Le plat du dimanche sera bientôt annoncé par le restaurant.',
+    day: 'DIMANCHE',
+    name: 'Couscous oriental – 3 viandes',
+    description: 'Agneau, merguez et poulet',
+    price: 5000,
+  },
+];
+
+// ─── MENU DU JOUR ─────────────────────────────────────────────────────────
+// En complément du plat du jour, un menu du jour est proposé quotidiennement.
+// Le menu varie selon les propositions de la Chef.
+
+export const MENU_DU_JOUR_FORMULES: MenuFormula[] = [
+  {
+    id: 'mdj-f1',
+    name: 'FORMULE 1',
+    price: 9000,
+    description: 'Entrée + Plat + Dessert',
+  },
+  {
+    id: 'mdj-f2',
+    name: 'FORMULE 2',
+    price: 7500,
+    description: 'Entrée + Plat',
+  },
+  {
+    id: 'mdj-f3',
+    name: 'FORMULE 3',
+    price: 7500,
+    description: 'Plat + Dessert',
+  },
+];
+
+export const DEFAULT_MENU_DU_JOUR_PROPOSITIONS = {
+  entree: 'Salade fraîcheur de saison',
+  plat: 'Plat du jour au choix',
+  dessert: 'Douceur maison de la Chef',
+};
+
+// ─── PAUSE GOURMANDE / SWEET BREAK (15h00 à 17h30) ─────────────────────────
+
+export const PAUSE_GOURMANDE_DESSERTS: PauseGourmandeDessert[] = [
+  {
+    id: 'pg-gaufre',
+    name: 'Gaufre Gourmande',
+    price: 6000,
+    image: '/images/menu/restaurant/gaufre-gourmande.jpg',
+    emoji: '🧇',
+  },
+  {
+    id: 'pg-pancake',
+    name: 'Pancake Gourmand',
+    price: 5000,
+    image: '/images/menu/restaurant/pancake-gourmand.jpg',
+    emoji: '🥞',
+  },
+  {
+    id: 'pg-crepe',
+    name: 'Crêpe Gourmande',
+    price: 4000,
+    image: '/images/menu/restaurant/crepe-au-chocolat.jpg',
+    emoji: '🥞',
+  },
+];
+
+export const PAUSE_GOURMANDE_FORMULES: PauseGourmandeFormula[] = [
+  {
+    id: 'pg-f-douceur',
+    name: 'Formule Douceur',
+    price: 5000,
+    description: '1 crêpe classique + 1 boisson chaude ou soft au choix',
+  },
+  {
+    id: 'pg-f-gourmande',
+    name: 'Formule Gourmande',
+    price: 6000,
+    description: '1 gaufre ou 1 pancake gourmand + 1 boisson chaude ou soft au choix',
+  },
+  {
+    id: 'pg-f-partager',
+    name: 'Formule à Partager',
+    price: 13000,
+    description: 'Assortiment crêpe + gaufre + pancakes gourmands + 2 boissons au choix',
+  },
+];
+
+export const PAUSE_GOURMANDE_TOPPINGS: string[] = [
+  'Chocolat',
+  'Caramel',
+  'Chantilly',
+  'Glace',
+  'Spéculoos',
+  'Oreo',
+  'Noisettes / amandes',
+];
+
+export const PAUSE_GOURMANDE_SUPPLEMENTS: PauseGourmandeSupplement[] = [
+  { id: 'pg-s-fruits', name: 'Fruits frais', price: 1500 },
+  { id: 'pg-s-chantilly', name: 'Chantilly', price: 1000 },
+  { id: 'pg-s-glace', name: 'Glace', price: 1500 },
+];
+
+// ─── NOS PLANCHES APÉRO (17h30 à 19h30) ────────────────────────────────────
+
+export const APERO_PLANCHES: AperoPlanche[] = [
+  {
+    id: 'ap-charcuterie',
+    name: 'Planche Charcuterie Halal',
+    price: 8000,
+    description: 'Assortiment de charcuteries halal, fromages, olives, cornichons et toasts.',
+    image: '/images/menu/restaurant/planche-charcuterie-halal.jpg',
+    emoji: '🥩',
+  },
+  {
+    id: 'ap-mini-bites',
+    name: 'Planche Mini Bites',
+    price: 6000,
+    description: 'Mini-pizzas, bruschettas et mini-tacos.',
+    image: '/images/menu/restaurant/planche-mini-bites.jpg',
+    emoji: '🍕',
+  },
+  {
+    id: 'ap-mini-brochettes',
+    name: 'Planche Mini-Brochettes',
+    price: 7000,
+    description: 'Assortiment de mini-brochettes de poulet et de bœuf, accompagnées de sauce maison.',
+    image: '/images/menu/rooftop/brochettes-grillees.jpg',
+    emoji: '🍢',
+  },
+  {
+    id: 'ap-grande-partager',
+    name: 'Grande Planche à Partager',
+    price: 15000,
+    description:
+      'Assortiment complet : charcuteries halal, fromages, mini-pizzas, mini-brochettes, bruschettas, mini-tacos, olives, cornichons et sauces maison.',
+    image: '/images/menu/restaurant/grande-planche-partager.jpg',
+    emoji: '🍱',
+    highlighted: true,
   },
 ];

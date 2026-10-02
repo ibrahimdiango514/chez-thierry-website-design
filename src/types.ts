@@ -47,6 +47,46 @@ export interface DailyDish {
   price?: number;
 }
 
+export interface MenuFormula {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  details?: string;
+}
+
+export interface PauseGourmandeDessert {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+  image?: string;
+  emoji?: string;
+}
+
+export interface PauseGourmandeFormula {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+}
+
+export interface PauseGourmandeSupplement {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface AperoPlanche {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  image?: string;
+  emoji?: string;
+  highlighted?: boolean;
+}
+
 export type OrderMode = 'sur_place' | 'emporter' | 'livraison';
 export type SectionType = 'restaurant' | 'rooftop';
 

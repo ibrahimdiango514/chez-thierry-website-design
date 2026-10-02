@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { SectionType, CartItem, MenuItem, OrderMode, DailyDish } from '../types';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { SectionType, CartItem, MenuItem, OrderMode, DailyDish, MenuFormula } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
 import { DailyDishes } from '../components/DailyDishes';
+import { PauseGourmande } from '../components/PauseGourmande';
+import { ApresMidisApero } from '../components/ApresMidisApero';
 import { SignatureDish } from '../components/SignatureDish';
 import { MenuSection } from '../components/MenuSection';
 import { Cart } from '../components/Cart';
@@ -19,6 +21,30 @@ export default function Home() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutMode, setCheckoutMode] = useState<OrderMode | ''>('');
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
+
+  const location = useLocation();
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  useEffect(() => {
+    // Gestion du scroll automatique selon la route ou le hash
+    const path = location.pathname;
+    if (path === '/pause-gourmande' || path === '/sweet-break') {
+      scrollToSection('pause-gourmande');
+    } else if (path === '/nos-apres-midis-apero' || path === '/apero') {
+      scrollToSection('apero');
+    } else if (path === '/plats-du-jour') {
+      scrollToSection('plat-du-jour');
+    } else if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      scrollToSection(id);
+    }
+  }, [location.pathname, location.hash]);
 
   const handleAddToCart = (item: MenuItem) => {
     setCartItems((prevItems) => {
@@ -73,16 +99,57 @@ export default function Home() {
   };
 
   const handleDailyDishOrder = (dish: DailyDish, mode: OrderMode) => {
-    setCartItems([{ item: { id: dish.id, name: dish.name, price: dish.price ?? 0, category: 'Plat du jour', description: dish.description }, quantity: 1 }]);
+    setCartItems([
+      {
+        item: {
+          id: dish.id,
+          name: `${dish.day} : ${dish.name}`,
+          price: dish.price ?? 5000,
+          category: 'Plat du jour',
+          description: dish.description,
+        },
+        quantity: 1,
+      },
+    ]);
     setCheckoutMode(mode);
     setIsCheckoutOpen(true);
   };
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  const handleSpecialItemOrder = (
+    item: { name: string; price: number; description?: string; id?: string },
+    mode: OrderMode
+  ) => {
+    setCartItems([
+      {
+        item: {
+          id: item.id ?? `item-${Date.now()}`,
+          name: item.name,
+          price: item.price,
+          category: 'Offre Spéciale',
+          description: item.description,
+        },
+        quantity: 1,
+      },
+    ]);
+    setCheckoutMode(mode);
+    setIsCheckoutOpen(true);
+  };
+
+  const handleFormulaOrder = (formula: MenuFormula, mode: OrderMode) => {
+    setCartItems([
+      {
+        item: {
+          id: formula.id,
+          name: `${formula.name} — ${formula.description}`,
+          price: formula.price,
+          category: 'Menu du jour',
+          description: formula.description,
+        },
+        quantity: 1,
+      },
+    ]);
+    setCheckoutMode(mode);
+    setIsCheckoutOpen(true);
   };
 
   return (
@@ -90,40 +157,62 @@ export default function Home() {
       
       {/* 🧭 Sticky Premium Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-neutral-950/90 backdrop-blur-md border-b border-neutral-900 px-4 md:px-8 py-2 flex items-center justify-between shadow-xl">
-        <button onClick={() => scrollToSection('accueil')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <button onClick={() => scrollToSection('accueil')} className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
           <img 
             src="/images/logo.png" 
             alt="Chez Thierry x Le Palmier" 
-            className="h-12 w-12 md:h-14 md:w-14 rounded-full object-cover border-2 border-amber-500/30 shadow-lg"
+            className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-amber-500/30 shadow-lg"
           />
-          <span className="font-playfair text-lg md:text-xl font-bold text-amber-500 tracking-wider hidden sm:inline">
+          <span className="font-playfair text-base md:text-lg font-bold text-amber-500 tracking-wider hidden sm:inline">
             CHEZ THIERRY <span className="text-white">x</span> LE PALMIER
           </span>
         </button>
-        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
-          <button onClick={() => scrollToSection('accueil')} className="hover:text-amber-400 transition-colors">Accueil</button>
-          <button onClick={() => scrollToSection('restaurant')} className="hover:text-amber-400 transition-colors">Restaurant</button>
-          <button onClick={() => scrollToSection('rooftop')} className="hover:text-amber-400 transition-colors">Rooftop</button>
+
+        {/* Desktop Navigation Tabs */}
+        <div className="hidden xl:flex items-center gap-5 text-xs xl:text-sm font-semibold text-slate-300">
+          <button onClick={() => scrollToSection('accueil')} className="hover:text-amber-400 transition-colors cursor-pointer">Accueil</button>
+          <button onClick={() => scrollToSection('plat-du-jour')} className="hover:text-amber-400 transition-colors cursor-pointer">Plats du jour</button>
+          <button onClick={() => scrollToSection('pause-gourmande')} className="hover:text-amber-400 transition-colors cursor-pointer">Pause Gourmande / Sweet Break</button>
+          <button onClick={() => scrollToSection('apero')} className="hover:text-amber-400 transition-colors cursor-pointer">Nos après-midis apéro</button>
+          <button onClick={() => scrollToSection('restaurant')} className="hover:text-amber-400 transition-colors cursor-pointer">Restaurant</button>
+          <button onClick={() => scrollToSection('rooftop')} className="hover:text-amber-400 transition-colors cursor-pointer">Rooftop</button>
           <Link to="/menu" className="hover:text-amber-400 transition-colors">Menu</Link>
-          <button onClick={() => scrollToSection('contact-restaurant')} className="hover:text-amber-400 transition-colors">Contact / Réservation</button>
+          <button onClick={() => scrollToSection('contact-restaurant')} className="hover:text-amber-400 transition-colors cursor-pointer">Contact / Réservation</button>
         </div>
+
+        {/* Medium Screen Navigation Tabs (Tablet) */}
+        <div className="hidden md:flex xl:hidden items-center gap-3 text-xs font-semibold text-slate-300">
+          <button onClick={() => scrollToSection('plat-du-jour')} className="hover:text-amber-400 transition-colors cursor-pointer">Plats du jour</button>
+          <button onClick={() => scrollToSection('pause-gourmande')} className="hover:text-amber-400 transition-colors cursor-pointer">Pause Gourmande</button>
+          <button onClick={() => scrollToSection('apero')} className="hover:text-amber-400 transition-colors cursor-pointer">Apéro</button>
+          <button onClick={() => scrollToSection('restaurant')} className="hover:text-amber-400 transition-colors cursor-pointer">Resto</button>
+          <button onClick={() => scrollToSection('rooftop')} className="hover:text-amber-400 transition-colors cursor-pointer">Rooftop</button>
+          <Link to="/menu" className="hover:text-amber-400 transition-colors">Menu</Link>
+        </div>
+
         {/* Mobile quick action menu */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-1.5 overflow-x-auto py-1 max-w-[65vw] scrollbar-hide">
           <button 
-            onClick={() => scrollToSection('restaurant')} 
-            className="text-xs bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-lg text-slate-200 font-bold"
+            onClick={() => scrollToSection('plat-du-jour')} 
+            className="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-lg text-slate-200 font-bold whitespace-nowrap"
           >
-            🍽️ Resto
+            🍽️ Plats du jour
           </button>
           <button 
-            onClick={() => scrollToSection('rooftop')} 
-            className="text-xs bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-lg text-slate-200 font-bold"
+            onClick={() => scrollToSection('pause-gourmande')} 
+            className="text-[10px] bg-neutral-900 border border-amber-500/30 px-2.5 py-1 rounded-lg text-amber-400 font-bold whitespace-nowrap"
           >
-            🌇 Rooftop
+            ☕ Pause Gourmande
+          </button>
+          <button 
+            onClick={() => scrollToSection('apero')} 
+            className="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-lg text-slate-200 font-bold whitespace-nowrap"
+          >
+            🍷 Apéro
           </button>
           <Link 
             to="/menu"
-            className="text-xs bg-amber-500/10 border border-amber-500/40 px-3 py-1.5 rounded-lg text-amber-400 font-bold"
+            className="text-[10px] bg-amber-500/10 border border-amber-500/40 px-2.5 py-1 rounded-lg text-amber-400 font-bold whitespace-nowrap"
           >
             📖 Menu
           </Link>
@@ -136,8 +225,17 @@ export default function Home() {
           {/* 1. Hero restaurant */}
           <Hero type="restaurant" />
 
-          {/* 1 bis. Plat du jour — plats de la semaine & du weekend (juste après le hero) */}
-          <DailyDishes onSelectMode={handleDailyDishOrder} />
+          {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend + Menu du jour */}
+          <DailyDishes
+            onSelectMode={handleDailyDishOrder}
+            onSelectFormula={handleFormulaOrder}
+          />
+
+          {/* 1 ter. PARTIE 2 : NOUVEL ONGLET « Pause Gourmande / Sweet Break » (15h00 à 17h30) */}
+          <PauseGourmande onSelectMode={handleSpecialItemOrder} />
+
+          {/* 1 quater. PARTIE 3 : NOUVEL ONGLET « Nos après-midis apéro » (17h30 à 19h30) */}
+          <ApresMidisApero onSelectMode={handleSpecialItemOrder} />
 
           {/* Visuel Restaurant — Présentation Premium */}
           <section className="bg-neutral-950 py-8 px-4 sm:px-6 md:px-8 overflow-hidden w-full max-w-full">
@@ -203,16 +301,16 @@ export default function Home() {
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                   <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 px-4">
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🍫 Coulant Chocolat
+                      🍰 Desserts Faits Maison
                     </span>
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🍨 Glace Vanille
+                      🍨 Glaces &amp; Gourmandises
                     </span>
                   </div>
                 </div>
               </div>
               <p className="text-center text-neutral-500 text-[11px] mt-4 font-light tracking-widest uppercase">
-                Desserts • Pâtisseries • Fait Maison
+                Pâtisseries • Glaces • Douceurs Sucrées
               </p>
             </div>
           </section>
@@ -226,19 +324,16 @@ export default function Home() {
                 </h3>
                 <div className="space-y-2 text-sm text-slate-300 font-light border-l-2 border-amber-500/30 pl-4">
                   <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span className="font-bold">Lundi :</span> <span className="text-neutral-500 italic">Fermé</span></p>
-                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Mardi :</span> <span>18h30 - 23h30</span></p>
-                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Mercredi :</span> <span>18h30 - 23h30</span></p>
-                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Jeudi :</span> <span>18h30 - 23h30</span></p>
-                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Vendredi :</span> <span>18h30 - 00h00</span></p>
-                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Samedi :</span> <span>18h30 - 00h00</span></p>
-                  <p className="flex justify-between pb-1"><span>Dimanche :</span> <span>18h30 - 23h30</span></p>
+                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Mardi :</span> <span>11h30 - 23h30</span></p>
+                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Mercredi :</span> <span>11h30 - 23h30</span></p>
+                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Jeudi :</span> <span>11h30 - 23h30</span></p>
+                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Vendredi :</span> <span>11h30 - 23h30</span></p>
+                  <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Samedi :</span> <span>11h30 - 23h30</span></p>
+                  <p className="flex justify-between pb-1"><span>Dimanche :</span> <span>11h30 - 23h30</span></p>
                 </div>
-                <p className="text-xs text-amber-500/80 mt-4 italic">
-                  * Note: Le Couscous Royal est disponible uniquement le Dimanche midi (12h-15h).
-                </p>
               </div>
               <div className="flex flex-col gap-4">
-                <h3 className="text-xl font-bold font-playfair text-amber-400 mb-2">📞 Commander au Restaurant</h3>
+                <h3 className="text-xl font-bold font-playfair text-amber-400 mb-2">📞 Réserver ou Commander</h3>
                 <a
                   href="tel:+22366427777"
                   className="w-full text-center bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold px-6 py-5 rounded-2xl text-base transition-all shadow-lg shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3 animate-pulse"
@@ -252,55 +347,47 @@ export default function Home() {
                   rel="noreferrer"
                   className="w-full text-center bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                 >
-                  💬 Commander via WhatsApp
+                  💬 Réserver via WhatsApp
                 </a>
               </div>
             </div>
           </section>
 
-          {/* 6. Localisation */}
+          {/* 6. Avis clients restaurant */}
           <section className="bg-neutral-950 text-white py-12 px-4 sm:px-6 md:px-8 border-t border-neutral-900/40 overflow-hidden w-full max-w-full">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold font-playfair text-amber-400 mb-4">📍 Nous Trouver</h2>
-              <p className="text-sm text-slate-300 mb-6">
-                Rue 548, Quinzambougou, Bamako, Mali
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Chez+Thierry,+Rue+548,+Quinzambougou,+Bamako,+Mali"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-6 py-3.5 rounded-xl text-sm font-bold transition-all shadow-lg active:scale-95"
-                >
-                  🗺️ Google Maps
-                </a>
-                <a
-                  href="https://www.google.com/maps/dir/?api=1&destination=Rue+548%2C+Quinzambougou%2C+Bamako%2C+Mali"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95"
-                >
-                  🚗 Itinéraire
-                </a>
-              </div>
-            </div>
-          </section>
-
-          {/* 7. Avis clients restaurant */}
-          <section className="bg-neutral-950 text-white py-12 px-4 md:px-8 border-t border-neutral-900/40 text-center">
-            <div className="max-w-4xl mx-auto">
               <div className="flex flex-col items-center gap-1 mb-6">
                 <div className="flex items-center justify-center gap-1 text-amber-400 text-xl">
                   <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
                 </div>
                 <h2 className="text-3xl font-bold font-playfair text-amber-400">4.8 / 5</h2>
-                <p className="text-neutral-500 text-xs font-semibold tracking-wider uppercase">+300 avis Google Restaurant</p>
+                <p className="text-neutral-500 text-xs font-semibold tracking-wider uppercase">+350 avis Google Restaurant</p>
               </div>
               <div className="bg-neutral-900/30 border border-neutral-800/80 p-6 rounded-2xl text-left max-w-xl mx-auto">
                 <p className="text-slate-300 text-sm italic font-light leading-relaxed">
-                  "La meilleure pizza de Bamako sans hésiter ! Une pâte croustillante, des produits frais et un cadre authentique depuis 30 ans."
+                  "Une cuisine raffinée, un cadre chaleureux et un accueil irréprochable. Le pavé de bœuf et les pizzas sont incontournables à Bamako !"
                 </p>
-                <h4 className="text-amber-400 font-bold text-xs mt-3 tracking-wide">— Aminata K.</h4>
+                <h4 className="text-amber-400 font-bold text-xs mt-3 tracking-wide">— Fatoumata D.</h4>
+              </div>
+            </div>
+          </section>
+
+          {/* 7. Localisation & Google Maps */}
+          <section className="bg-neutral-950 text-white py-12 px-4 md:px-8 border-t border-neutral-900/40 text-center">
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-2">📍 Nous Trouver</h3>
+              <p className="text-sm text-slate-300 mb-6 font-light">Rue 548, Quinzambougou, Bamako, Mali</p>
+              <div className="rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl h-72">
+                <iframe
+                  title="Localisation Chez Thierry Bamako"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3893.1894458319694!2d-7.9866449!3d12.6355418!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xe51cd655a0b27b9%3A0x67399a9cf5187e1a!2sChez%20Thierry!5e0!3m2!1sfr!2sml!4v1700000000000!5m2!1sfr!2sml"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </div>
           </section>
@@ -311,41 +398,33 @@ export default function Home() {
           {/* 1. Hero rooftop */}
           <Hero type="rooftop" />
 
-          {/* 2. Menu rooftop */}
+          {/* 2. Menu rooftop complet */}
           <MenuSection 
             items={ROOFTOP_MENU} 
             onAddToCart={handleAddToCart} 
             sectionType="rooftop" 
           />
 
-          {/* Visuel Food Rooftop — Présentation Premium */}
+          {/* Visuel Rooftop — Présentation Street Food & Burgers Premium */}
           <section className="bg-neutral-950 py-8 px-4 sm:px-6 md:px-8 overflow-hidden w-full max-w-full">
             <div className="max-w-5xl mx-auto">
-              {/* Badge premium */}
               <div className="flex justify-center mb-4">
                 <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-5 py-2 rounded-full text-xs font-bold tracking-widest uppercase backdrop-blur-sm">
-                  ✨ Nos Spécialités Rooftop
+                  🍔 Burgers &amp; Snacks Rooftop
                 </span>
               </div>
-
-              {/* Cadre premium */}
               <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-amber-500/20 via-neutral-900 to-neutral-950 p-[3px] shadow-[0_0_40px_rgba(245,158,11,0.15)]">
-                {/* Bordure intérieure */}
                 <div className="relative rounded-[20px] overflow-hidden border border-amber-500/10 bg-neutral-900">
                   <img 
-                    src="/images/menu/rooftop/smash-burger.jpg" 
-                    alt="Smash Burger — plat phare Rooftop Le Palmier" 
+                    src="/images/menu/rooftop/double-smash.jpg" 
+                    alt="Double Smash Burger — Rooftop Le Palmier" 
                     className="w-full h-auto max-h-[60vh] object-contain mx-auto"
                     loading="lazy"
                   />
-                  
-                  {/* Overlay gradient subtil en bas */}
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-                  
-                  {/* Labels produits */}
                   <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 px-4">
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                      🍔 Smash Burger
+                      🍔 Double Smash Burger
                     </span>
                     <span className="bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
                       🧀 Cheddar Fondant
@@ -356,8 +435,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              {/* Sous-titre premium */}
               <p className="text-center text-neutral-500 text-[11px] mt-4 font-light tracking-widest uppercase">
                 Grillades • Snacks • Street Food Premium
               </p>
@@ -451,7 +528,7 @@ export default function Home() {
         </a>
         <button
           onClick={() => setShowPhoneMenu(!showPhoneMenu)}
-          className="bg-neutral-900/90 backdrop-blur-md hover:bg-neutral-800 p-3 rounded-2xl text-amber-500 border border-neutral-800 hover:border-amber-500 shadow-xl transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center relative"
+          className="bg-neutral-900/90 backdrop-blur-md hover:bg-neutral-800 p-3 rounded-2xl text-amber-500 border border-neutral-800 hover:border-amber-500 shadow-xl transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center relative cursor-pointer"
           title="Nous appeler"
         >
           <svg className="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
