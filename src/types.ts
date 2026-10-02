@@ -71,12 +71,14 @@ export interface PauseGourmandeFormula {
   name: string;
   price: number;
   description: string;
+  image?: string;
 }
 
 export interface PauseGourmandeSupplement {
   id: string;
   name: string;
   price: number;
+  image?: string;
 }
 
 export interface AperoPlanche {

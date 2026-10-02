@@ -155,7 +155,6 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
     name: 'Facou',
     description: 'À base de viande de mouton',
     price: 5000,
-    image: '/images/menu/restaurant/facou.jpg',
   },
   {
     id: 'dj-mercredi',
@@ -163,23 +162,20 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
     name: 'Mafé',
     description: "Sauce à base d'arachide, viande de bœuf",
     price: 5000,
-    image: '/images/menu/restaurant/mafe.jpg',
   },
   {
     id: 'dj-jeudi',
     day: 'JEUDI',
     name: 'Yassa Poulet',
-    description: 'Poulet mariné au citron et oignons fondants',
+    description: '',
     price: 5000,
-    image: '/images/menu/restaurant/yassa-poulet.jpg',
   },
   {
     id: 'dj-vendredi',
     day: 'VENDREDI',
     name: 'Tchep poisson',
-    description: 'Riz rouge sénégalais parfumé et légumes du marché',
+    description: '',
     price: 5000,
-    image: '/images/menu/restaurant/tchep-poisson.jpg',
   },
 ];
 
@@ -189,9 +185,8 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
     id: 'dj-samedi',
     day: 'SAMEDI',
     name: "Spécialité d'ici & d'ailleurs de la Chef",
-    description: 'Création gourmande et raffinée de la Chef',
+    description: '',
     price: 5000,
-    image: '/images/menu/restaurant/specialite-chef.jpg',
   },
   {
     id: 'dj-dimanche',
@@ -199,7 +194,6 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
     name: 'Couscous oriental – 3 viandes',
     description: 'Agneau, merguez et poulet',
     price: 5000,
-    image: '/images/menu/restaurant/couscous-oriental-3-viandes.jpg',
   },
 ];
 
@@ -262,18 +256,21 @@ export const PAUSE_GOURMANDE_FORMULES: PauseGourmandeFormula[] = [
     name: 'Formule Douceur',
     price: 5000,
     description: '1 crêpe classique + 1 boisson chaude ou soft au choix',
+    image: '/images/menu/restaurant/formule-douceur.jpg',
   },
   {
     id: 'pg-f-gourmande',
     name: 'Formule Gourmande',
     price: 6000,
     description: '1 gaufre ou 1 pancake gourmand + 1 boisson chaude ou soft au choix',
+    image: '/images/menu/restaurant/formule-gourmande.jpg',
   },
   {
     id: 'pg-f-partager',
     name: 'Formule à Partager',
     price: 13000,
     description: 'Assortiment crêpe + gaufre + pancakes gourmands + 2 boissons au choix',
+    image: '/images/menu/restaurant/formule-a-partager.jpg',
   },
 ];
 
@@ -288,9 +285,9 @@ export const PAUSE_GOURMANDE_TOPPINGS: string[] = [
 ];
 
 export const PAUSE_GOURMANDE_SUPPLEMENTS: PauseGourmandeSupplement[] = [
-  { id: 'pg-s-fruits', name: 'Fruits frais', price: 1500 },
-  { id: 'pg-s-chantilly', name: 'Chantilly', price: 1000 },
-  { id: 'pg-s-glace', name: 'Glace', price: 1500 },
+  { id: 'pg-s-fruits', name: 'Fruits frais', price: 1500, image: '/images/menu/restaurant/supplement-fruits-frais.jpg' },
+  { id: 'pg-s-chantilly', name: 'Chantilly', price: 1000, image: '/images/menu/restaurant/supplement-chantilly.jpg' },
+  { id: 'pg-s-glace', name: 'Glace', price: 1500, image: '/images/menu/restaurant/supplement-glace.jpg' },
 ];
 
 // ─── NOS PLANCHES APÉRO (17h30 à 19h30) ────────────────────────────────────

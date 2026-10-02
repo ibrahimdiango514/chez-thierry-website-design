@@ -141,6 +141,17 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                 className="relative flex flex-col justify-between rounded-3xl border border-neutral-800 bg-gradient-to-b from-neutral-900/80 via-neutral-900/40 to-neutral-950 p-6 shadow-xl transition-all hover:border-amber-500/40"
               >
                 <div>
+                  {formula.image && (
+                    <div className="relative w-full aspect-[16/9] mb-4 overflow-hidden rounded-2xl bg-neutral-950 border border-neutral-800">
+                      <img
+                        src={formula.image}
+                        alt={formula.name}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+
                   <span className="inline-block rounded-full bg-amber-500/10 border border-amber-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-3">
                     {formula.name}
                   </span>
@@ -169,6 +180,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                           price: formula.price,
                           category: 'Pause Gourmande',
                           description: formula.description,
+                          image: formula.image,
                         })
                       }
                       className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
@@ -222,13 +234,25 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                   key={supp.id}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-2xl border border-neutral-800/80 bg-neutral-950 p-3.5 hover:border-amber-500/30 transition-colors"
                 >
-                  <div>
-                    <span className="text-sm font-bold text-white block">
-                      {supp.name}
-                    </span>
-                    <span className="text-xs font-extrabold text-amber-400">
-                      {supp.price.toLocaleString()} F CFA
-                    </span>
+                  <div className="flex items-center gap-3">
+                    {supp.image && (
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-900 border border-neutral-800 shrink-0">
+                        <img
+                          src={supp.image}
+                          alt={supp.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-sm font-bold text-white block">
+                        {supp.name}
+                      </span>
+                      <span className="text-xs font-extrabold text-amber-400">
+                        {supp.price.toLocaleString()} F CFA
+                      </span>
+                    </div>
                   </div>
 
                   {onAddToCart && (
@@ -241,7 +265,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                           price: supp.price,
                           category: 'Suppléments',
                           description: `Supplément ${supp.name}`,
-                          image: '/images/menu/restaurant/supplement-daccompagnement.jpg',
+                          image: supp.image || '/images/menu/restaurant/supplement-daccompagnement.jpg',
                         })
                       }
                       className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer self-end sm:self-auto"
