@@ -1,5 +1,7 @@
 # Dépendances
 node_modules/
+.npm/
+uploads/
 
 # Build
 dist/

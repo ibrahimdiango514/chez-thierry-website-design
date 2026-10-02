@@ -235,19 +235,16 @@ export default function Home() {
 
           {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend + Menu du jour */}
           <DailyDishes
-            onSelectMode={handleDailyDishOrder}
-            onSelectFormula={handleFormulaOrder}
+            onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
           />
 
           {/* 1 ter. PARTIE 2 : NOUVEL ONGLET « Pause Gourmande / Sweet Break » (15h00 à 17h30) */}
           <PauseGourmande
-            onSelectMode={handleSpecialItemOrder}
             onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
           />
 
           {/* 1 quater. PARTIE 3 : NOUVEL ONGLET « Nos après-midis apéro » (17h30 à 19h30) */}
           <ApresMidisApero
-            onSelectMode={handleSpecialItemOrder}
             onAddToCart={(item) => handleAddToCart(item, 'rooftop')}
           />
 

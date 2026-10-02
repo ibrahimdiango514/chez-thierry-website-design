@@ -46,6 +46,7 @@ export interface DailyDish {
    * Si absent, le message est envoyé sans prix.
    */
   price?: number;
+  image?: string;
 }
 
 export interface MenuFormula {

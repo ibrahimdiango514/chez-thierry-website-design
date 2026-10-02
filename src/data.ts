@@ -155,6 +155,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
     name: 'Facou',
     description: 'À base de viande de mouton',
     price: 5000,
+    image: '/images/menu/restaurant/facou.jpg',
   },
   {
     id: 'dj-mercredi',
@@ -162,20 +163,23 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
     name: 'Mafé',
     description: "Sauce à base d'arachide, viande de bœuf",
     price: 5000,
+    image: '/images/menu/restaurant/mafe.jpg',
   },
   {
     id: 'dj-jeudi',
     day: 'JEUDI',
     name: 'Yassa Poulet',
-    description: '',
+    description: 'Poulet mariné au citron et oignons fondants',
     price: 5000,
+    image: '/images/menu/restaurant/yassa-poulet.jpg',
   },
   {
     id: 'dj-vendredi',
     day: 'VENDREDI',
     name: 'Tchep poisson',
-    description: '',
+    description: 'Riz rouge sénégalais parfumé et légumes du marché',
     price: 5000,
+    image: '/images/menu/restaurant/tchep-poisson.jpg',
   },
 ];
 
@@ -185,8 +189,9 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
     id: 'dj-samedi',
     day: 'SAMEDI',
     name: "Spécialité d'ici & d'ailleurs de la Chef",
-    description: '',
+    description: 'Création gourmande et raffinée de la Chef',
     price: 5000,
+    image: '/images/menu/restaurant/specialite-chef.jpg',
   },
   {
     id: 'dj-dimanche',
@@ -194,6 +199,7 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
     name: 'Couscous oriental – 3 viandes',
     description: 'Agneau, merguez et poulet',
     price: 5000,
+    image: '/images/menu/restaurant/couscous-oriental-3-viandes.jpg',
   },
 ];
 
@@ -245,7 +251,7 @@ export const PAUSE_GOURMANDE_DESSERTS: PauseGourmandeDessert[] = [
     id: 'pg-crepe',
     name: 'Crêpe Gourmande',
     price: 4000,
-    image: '/images/menu/restaurant/crepe-au-chocolat.jpg',
+    image: '/images/menu/restaurant/crepe-gourmande.jpg',
     emoji: '🥞',
   },
 ];
@@ -310,7 +316,7 @@ export const APERO_PLANCHES: AperoPlanche[] = [
     name: 'Planche Mini-Brochettes',
     price: 7000,
     description: 'Assortiment de mini-brochettes de poulet et de bœuf, accompagnées de sauce maison.',
-    image: '/images/menu/rooftop/brochettes-grillees.jpg',
+    image: '/images/menu/restaurant/planche-mini-brochettes.jpg',
     emoji: '🍢',
   },
   {

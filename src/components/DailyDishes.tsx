@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { DailyDish, DailyDishPeriod, MenuFormula, OrderMode } from '../types';
+import { DailyDish, DailyDishPeriod, MenuItem } from '../types';
 import {
   WEEK_DAILY_DISHES,
   WEEKEND_DAILY_DISHES,
   MENU_DU_JOUR_FORMULES,
   DEFAULT_MENU_DU_JOUR_PROPOSITIONS,
 } from '../data';
-import { OrderModeButtons } from './OrderModeButtons';
-import { Utensils, Edit3, Check, RotateCcw } from 'lucide-react';
+import { Utensils, Edit3, Check, RotateCcw, Plus } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────
    🍽️ SECTION « PLATS DU JOUR — SEMAINE & WEEK-END » + « MENU DU JOUR »
@@ -15,10 +14,10 @@ import { Utensils, Edit3, Check, RotateCcw } from 'lucide-react';
 
 interface DishListProps {
   dishes: DailyDish[];
-  onSelectMode?: (dish: DailyDish, mode: OrderMode) => void;
+  onAddToCart?: (item: MenuItem) => void;
 }
 
-const DishList: React.FC<DishListProps> = ({ dishes, onSelectMode }) => (
+const DishList: React.FC<DishListProps> = ({ dishes, onAddToCart }) => (
   <ul className="flex flex-col">
     {dishes.map((dish) => {
       const isClosed = dish.name.toLowerCase() === 'fermé';
@@ -74,13 +73,26 @@ const DishList: React.FC<DishListProps> = ({ dishes, onSelectMode }) => (
                 </p>
               )}
 
-              {/* Boutons de commande (désactivés si fermé) */}
-              {!isClosed && (
-                <OrderModeButtons
-                  dish={{ name: `${dish.day} : ${dish.name}`, price: dish.price }}
-                  className="mt-3 max-w-sm"
-                  onSelectMode={onSelectMode ? (_dish, mode) => onSelectMode(dish, mode) : undefined}
-                />
+              {/* Bouton unique « Ajouter au panier » */}
+              {!isClosed && onAddToCart && (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onAddToCart({
+                        id: dish.id,
+                        name: `${dish.day} : ${dish.name}`,
+                        price: dish.price ?? 5000,
+                        category: 'Plats du jour',
+                        description: dish.description,
+                      })
+                    }
+                    className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Ajouter au panier</span>
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -97,7 +109,7 @@ interface DishCategoryProps {
   emoji: string;
   dishes: DailyDish[];
   highlighted?: boolean;
-  onSelectMode?: (dish: DailyDish, mode: OrderMode) => void;
+  onAddToCart?: (item: MenuItem) => void;
 }
 
 const DishCategory: React.FC<DishCategoryProps> = ({
@@ -107,7 +119,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
   emoji,
   dishes,
   highlighted = false,
-  onSelectMode,
+  onAddToCart,
 }) => (
   <div
     className={`relative flex h-full flex-col rounded-3xl border bg-gradient-to-b p-5 sm:p-6 md:p-8 shadow-2xl ${
@@ -130,7 +142,7 @@ const DishCategory: React.FC<DishCategoryProps> = ({
       </p>
     </div>
 
-    <DishList dishes={dishes} onSelectMode={onSelectMode} />
+    <DishList dishes={dishes} onAddToCart={onAddToCart} />
 
     {/* Note de prix */}
     <div className="mt-5 flex items-center justify-between border-t border-neutral-800/80 pt-3">
@@ -147,9 +159,8 @@ const DishCategory: React.FC<DishCategoryProps> = ({
 const STORAGE_KEY = 'chezthierry_menu_du_jour_propositions';
 
 export const DailyDishes: React.FC<{
-  onSelectMode?: (dish: DailyDish, mode: OrderMode) => void;
-  onSelectFormula?: (formula: MenuFormula, mode: OrderMode) => void;
-}> = ({ onSelectMode, onSelectFormula }) => {
+  onAddToCart?: (item: MenuItem) => void;
+}> = ({ onAddToCart }) => {
   /* Propositions modifiables du Menu du jour (sauvegardées en localStorage) */
   const [propositions, setPropositions] = useState(DEFAULT_MENU_DU_JOUR_PROPOSITIONS);
   const [isEditing, setIsEditing] = useState(false);
@@ -192,7 +203,7 @@ export const DailyDishes: React.FC<{
     }
   };
 
-  const categories: (Omit<DishCategoryProps, 'onSelectMode'> & { id: DailyDishPeriod })[] = [
+  const categories: (Omit<DishCategoryProps, 'onAddToCart'> & { id: DailyDishPeriod })[] = [
     {
       id: 'semaine',
       badge: '🗓️ Lundi → Vendredi',
@@ -247,7 +258,7 @@ export const DailyDishes: React.FC<{
         {/* Les deux catégories : Semaine & Weekend */}
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 mb-16">
           {categories.map((category) => (
-            <DishCategory key={category.id} {...category} onSelectMode={onSelectMode} />
+            <DishCategory key={category.id} {...category} onAddToCart={onAddToCart} />
           ))}
         </div>
 
@@ -287,7 +298,7 @@ export const DailyDishes: React.FC<{
               </button>
             </div>
 
-            {/* Formulaire d'édition rapide (back-office simple pour le restaurateur) */}
+            {/* Formulaire d'édition rapide */}
             {isEditing ? (
               <form onSubmit={handleSavePropositions} className="space-y-4 mb-2">
                 <p className="text-[11px] text-neutral-400 italic">
@@ -371,53 +382,50 @@ export const DailyDishes: React.FC<{
             )}
           </div>
 
-          {/* Les 3 formules du Menu du Jour */}
+          {/* Les 3 formules du Menu du Jour avec bouton unique « Ajouter au panier » */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {MENU_DU_JOUR_FORMULES.map((formula) => {
-              const dishObj = {
-                id: formula.id,
-                name: `${formula.name} — ${formula.description}`,
-                price: formula.price,
-                day: 'Menu du jour',
-                description: `Formule : ${formula.description} (${propositions.entree} / ${propositions.plat} / ${propositions.dessert})`,
-              };
-
-              return (
-                <div
-                  key={formula.id}
-                  className="flex flex-col justify-between rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-6 transition-all hover:border-amber-500/40"
-                >
-                  <div>
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full mb-3">
-                      {formula.name}
+            {MENU_DU_JOUR_FORMULES.map((formula) => (
+              <div
+                key={formula.id}
+                className="flex flex-col justify-between rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-6 transition-all hover:border-amber-500/40"
+              >
+                <div>
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full mb-3">
+                    {formula.name}
+                  </span>
+                  <h4 className="font-playfair text-xl font-bold text-white mb-2">
+                    {formula.description}
+                  </h4>
+                  <div className="my-3 flex items-baseline gap-1">
+                    <span className="text-2xl font-extrabold text-amber-400">
+                      {formula.price.toLocaleString()} F
                     </span>
-                    <h4 className="font-playfair text-xl font-bold text-white mb-2">
-                      {formula.description}
-                    </h4>
-                    <div className="my-3 flex items-baseline gap-1">
-                      <span className="text-2xl font-extrabold text-amber-400">
-                        {formula.price.toLocaleString()} F
-                      </span>
-                      <span className="text-xs font-semibold text-neutral-500">F CFA</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-neutral-900">
-                    <OrderModeButtons
-                      dish={{ name: `${formula.name} (${formula.description})`, price: formula.price }}
-                      className="w-full"
-                      onSelectMode={
-                        onSelectFormula
-                          ? (_d, mode) => onSelectFormula(formula, mode)
-                          : onSelectMode
-                          ? (_d, mode) => onSelectMode(dishObj, mode)
-                          : undefined
-                      }
-                    />
+                    <span className="text-xs font-semibold text-neutral-500">F CFA</span>
                   </div>
                 </div>
-              );
-            })}
+
+                <div className="mt-4 pt-3 border-t border-neutral-900">
+                  {onAddToCart && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onAddToCart({
+                          id: formula.id,
+                          name: `${formula.name} — ${formula.description}`,
+                          price: formula.price,
+                          category: 'Menu du jour',
+                          description: `Formule : ${formula.description} (${propositions.entree} / ${propositions.plat} / ${propositions.dessert})`,
+                        })
+                      }
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Ajouter au panier</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

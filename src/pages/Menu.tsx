@@ -323,7 +323,7 @@ function OrderModal({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [mode, setMode] = useState<OrderMode | ''>('');
-  const [useManual, setUseManual] = useState(false);
+  const [useManual, setUseManual] = useState(true);
   const [manualAddress, setManualAddress] = useState('');
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [geoAddress, setGeoAddress] = useState('');
@@ -449,12 +449,7 @@ function OrderModal({
   };
 
   const handlePhoneOrder = (targetEst?: Establishment) => {
-    const err = validate();
-    if (err || !mode) {
-      setError(err || 'Veuillez choisir un mode de commande.');
-      return;
-    }
-
+    setError('');
     setShowPhoneRecap(true);
     const targetTel =
       targetEst === 'rooftop' || (!targetEst && !hasRestaurant && hasRooftop)

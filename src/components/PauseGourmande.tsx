@@ -1,5 +1,5 @@
 import React from 'react';
-import { OrderMode } from '../types';
+import { MenuItem } from '../types';
 import {
   PAUSE_GOURMANDE_DESSERTS,
   PAUSE_GOURMANDE_FORMULES,
@@ -7,19 +7,17 @@ import {
   PAUSE_GOURMANDE_SUPPLEMENTS,
 } from '../data';
 import { DishImage } from './DishImage';
-import { OrderModeButtons } from './OrderModeButtons';
-import { Clock, Coffee, Sparkles, PlusCircle } from 'lucide-react';
+import { Clock, Coffee, Sparkles, PlusCircle, Plus } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────
    ☕ SECTION « PAUSE GOURMANDE / SWEET BREAK » (15h00 à 17h30)
    ───────────────────────────────────────────────────────────── */
 
 interface PauseGourmandeProps {
-  onSelectMode?: (item: { name: string; price: number; description?: string }, mode: OrderMode) => void;
   onAddToCart?: (item: MenuItem) => void;
 }
 
-export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, onAddToCart }) => {
+export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) => {
   return (
     <section
       id="pause-gourmande"
@@ -70,7 +68,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                 className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/50 p-4 transition-all duration-300 hover:border-amber-500/40 hover:bg-neutral-900/80 shadow-xl"
               >
                 <div>
-                  {/* Photo soignée prête à recevoir l'image */}
+                  {/* Photo prête et soignée */}
                   <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-neutral-950 border border-neutral-800/80">
                     <DishImage
                       src={dessert.image}
@@ -92,13 +90,14 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-neutral-800/60 flex flex-col gap-2.5">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] font-semibold text-neutral-400">Prix</span>
-                    <span className="text-base font-extrabold text-amber-400">
-                      {dessert.price.toLocaleString()} F CFA
+                <div className="mt-5 pt-3 border-t border-neutral-800/60 flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-xl font-extrabold text-amber-400">
+                      {dessert.price.toLocaleString()} F
                     </span>
+                    <span className="block text-[10px] text-neutral-500 font-semibold">F CFA</span>
                   </div>
+
                   {onAddToCart && (
                     <button
                       type="button"
@@ -112,29 +111,12 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                           image: dessert.image,
                         })
                       }
-                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                      className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all active:scale-95 shadow-md shadow-amber-500/20 cursor-pointer"
                     >
-                      <span>🛒</span> Ajouter au panier
+                      <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Ajouter au panier</span>
                     </button>
                   )}
-                  <OrderModeButtons
-                    dish={{ name: dessert.name, price: dessert.price }}
-                    className="w-full"
-                    onSelectMode={
-                      onSelectMode
-                        ? (_d, mode) =>
-                            onSelectMode(
-                              {
-                                id: dessert.id,
-                                name: dessert.name,
-                                price: dessert.price,
-                                description: 'Pause Gourmande',
-                              },
-                              mode
-                            )
-                        : undefined
-                    }
-                  />
                 </div>
               </div>
             ))}
@@ -176,7 +158,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                   </p>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-neutral-800/80 flex flex-col gap-2.5">
+                <div className="mt-6 pt-3 border-t border-neutral-800/80">
                   {onAddToCart && (
                     <button
                       type="button"
@@ -189,29 +171,12 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                           description: formula.description,
                         })
                       }
-                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
                     >
-                      <span>🛒</span> Ajouter au panier
+                      <Plus className="w-4 h-4 stroke-[2.5]" />
+                      <span>Ajouter au panier</span>
                     </button>
                   )}
-                  <OrderModeButtons
-                    dish={{ name: `${formula.name} (${formula.description})`, price: formula.price }}
-                    className="w-full"
-                    onSelectMode={
-                      onSelectMode
-                        ? (_d, mode) =>
-                            onSelectMode(
-                              {
-                                id: formula.id,
-                                name: formula.name,
-                                price: formula.price,
-                                description: formula.description,
-                              },
-                              mode
-                            )
-                        : undefined
-                    }
-                  />
                 </div>
               </div>
             ))}
@@ -279,9 +244,10 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onSelectMode, on
                           image: '/images/menu/restaurant/supplement-daccompagnement.jpg',
                         })
                       }
-                      className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer self-end sm:self-auto"
+                      className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer self-end sm:self-auto"
                     >
-                      <span>+</span> Ajouter au panier
+                      <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Ajouter au panier</span>
                     </button>
                   )}
                 </div>

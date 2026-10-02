@@ -1,9 +1,8 @@
 import React from 'react';
-import { OrderMode } from '../types';
+import { MenuItem } from '../types';
 import { APERO_PLANCHES } from '../data';
 import { DishImage } from './DishImage';
-import { OrderModeButtons } from './OrderModeButtons';
-import { Clock, Wine, Users } from 'lucide-react';
+import { Clock, Wine, Users, Plus } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────
    🍷 SECTION « NOS APRÈS-MIDIS APÉRO » / « NOS PLANCHES APÉRO »
@@ -11,11 +10,10 @@ import { Clock, Wine, Users } from 'lucide-react';
    ───────────────────────────────────────────────────────────── */
 
 interface ApresMidisAperoProps {
-  onSelectMode?: (item: { name: string; price: number; description?: string; id?: string }, mode: OrderMode) => void;
   onAddToCart?: (item: MenuItem) => void;
 }
 
-export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode, onAddToCart }) => {
+export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onAddToCart }) => {
   return (
     <section
       id="apero"
@@ -66,7 +64,7 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode, 
                 }`}
               >
                 <div>
-                  {/* Photo container soigné et prêt à recevoir la photo */}
+                  {/* Photo container soigné */}
                   <div
                     className={`relative w-full overflow-hidden rounded-2xl bg-neutral-950 border border-neutral-800/80 ${
                       isSignature ? 'aspect-[21/9] sm:aspect-[24/9]' : 'aspect-video'
@@ -106,7 +104,14 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode, 
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-800/80 flex flex-col gap-2.5">
+                <div className="mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-xl font-extrabold text-amber-400">
+                      {planche.price.toLocaleString()} F
+                    </span>
+                    <span className="block text-[10px] text-neutral-500 font-semibold">F CFA</span>
+                  </div>
+
                   {onAddToCart && (
                     <button
                       type="button"
@@ -120,29 +125,12 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onSelectMode, 
                           image: planche.image,
                         })
                       }
-                      className="w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500 border border-amber-500/40 hover:border-amber-500 text-amber-400 hover:text-neutral-950 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 cursor-pointer shadow-sm"
+                      className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all active:scale-95 shadow-md shadow-amber-500/20 cursor-pointer"
                     >
-                      <span>🛒</span> Ajouter au panier
+                      <Plus className="w-4 h-4 stroke-[2.5]" />
+                      <span>Ajouter au panier</span>
                     </button>
                   )}
-                  <OrderModeButtons
-                    dish={{ name: planche.name, price: planche.price }}
-                    className="w-full"
-                    onSelectMode={
-                      onSelectMode
-                        ? (_d, mode) =>
-                            onSelectMode(
-                              {
-                                id: planche.id,
-                                name: planche.name,
-                                price: planche.price,
-                                description: planche.description,
-                              },
-                              mode
-                            )
-                        : undefined
-                    }
-                  />
                 </div>
               </div>
             );
