@@ -319,9 +319,12 @@ export default function Home() {
           <section id="contact-restaurant" className="bg-neutral-950 text-white py-12 px-4 md:px-8 border-t border-neutral-900/40">
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-start bg-neutral-900/30 p-8 rounded-3xl border border-neutral-900">
               <div>
-                <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-6 flex items-center gap-2">
-                  <span>🕒</span> Horaires Restaurant
+                <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-4 flex items-center gap-2">
+                  <span>🕒</span> Horaires &amp; Service Restaurant
                 </h3>
+                <p className="text-xs text-amber-300 font-semibold mb-4 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg inline-block">
+                  ✨ Service continu du mardi au dimanche, midi → soir
+                </p>
                 <div className="space-y-2 text-sm text-slate-300 font-light border-l-2 border-amber-500/30 pl-4">
                   <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span className="font-bold">Lundi :</span> <span className="text-neutral-500 italic">Fermé</span></p>
                   <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Mardi :</span> <span>11h30 - 23h30</span></p>
@@ -331,6 +334,11 @@ export default function Home() {
                   <p className="flex justify-between border-b border-neutral-900/60 pb-1"><span>Samedi :</span> <span>11h30 - 23h30</span></p>
                   <p className="flex justify-between pb-1"><span>Dimanche :</span> <span>11h30 - 23h30</span></p>
                 </div>
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-400">
+                  <span className="bg-neutral-800/60 px-2.5 py-1 rounded-md border border-neutral-700/40">❄️ Salle climatisée</span>
+                  <span className="bg-neutral-800/60 px-2.5 py-1 rounded-md border border-neutral-700/40">🌿 Terrasse rafraîchie</span>
+                  <span className="bg-neutral-800/60 px-2.5 py-1 rounded-md border border-neutral-700/40">🪵 Pizzas au feu de bois</span>
+                </div>
               </div>
               <div className="flex flex-col gap-4">
                 <h3 className="text-xl font-bold font-playfair text-amber-400 mb-2">📞 Réserver ou Commander</h3>
@@ -339,7 +347,7 @@ export default function Home() {
                   className="w-full text-center bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold px-6 py-5 rounded-2xl text-base transition-all shadow-lg shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3 animate-pulse"
                 >
                   <span className="text-2xl">📞</span>
-                  <span>Appeler le Restaurant</span>
+                  <span>Appeler le 66 42 77 77</span>
                 </a>
                 <a
                   href="https://api.whatsapp.com/send?phone=22366427777"
@@ -347,7 +355,7 @@ export default function Home() {
                   rel="noreferrer"
                   className="w-full text-center bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                 >
-                  💬 Réserver via WhatsApp
+                  💬 Réserver via WhatsApp (66 42 77 77)
                 </a>
               </div>
             </div>
@@ -376,7 +384,7 @@ export default function Home() {
           <section className="bg-neutral-950 text-white py-12 px-4 md:px-8 border-t border-neutral-900/40 text-center">
             <div className="max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-2">📍 Nous Trouver</h3>
-              <p className="text-sm text-slate-300 mb-6 font-light">Rue 548, Quinzambougou, Bamako, Mali</p>
+              <p className="text-sm text-slate-300 mb-6 font-light">Quinzambougou – La Total, Bamako, Mali</p>
               <div className="rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl h-72">
                 <iframe
                   title="Localisation Chez Thierry Bamako"
@@ -441,6 +449,73 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Soirées Thématiques Rooftop */}
+          <section className="bg-neutral-950 py-10 px-4 sm:px-6 md:px-8 border-t border-neutral-900/40">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-8">
+                <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-5 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-3">
+                  ✨ Ambiance &amp; Événements
+                </span>
+                <h3 className="text-3xl font-bold font-playfair text-white tracking-wide">
+                  Nos Soirées Thématiques
+                </h3>
+                <p className="text-neutral-400 text-xs mt-2 max-w-md mx-auto">
+                  Vivez des moments inoubliables sur le Rooftop Le Palmier au rythme de nos rendez-vous hebdomadaires.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Mercredi Happy Hours */}
+                <div className="bg-gradient-to-b from-neutral-900/80 to-neutral-950 p-6 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-all shadow-lg flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="bg-amber-500/20 text-amber-400 text-xs font-black uppercase px-3 py-1 rounded-full border border-amber-500/30">
+                        Mercredi
+                      </span>
+                      <span className="text-2xl">🍹</span>
+                    </div>
+                    <h4 className="text-xl font-bold text-white mb-2 font-playfair">Happy Hours</h4>
+                    <p className="text-slate-300 text-xs leading-relaxed">
+                      Cocktails • Détente • Musique • Rooftop. L'ambiance idéale en milieu de semaine pour savourer nos créations mixologiques.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Vendredi After Work */}
+                <div className="bg-gradient-to-b from-neutral-900/80 to-neutral-950 p-6 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-all shadow-lg flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="bg-amber-500/20 text-amber-400 text-xs font-black uppercase px-3 py-1 rounded-full border border-amber-500/30">
+                        Vendredi
+                      </span>
+                      <span className="text-2xl">🍢</span>
+                    </div>
+                    <h4 className="text-xl font-bold text-white mb-2 font-playfair">After Work</h4>
+                    <p className="text-slate-300 text-xs leading-relaxed">
+                      Cocktails • Tapas • Musique • Ambiance. Décompressez de votre semaine de travail avec une atmosphère festive et lounge.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Samedi Karaoké */}
+                <div className="bg-gradient-to-b from-neutral-900/80 to-neutral-950 p-6 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-all shadow-lg flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="bg-amber-500/20 text-amber-400 text-xs font-black uppercase px-3 py-1 rounded-full border border-amber-500/30">
+                        Samedi
+                      </span>
+                      <span className="text-2xl">🎤</span>
+                    </div>
+                    <h4 className="text-xl font-bold text-white mb-2 font-playfair">Karaoké Party</h4>
+                    <p className="text-slate-300 text-xs leading-relaxed">
+                      Entre amis, en couple ou en groupe : chantez, dansez, profitez ! Une soirée inoubliable sous les étoiles de Bamako.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* 3 & 4. Horaires & Contact Rooftop */}
           <section className="bg-neutral-950 text-white py-12 px-4 md:px-8 border-t border-neutral-900/40">
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-start bg-neutral-900/30 p-8 rounded-3xl border border-neutral-900">
@@ -465,7 +540,7 @@ export default function Home() {
                   className="w-full text-center bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold px-6 py-5 rounded-2xl text-base transition-all shadow-lg shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3 animate-pulse"
                 >
                   <span className="text-2xl">📞</span>
-                  <span>Appeler le Rooftop</span>
+                  <span>Appeler le 76 22 27 77</span>
                 </a>
                 <a
                   href="https://api.whatsapp.com/send?phone=22376222777"
@@ -473,7 +548,7 @@ export default function Home() {
                   rel="noreferrer"
                   className="w-full text-center bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                 >
-                  💬 Réserver via WhatsApp
+                  💬 Réserver via WhatsApp (76 22 27 77)
                 </a>
               </div>
             </div>

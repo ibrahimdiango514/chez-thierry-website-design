@@ -31,7 +31,7 @@ export const ROOFTOP_PHONE_DISPLAY = '+223 76 22 27 77';
 export const ROOFTOP_PHONE_TEL = '+22376222777';
 export const RESTAURANT_WHATSAPP = '22366427777';
 export const ROOFTOP_WHATSAPP = '22376222777';
-export const ADDRESS = 'Rue 548, Quinzambougou, Bamako, Mali';
+export const ADDRESS = 'Quinzambougou – La Total, Bamako, Mali';
 export const EMAIL = 'chezthierryresto@gmail.com';
 export const MAPS_URL =
   'https://www.google.com/maps/search/?api=1&query=Chez+Thierry,+Rue+548,+Quinzambougou,+Bamako,+Mali';
@@ -39,27 +39,27 @@ export const MAPS_URL =
 /** Horaires affichés sur le site principal (Restaurant) */
 export const RESTAURANT_HOURS: { day: string; hours: string }[] = [
   { day: 'Lundi', hours: 'Fermé' },
-  { day: 'Mardi', hours: '18h30 - 23h30' },
-  { day: 'Mercredi', hours: '18h30 - 23h30' },
-  { day: 'Jeudi', hours: '18h30 - 23h30' },
-  { day: 'Vendredi', hours: '18h30 - 00h00' },
-  { day: 'Samedi', hours: '18h30 - 00h00' },
-  { day: 'Dimanche', hours: '18h30 - 23h30' },
+  { day: 'Mardi', hours: '11h30 - 23h30 (Service continu midi → soir)' },
+  { day: 'Mercredi', hours: '11h30 - 23h30 (Service continu midi → soir)' },
+  { day: 'Jeudi', hours: '11h30 - 23h30 (Service continu midi → soir)' },
+  { day: 'Vendredi', hours: '11h30 - 23h30 (Service continu midi → soir)' },
+  { day: 'Samedi', hours: '11h30 - 23h30 (Service continu midi → soir)' },
+  { day: 'Dimanche', hours: '11h30 - 23h30 (Service continu midi → soir)' },
 ];
 
 /** Horaires affichés sur le site principal (Rooftop) */
 export const ROOFTOP_HOURS: { day: string; hours: string }[] = [
   { day: 'Lundi', hours: 'Fermé' },
   { day: 'Mardi', hours: '18h30 - 00h00' },
-  { day: 'Mercredi', hours: '18h30 - 00h00' },
+  { day: 'Mercredi', hours: '18h30 - 00h00 (Happy Hours)' },
   { day: 'Jeudi', hours: '18h30 - 00h00' },
-  { day: 'Vendredi', hours: '18h30 - 02h00' },
-  { day: 'Samedi', hours: '18h30 - 02h00' },
+  { day: 'Vendredi', hours: '18h30 - 02h00 (After Work)' },
+  { day: 'Samedi', hours: '18h30 - 02h00 (Karaoké Party)' },
   { day: 'Dimanche', hours: '18h30 - 00h00' },
 ];
 
 export const RESTAURANT_SPECIAL_NOTE =
-  'Le Couscous Royal est disponible uniquement le dimanche midi (12h-15h).';
+  'Service continu du mardi au dimanche, midi → soir (Déjeuner • Pause gourmande • Apéro • Dîner). Le Couscous Royal est disponible le dimanche midi (12h-15h).';
 
 /* ── Toute la carte, avec la section de chaque plat ──────────────────── */
 
