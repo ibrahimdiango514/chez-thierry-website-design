@@ -147,10 +147,10 @@ const DishCategory: React.FC<DishCategoryProps> = ({
     {/* Note de prix */}
     <div className="mt-5 flex items-center justify-between border-t border-neutral-800/80 pt-3">
       <span className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">
-        Prix du plat du jour
+        Tarifs des plats
       </span>
       <span className="text-xs sm:text-sm font-bold text-amber-400">
-        5 000 F CFA
+        Selon sélection
       </span>
     </div>
   </div>
@@ -248,7 +248,7 @@ export const DailyDishes: React.FC<{
             Nos Plats du Jour
           </h2>
           <div className="mt-3 inline-block rounded-xl border border-amber-500/40 bg-neutral-900/80 px-4 py-1.5 text-xs sm:text-sm font-bold text-amber-400">
-            PLATS DU JOUR — 5 000 F CFA
+            PLATS DU JOUR — SEMAINE &amp; WEEKEND
           </div>
           <p className="mx-auto mt-3 max-w-2xl text-sm font-light leading-relaxed text-slate-400 md:text-base">
             Dans le cadre du nouveau service continu, découvrez les plats du jour de la semaine et du week-end.

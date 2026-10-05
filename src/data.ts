@@ -193,7 +193,7 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
     day: 'DIMANCHE',
     name: 'Couscous oriental – 3 viandes',
     description: 'Agneau, merguez et poulet',
-    price: 5000,
+    price: 7500,
   },
 ];
 
