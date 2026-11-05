@@ -1,10 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
+import { RouteAnalytics } from './analytics/RouteAnalytics';
+import { CookieConsent } from './components/CookieConsent';
 
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Mesure d'audience : pages vues à chaque changement de route (SPA) */}
+      <RouteAnalytics />
       <Routes>
         {/* Page principale — accueil (restaurant + rooftop + pause gourmande + apéro) */}
         <Route path="/" element={<Home />} />
@@ -19,6 +23,8 @@ export default function App() {
         {/* Toute autre URL inconnue redirige vers l'accueil */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {/* Bandeau de consentement (mesure d'audience) */}
+      <CookieConsent />
     </BrowserRouter>
   );
 }

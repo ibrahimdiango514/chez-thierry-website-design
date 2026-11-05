@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -22,6 +22,23 @@ import { Footer } from '../components/Footer';
 import { DishImage, CATEGORY_EMOJIS } from '../components/DishImage';
 import { QRCodeSection } from '../components/QRCodeSection';
 import { Assistant } from '../components/Assistant';
+import {
+  trackBeginCheckout,
+  trackMenuView,
+  trackOrderPhoneDeclared,
+  trackPhoneClick,
+  trackWhatsAppClick,
+  orderScopeFromSections,
+} from '../analytics/events';
+import { useAnalyticsActive } from '../analytics/ga4';
+import { useSectionViews } from '../analytics/useSectionViews';
+import { useVisitId } from '../analytics/useVisitId';
+
+/* Sections du menu suivies (consultation) : id HTML → nom GA4 */
+const MENU_PAGE_SECTIONS: Record<string, string> = {
+  'menu-restaurant': 'restaurant_menu',
+  'menu-rooftop': 'rooftop_menu',
+};
 
 type Establishment = 'restaurant' | 'rooftop';
 
@@ -334,6 +351,17 @@ function OrderModal({
 
   const sections = Array.from(new Set(lines.map((l) => l.section)));
   const mixed = sections.length > 1;
+
+  // 📊 Début de commande : une fois à l'ouverture du formulaire
+  const beginTrackedRef = useRef(false);
+  useEffect(() => {
+    if (beginTrackedRef.current || lines.length === 0) return;
+    beginTrackedRef.current = true;
+    trackBeginCheckout(
+      lines.map((l) => ({ item: l.item, quantity: l.qty })),
+      orderScopeFromSections(sections)
+    );
+  }, []);
   const hasRestaurant = sections.includes('restaurant');
   const hasRooftop = sections.includes('rooftop');
   const totalQty = lines.reduce((s, l) => s + l.qty, 0);
@@ -443,6 +471,11 @@ function OrderModal({
 
     const url = `https://api.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(msg)}`;
 
+    trackWhatsAppClick({
+      placement: 'checkout_order',
+      businessUnit: number === WHATSAPP_NUMBERS.rooftop ? 'rooftop' : 'restaurant',
+      orderMode: mode,
+    });
     window.open(url, '_blank');
     onClearCart();
     onClose();
@@ -455,6 +488,11 @@ function OrderModal({
       targetEst === 'rooftop' || (!targetEst && !hasRestaurant && hasRooftop)
         ? '+22376222777'
         : '+22366427777';
+    trackPhoneClick({
+      placement: 'checkout_order',
+      businessUnit: targetTel === '+22376222777' ? 'rooftop' : 'restaurant',
+      orderMode: mode || 'unselected',
+    });
     window.location.href = `tel:${targetTel}`;
   };
 
@@ -743,6 +781,7 @@ function OrderModal({
               {(hasRestaurant || !hasRooftop) && (
                 <a
                   href="tel:+22366427777"
+                  onClick={() => trackPhoneClick({ placement: 'checkout_recap', businessUnit: 'restaurant', orderMode: mode || 'unselected' })}
                   className="w-full flex items-center justify-between bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
                 >
                   <span className="flex items-center gap-2">
@@ -755,6 +794,7 @@ function OrderModal({
               {(hasRooftop || mixed) && (
                 <a
                   href="tel:+22376222777"
+                  onClick={() => trackPhoneClick({ placement: 'checkout_recap', businessUnit: 'rooftop', orderMode: mode || 'unselected' })}
                   className="w-full flex items-center justify-between bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
                 >
                   <span className="flex items-center gap-2">
@@ -811,6 +851,12 @@ function OrderModal({
             <button
               type="button"
               onClick={() => {
+                trackOrderPhoneDeclared({
+                  scope: orderScopeFromSections(sections),
+                  orderMode: mode || 'unselected',
+                  value: totalPrice,
+                  itemCount: totalQty,
+                });
                 onClearCart();
                 onClose();
               }}
@@ -831,6 +877,14 @@ export default function Menu() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState<CartLine[]>([]);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
+
+  // 📊 Consultation du menu digital (une fois par visite de la page)
+  const visitId = useVisitId();
+  const analyticsActive = useAnalyticsActive();
+  useEffect(() => {
+    if (analyticsActive) trackMenuView(visitId);
+  }, [analyticsActive, visitId]);
+  useSectionViews(MENU_PAGE_SECTIONS, visitId);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1081,11 +1135,11 @@ export default function Menu() {
         <section className="mt-12 text-center bg-neutral-900/30 border border-neutral-900 rounded-2xl p-5">
           <p className="text-slate-300 text-sm md:text-base">
             📞 Besoin d'aide ? Appelez le Restaurant{' '}
-            <a href="tel:+22366427777" className="text-amber-400 font-bold">
+            <a href="tel:+22366427777" onClick={() => trackPhoneClick({ placement: 'menu_page_help', businessUnit: 'restaurant' })} className="text-amber-400 font-bold">
               +223 66 42 77 77
             </a>{' '}
             ou le Rooftop{' '}
-            <a href="tel:+22376222777" className="text-amber-400 font-bold">
+            <a href="tel:+22376222777" onClick={() => trackPhoneClick({ placement: 'menu_page_help', businessUnit: 'rooftop' })} className="text-amber-400 font-bold">
               +223 76 22 27 77
             </a>
           </p>
