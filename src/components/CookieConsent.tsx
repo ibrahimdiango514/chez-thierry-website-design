@@ -32,14 +32,14 @@ export const CookieConsent: React.FC = () => {
   };
 
   const buttonBase =
-    'flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all active:scale-95 cursor-pointer';
+    'flex-1 min-h-11 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all active:scale-95 cursor-pointer';
 
   return (
     <div
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
-      className="fixed inset-x-3 bottom-3 md:inset-x-auto md:right-6 md:bottom-6 md:max-w-md z-[45] bg-neutral-950/95 backdrop-blur-md border border-neutral-800 rounded-2xl shadow-2xl p-4 sm:p-5 animate-fade-in-up"
+      className="fixed inset-x-3 bottom-3 md:inset-x-auto md:right-6 md:bottom-6 md:max-w-md z-[70] bg-neutral-950/95 backdrop-blur-md border border-neutral-800 rounded-2xl shadow-2xl p-4 sm:p-5 animate-fade-in-up"
     >
       <div className="flex items-start gap-3">
         <Cookie className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
