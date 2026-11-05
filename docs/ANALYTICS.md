@@ -25,7 +25,6 @@ architecture, événements envoyés, règles de confidentialité, tests et actio
 | `src/vite-env.d.ts` | Typage de `VITE_GA_MEASUREMENT_ID` et `VITE_ASSISTANT_WEBHOOK_URL` |
 | `src/main.tsx` | Appelle `initAnalytics()` avant le rendu React |
 | `src/pages/Confidentialite.tsx` | Page `/confidentialite` (politique de confidentialité) |
-| `src/config/legal.ts` | Informations juridiques de la page : champs vides affichés « À VALIDER » tant qu'ils ne sont pas validés |
 
 ### Chargement
 
@@ -112,7 +111,7 @@ Principes appliqués :
 - Le refus est aussi simple que l'acceptation : deux boutons strictement identiques (format, couleur, police, 44 px de haut minimum).
 - Le bandeau reste au-dessus de la barre « Commander » sur mobile (il ne masque jamais les boutons de choix). Il est placé à 104 px du bas de l'écran et fait environ 20 à 37 % de la hauteur selon le téléphone.
 - Le lien « Gérer les cookies » du pied de page rouvre le bandeau (cible de 44 px).
-- La page `/confidentialite` (lien dans le pied de page et dans le bandeau) décrit les traitements réels. Les informations juridiques (identité, contact, bases légales, durées, transferts, droits, autorité de contrôle, date de mise à jour) ne sont **pas** inventées : elles sont vides dans `src/config/legal.ts` et affichées « À VALIDER » sur la page. Tant que `validated` vaut `false`, la page affiche un avertissement. **Le site n'est pas déclaré conforme** tant que ces champs ne sont pas validés par le responsable du restaurant.
+- La page `/confidentialite` (lien dans le pied de page et dans le bandeau) explique simplement la mesure d'audience, le choix accepter ou refuser, les clics WhatsApp et téléphone, l'absence de données personnelles dans GA4, la localisation à la demande et la carte après clic. Elle ne contient aucune coordonnée ni identité juridique : le restaurant doit vérifier le texte avant publication.
 
 Contrôles automatisés effectués : `redact-check` (8 numéros masqués, IP / ports / prix / quantités / dates conservés) et contrôle E2E de l'absence de numéro, de nom ou de texte WhatsApp dans les requêtes.
 
@@ -175,7 +174,7 @@ Points à trancher :
   - Prestataire `ipapi.co` (Kloudend, Inc., États-Unis, contact privacy@kloudend.com). Sa politique indique ne pas partager ni vendre les requêtes IP et conserver les journaux pour une durée limitée. Elle mentionne toutefois des finalités publicité, remarketing et analytics dans sa politique générale ; leur application à l'API `/json/` n'est pas établie. À demander par écrit.
   - Nominatim (OpenStreetMap Foundation) : limite d'un usage raisonnable (≤ 1 requête/s par application, User-Agent ou Referer identifiant l'application, attribution ODbL obligatoire, résultats à mettre en cache, pas de données personnelles, pas d'auto-complétion). L'usage actuel (un clic de l'utilisateur) est compatible, sous réserve de l'attribution.
   - Alternatives : (a) supprimer le repli `ipapi.co` et ne garder que le GPS et la saisie manuelle (recommandé : la précision de l'IP est faible pour une livraison) ; (b) remplacer `ipapi.co` par un prestataire ayant un accord de traitement (DPA) ; (c) héberger un géocodeur (Nominatim ou Photon) ou utiliser un service avec accord contractuel.
-- **Politique de confidentialité** : la page `/confidentialite` existe. Son contenu juridique doit être validé (voir `src/config/legal.ts`).
+- **Politique de confidentialité** : la page `/confidentialite` est courte et ne contient pas d'identité juridique. Le restaurant doit relire le texte avant publication.
 - **Google Fonts** : supprimé (décision). La typographie reste inchangée.
 
 ## 7. Actions à effectuer dans l'interface GA4

@@ -21,7 +21,7 @@ export default function App() {
         <Route path="/plats-du-jour" element={<Home />} />
         {/* Page Menu Digital — partageable (QR Code) */}
         <Route path="/menu" element={<Menu />} />
-        {/* Politique de confidentialité (informations juridiques à valider — voir src/config/legal.ts) */}
+        {/* Politique de confidentialité : page courte et informative */}
         <Route path="/confidentialite" element={<Confidentialite />} />
         {/* Toute autre URL inconnue redirige vers l'accueil */}
         <Route path="*" element={<Navigate to="/" replace />} />
