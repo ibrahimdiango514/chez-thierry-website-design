@@ -1,5 +1,6 @@
 import React from 'react';
 import { Phone, MapPin, Clock, Utensils, Sparkles, Flame, Music, Wine, Compass } from 'lucide-react';
+import { trackPhoneClick } from '../analytics/events';
 
 export const GeneralInfo: React.FC = () => {
   return (
@@ -91,6 +92,7 @@ export const GeneralInfo: React.FC = () => {
             <div className="pt-4 border-t border-neutral-800/80">
               <a
                 href="tel:+22366427777"
+                onClick={() => trackPhoneClick({ placement: 'general_info', businessUnit: 'restaurant' })}
                 className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold py-3.5 px-4 rounded-2xl text-sm transition-all shadow-lg shadow-amber-500/20 active:scale-95"
               >
                 <Phone className="w-4 h-4" />
@@ -164,6 +166,7 @@ export const GeneralInfo: React.FC = () => {
             <div className="pt-4 border-t border-neutral-800/80 mt-4">
               <a
                 href="tel:+22376222777"
+                onClick={() => trackPhoneClick({ placement: 'general_info', businessUnit: 'rooftop' })}
                 className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-extrabold py-3.5 px-4 rounded-2xl text-sm transition-all shadow-lg shadow-rose-500/20 active:scale-95"
               >
                 <Phone className="w-4 h-4" />

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { SectionType, CartItem, MenuItem, OrderMode, DailyDish, MenuFormula } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
+import { MapEmbed } from '../components/MapEmbed';
 import { GeneralInfo } from '../components/GeneralInfo';
 import { DailyDishes } from '../components/DailyDishes';
 import { PauseGourmande } from '../components/PauseGourmande';
@@ -14,6 +15,18 @@ import { CheckoutModal } from '../components/CheckoutModal';
 import { Footer } from '../components/Footer';
 import { Assistant } from '../components/Assistant';
 import { QRCodeSection } from '../components/QRCodeSection';
+import { trackPhoneClick, trackWhatsAppClick } from '../analytics/events';
+import { useSectionViews } from '../analytics/useSectionViews';
+import { useVisitId } from '../analytics/useVisitId';
+
+/* Sections du menu suivies (consultation) : id HTML → nom GA4 */
+const HOME_MENU_SECTIONS: Record<string, string> = {
+  'plat-du-jour': 'plat_du_jour',
+  'pause-gourmande': 'pause_gourmande',
+  'apero': 'apero',
+  'home-menu-restaurant': 'restaurant_menu',
+  'home-menu-rooftop': 'rooftop_menu',
+};
 
 export default function Home() {
   const [activeSection] = useState<SectionType>('restaurant');
@@ -24,6 +37,7 @@ export default function Home() {
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
 
   const location = useLocation();
+  useSectionViews(HOME_MENU_SECTIONS, useVisitId());
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -355,6 +369,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold font-playfair text-amber-400 mb-2">📞 Réserver ou Commander</h3>
                 <a
                   href="tel:+22366427777"
+                  onClick={() => trackPhoneClick({ placement: 'contact_block', businessUnit: 'restaurant' })}
                   className="w-full text-center bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold px-6 py-5 rounded-2xl text-base transition-all shadow-lg shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3 animate-pulse"
                 >
                   <span className="text-2xl">📞</span>
@@ -362,6 +377,7 @@ export default function Home() {
                 </a>
                 <a
                   href="https://api.whatsapp.com/send?phone=22366427777"
+                  onClick={() => trackWhatsAppClick({ placement: 'contact_block', businessUnit: 'restaurant' })}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full text-center bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
@@ -396,18 +412,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-2">📍 Nous Trouver</h3>
               <p className="text-sm text-slate-300 mb-6 font-light">Quinzambougou – La Total, Bamako, Mali</p>
-              <div className="rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl h-72">
-                <iframe
-                  title="Localisation Chez Thierry Bamako"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3893.1894458319694!2d-7.9866449!3d12.6355418!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xe51cd655a0b27b9%3A0x67399a9cf5187e1a!2sChez%20Thierry!5e0!3m2!1sfr!2sml!4v1700000000000!5m2!1sfr!2sml"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              <MapEmbed />
             </div>
           </section>
         </div>
@@ -548,6 +553,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold font-playfair text-amber-400 mb-2">📞 Réserver ou Commander</h3>
                 <a
                   href="tel:+22376222777"
+                  onClick={() => trackPhoneClick({ placement: 'contact_block', businessUnit: 'rooftop' })}
                   className="w-full text-center bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-neutral-950 font-extrabold px-6 py-5 rounded-2xl text-base transition-all shadow-lg shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3 animate-pulse"
                 >
                   <span className="text-2xl">📞</span>
@@ -555,6 +561,7 @@ export default function Home() {
                 </a>
                 <a
                   href="https://api.whatsapp.com/send?phone=22376222777"
+                  onClick={() => trackWhatsAppClick({ placement: 'contact_block', businessUnit: 'rooftop' })}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full text-center bg-neutral-900 border border-neutral-800 hover:border-amber-500 text-slate-200 hover:text-white px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
@@ -624,12 +631,14 @@ export default function Home() {
             <div className="absolute left-full ml-3 bottom-0 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl p-2 flex flex-col gap-2 w-44">
               <a
                 href="tel:+22366427777"
+                onClick={() => trackPhoneClick({ placement: 'floating_phone_menu', businessUnit: 'restaurant' })}
                 className="flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-3 py-2.5 rounded-xl text-xs font-bold transition-all"
               >
                 <span>🍽️</span> Restaurant
               </a>
               <a
                 href="tel:+22376222777"
+                onClick={() => trackPhoneClick({ placement: 'floating_phone_menu', businessUnit: 'rooftop' })}
                 className="flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-3 py-2.5 rounded-xl text-xs font-bold transition-all"
               >
                 <span>🌇</span> Rooftop

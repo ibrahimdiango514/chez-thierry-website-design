@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CartItem, OrderMode, SectionType } from '../types';
 import {
   X,
@@ -20,7 +20,15 @@ import {
   ROOFTOP_PHONE_TEL,
   MODE_LABELS,
   getWhatsAppNumberForCart,
+  ROOFTOP_PHONE_RAW,
 } from '../utils/orderHelper';
+import {
+  trackBeginCheckout,
+  trackOrderPhoneDeclared,
+  trackPhoneClick,
+  trackWhatsAppClick,
+  orderScopeFromSections,
+} from '../analytics/events';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -62,6 +70,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       setUseManualAddress(true);
     }
   }, [isOpen, initialMode]);
+
+  // 📊 Début de commande : le formulaire s'ouvre avec au moins un article (une fois par ouverture)
+  const beginTrackedRef = useRef(false);
+  useEffect(() => {
+    if (!isOpen) {
+      beginTrackedRef.current = false;
+      return;
+    }
+    if (beginTrackedRef.current || cartItems.length === 0) return;
+    beginTrackedRef.current = true;
+    const sectionsOfCart = cartItems.map((ci) => ci.section || getItemSection(ci.item, currentSection));
+    trackBeginCheckout(cartItems, orderScopeFromSections(sectionsOfCart));
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -187,6 +208,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     if (targetEst === 'restaurant') targetNumber = '22366427777';
     if (targetEst === 'rooftop') targetNumber = '22376222777';
 
+    trackWhatsAppClick({
+      placement: 'checkout_order',
+      businessUnit: targetNumber === ROOFTOP_PHONE_RAW ? 'rooftop' : 'restaurant',
+      orderMode: mode,
+    });
+
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${targetNumber}&text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     onClearCart();
@@ -205,6 +232,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         ? ROOFTOP_PHONE_TEL
         : RESTAURANT_PHONE_TEL;
     
+    trackPhoneClick({
+      placement: 'checkout_order',
+      businessUnit: targetTel === ROOFTOP_PHONE_TEL ? 'rooftop' : 'restaurant',
+      orderMode: mode || 'unselected',
+    });
+
     // Déclenche l'appel direct sans bloquer l'écran
     window.location.href = `tel:${targetTel}`;
   };
@@ -513,6 +546,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               {(hasRestaurant || !hasRooftop) && (
                 <a
                   href={`tel:${RESTAURANT_PHONE_TEL}`}
+                  onClick={() => trackPhoneClick({ placement: 'checkout_recap', businessUnit: 'restaurant', orderMode: mode || 'unselected' })}
                   className="w-full flex items-center justify-between bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
                 >
                   <span className="flex items-center gap-2">
@@ -525,6 +559,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               {(hasRooftop || isMixed) && (
                 <a
                   href={`tel:${ROOFTOP_PHONE_TEL}`}
+                  onClick={() => trackPhoneClick({ placement: 'checkout_recap', businessUnit: 'rooftop', orderMode: mode || 'unselected' })}
                   className="w-full flex items-center justify-between bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95"
                 >
                   <span className="flex items-center gap-2">
@@ -583,6 +618,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <button
                 type="button"
                 onClick={() => {
+                  trackOrderPhoneDeclared({
+                    scope: orderScopeFromSections(sectionsInCart),
+                    orderMode: mode || 'unselected',
+                    value: total,
+                    itemCount: cartItems.reduce((sum, ci) => sum + ci.quantity, 0),
+                  });
                   onClearCart();
                   onClose();
                 }}

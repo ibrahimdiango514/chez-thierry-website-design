@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { Download, Share2 } from 'lucide-react';
+import { trackWhatsAppClick } from '../analytics/events';
 
 /* ── URLs officielles (production) ───────────────────────────────────── */
 const LOGO_URL = '/images/logo.png';
@@ -143,6 +144,7 @@ async function shareQR(cfg: QRConfig) {
       /* partage annulé */
     }
   }
+  trackWhatsAppClick({ placement: 'qr_share_fallback' });
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 

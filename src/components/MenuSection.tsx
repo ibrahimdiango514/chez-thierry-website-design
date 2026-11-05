@@ -53,7 +53,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
   let totalResults = 0;
 
   return (
-    <div className="w-full bg-neutral-950 text-white py-12 px-4 md:px-8">
+    <div id={`home-menu-${sectionType}`} className="w-full bg-neutral-950 text-white py-12 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
           <h2 className="text-2xl md:text-3xl font-bold font-playfair border-l-4 border-amber-500 pl-4 text-white">

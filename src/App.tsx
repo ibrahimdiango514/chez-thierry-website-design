@@ -1,10 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
+import { RouteAnalytics } from './analytics/RouteAnalytics';
+import { CookieConsent } from './components/CookieConsent';
+import Confidentialite from './pages/Confidentialite';
 
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Mesure d'audience : pages vues à chaque changement de route (SPA) */}
+      <RouteAnalytics />
       <Routes>
         {/* Page principale — accueil (restaurant + rooftop + pause gourmande + apéro) */}
         <Route path="/" element={<Home />} />
@@ -16,9 +21,13 @@ export default function App() {
         <Route path="/plats-du-jour" element={<Home />} />
         {/* Page Menu Digital — partageable (QR Code) */}
         <Route path="/menu" element={<Menu />} />
+        {/* Politique de confidentialité : page courte et informative */}
+        <Route path="/confidentialite" element={<Confidentialite />} />
         {/* Toute autre URL inconnue redirige vers l'accueil */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {/* Bandeau de consentement (mesure d'audience) */}
+      <CookieConsent />
     </BrowserRouter>
   );
 }

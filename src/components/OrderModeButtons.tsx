@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingBag, Truck, Utensils } from 'lucide-react';
 import { OrderMode } from '../types';
 import { MODE_LABELS, ORDER_MODES, buildDishOrderUrl, type Establishment } from '../lib/whatsappOrder';
+import { trackWhatsAppClick } from '../analytics/events';
 
 /* ─────────────────────────────────────────────────────────────
    🛒 BOUTONS DE COMMANDE — Sur place / À emporter / Livraison
@@ -67,7 +68,7 @@ export const OrderModeButtons: React.FC<OrderModeButtonsProps> = ({
           <span className="whitespace-nowrap">{label}</span>
         </button>
         ) : (
-          <a key={mode} href={href} target="_blank" rel="noreferrer" aria-label={`Commander ${dish.name} — ${label}`} title={`Commander : ${label}`} className="group/order flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-1 py-2.5 sm:py-3 rounded-xl border border-neutral-800 bg-neutral-900 text-slate-300 text-[10px] sm:text-xs font-extrabold transition-all duration-300 hover:bg-amber-500 hover:text-neutral-950 hover:border-amber-500 active:scale-95 cursor-pointer">
+          <a key={mode} href={href} target="_blank" rel="noreferrer" onClick={() => trackWhatsAppClick({ placement: 'dish_order_mode', businessUnit: establishment, orderMode: mode })} aria-label={`Commander ${dish.name} — ${label}`} title={`Commander : ${label}`} className="group/order flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-1 py-2.5 sm:py-3 rounded-xl border border-neutral-800 bg-neutral-900 text-slate-300 text-[10px] sm:text-xs font-extrabold transition-all duration-300 hover:bg-amber-500 hover:text-neutral-950 hover:border-amber-500 active:scale-95 cursor-pointer">
             <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-amber-400 transition-colors group-hover/order:text-neutral-950" />
             <span className="whitespace-nowrap">{label}</span>
           </a>

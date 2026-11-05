@@ -1,4 +1,7 @@
 import React from 'react';
+import { trackPhoneClick } from '../analytics/events';
+import { requestConsentBanner } from '../analytics/consent';
+import { Link } from 'react-router-dom';
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-neutral-950 border-t border-neutral-900 text-slate-400 py-12 px-6">
@@ -19,10 +22,10 @@ export const Footer: React.FC = () => {
             <span>✉️</span> <a href="mailto:chezthierryresto@gmail.com" className="hover:text-amber-400 underline transition-colors">chezthierryresto@gmail.com</a>
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
-            <a href="tel:+22366427777" className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 hover:border-amber-500 text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all">
+            <a href="tel:+22366427777" onClick={() => trackPhoneClick({ placement: 'footer', businessUnit: 'restaurant' })} className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 hover:border-amber-500 text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all">
               <span>📞</span> Restaurant
             </a>
-            <a href="tel:+22376222777" className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 hover:border-amber-500 text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all">
+            <a href="tel:+22376222777" onClick={() => trackPhoneClick({ placement: 'footer', businessUnit: 'rooftop' })} className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 hover:border-amber-500 text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all">
               <span>📞</span> Rooftop
             </a>
             <a href="https://www.google.com/maps/search/?api=1&query=Chez+Thierry,+Rue+548,+Quinzambougou,+Bamako,+Mali" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 hover:border-amber-500 text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all">
@@ -91,7 +94,22 @@ export const Footer: React.FC = () => {
 
       {/* Copyright */}
       <div className="max-w-6xl mx-auto mt-8 pt-4 border-t border-neutral-900/60 text-center text-[10px] text-neutral-600">
-        © {new Date().getFullYear()} Chez Thierry & Le Palmier Rooftop Bamako. Tous droits réservés.
+        <p>© {new Date().getFullYear()} Chez Thierry & Le Palmier Rooftop Bamako. Tous droits réservés.</p>
+        <div className="flex flex-wrap justify-center items-center gap-x-4">
+          <button
+            type="button"
+            onClick={requestConsentBanner}
+            className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors cursor-pointer"
+          >
+            Gérer les cookies
+          </button>
+          <Link
+            to="/confidentialite"
+            className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors"
+          >
+            Politique de confidentialité
+          </Link>
+        </div>
       </div>
     </footer>
   );
