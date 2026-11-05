@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
         <button
           type="button"
           onClick={requestConsentBanner}
-          className="mt-2 underline underline-offset-2 hover:text-slate-300 transition-colors cursor-pointer"
+          className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors cursor-pointer"
         >
           Gérer les cookies
         </button>

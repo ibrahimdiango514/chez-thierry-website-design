@@ -107,7 +107,9 @@ Principes appliqués :
 - Les liens WhatsApp et téléphone déclenchent l'événement, mais leur contenu (numéro, texte pré-rempli) n'est jamais transmis.
 - Pas de remarketing ni de personnalisation publicitaire, y compris après consentement.
 - Le bandeau indique clairement la finalité (mesure d'audience), l'absence de publicité et de remarketing, et comment changer d'avis.
-- Le refus est aussi simple que l'acceptation (deux boutons de même poids).
+- Le refus est aussi simple que l'acceptation : deux boutons strictement identiques (format, couleur, police, 44 px de haut minimum).
+- Le bandeau reste au-dessus de la barre « Commander » sur mobile (il ne masque jamais les boutons de choix). Il est placé à 104 px du bas de l'écran et fait environ 20 à 37 % de la hauteur selon le téléphone.
+- Le lien « Gérer les cookies » du pied de page rouvre le bandeau (cible de 44 px).
 
 Contrôles automatisés effectués : `redact-check` (8 numéros masqués, IP / ports / prix / quantités / dates conservés) et contrôle E2E de l'absence de numéro, de nom ou de texte WhatsApp dans les requêtes.
 
@@ -133,7 +135,7 @@ Fichier `.env.example` (bloc GA commenté) :
 
 ### Vérifications automatisées (build local, Chromium headless)
 
-- **Non-régression visuelle / DOM** : le DOM rendu sur `/`, `/menu`, `/apero`, `/plats-du-jour` est identique à la version précédente, à l'exception des ajouts volontaires (bouton « Gérer les cookies », identifiants `home-menu-*` sans effet visuel, balise `<p>` du copyright).
+- **Non-régression visuelle** : captures par fenêtre de défilement (390×844 et 1280×800) comparées pixel à pixel à la version précédente. Écarts attendus uniquement : la zone carte (affichage à la demande) et le pied de page (bouton « Gérer les cookies »). Le haut de page est strictement identique.
 - **Parcours E2E** (74 vérifications) : chargement de la balise, page_view à chaque navigation (y compris retour arrière), `menu_view` unique, `menu_section_view`, `begin_checkout` une fois par ouverture, clics WhatsApp et téléphone sur les placements listés, `order_phone_declared`, absence de doublons, absence de données personnelles dans les paramètres.
 - **Partage QR** : repli `wa.me` tracé une seule fois (`qr_share_fallback`).
 - **Consentement** : aucune requête Google avant acceptation ; après refus ou retrait, aucune requête gtag.
@@ -151,7 +153,23 @@ Note : la collecte réelle n'a pas pu être vérifiée depuis l'environnement de
 
 ---
 
-## 6. Actions à effectuer dans l'interface GA4
+## 6. Requêtes tierces et polices (hors Google Analytics)
+
+Avant tout consentement, le site ne fait **aucune requête vers un domaine tiers** (vérifié en défilant la page entière, sur `/` et `/menu`).
+
+| Élément | Comportement | État |
+| --- | --- | --- |
+| Google Fonts | Supprimé. La page n'a jamais appliqué Montserrat ni Playfair (les classes `font-playfair` n'étaient pas définies dans le thème Tailwind). Le rendu reste donc la pile système, inchangée. | Supprimé, aucun changement visuel |
+| Carte Google Maps | Insérée seulement après le clic « Afficher la carte ». Lien « Ouvrir dans Google Maps » (nouvel onglet) disponible avant. | Chargement à la demande |
+| Géolocalisation (commande, livraison) | Appels à `ipapi.co` et `nominatim.openstreetmap.org`, uniquement après une action de l'utilisateur dans le formulaire de commande. | Inchangé, à examiner (voir ci-dessous) |
+| Liens TikTok, Instagram, WhatsApp | Liens simples, aucune requête au chargement. | Inchangé |
+
+Points à trancher :
+- **Application de Playfair Display / Montserrat** : décision de design. Si vous voulez ces polices, il faut définir `--font-playfair` et `--font-sans` dans le thème, héberger les fichiers (licence SIL OFL) et accepter un changement visuel sur les titres.
+- **Géolocalisation de livraison** : `ipapi.co` reçoit l'adresse IP de l'utilisateur. Une solution sans tiers serait préférable.
+- **Politique de confidentialité** : aucune page n'existe dans le dépôt. Le bandeau ne contient donc pas de lien. À ajouter une fois le texte publié (responsable de traitement, contact, durées, droits).
+
+## 7. Actions à effectuer dans l'interface GA4
 
 | Action | Où | Pourquoi |
 | --- | --- | --- |
@@ -166,7 +184,7 @@ Note : la collecte réelle n'a pas pu être vérifiée depuis l'environnement de
 
 ---
 
-## 7. Maintenance
+## 8. Maintenance
 
 - Ajouter un événement : le déclarer dans `events.ts` (nom, paramètres, types), appeler la fonction depuis le composant, et mettre à jour ce document.
 - Ne jamais passer de texte libre, de numéro de téléphone ou de contenu WhatsApp dans un paramètre.

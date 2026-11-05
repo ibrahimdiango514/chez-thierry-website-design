@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { SectionType, CartItem, MenuItem, OrderMode, DailyDish, MenuFormula } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
+import { MapEmbed } from '../components/MapEmbed';
 import { GeneralInfo } from '../components/GeneralInfo';
 import { DailyDishes } from '../components/DailyDishes';
 import { PauseGourmande } from '../components/PauseGourmande';
@@ -411,18 +412,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold font-playfair text-amber-400 mb-2">📍 Nous Trouver</h3>
               <p className="text-sm text-slate-300 mb-6 font-light">Quinzambougou – La Total, Bamako, Mali</p>
-              <div className="rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl h-72">
-                <iframe
-                  title="Localisation Chez Thierry Bamako"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3893.1894458319694!2d-7.9866449!3d12.6355418!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xe51cd655a0b27b9%3A0x67399a9cf5187e1a!2sChez%20Thierry!5e0!3m2!1sfr!2sml!4v1700000000000!5m2!1sfr!2sml"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              <MapEmbed />
             </div>
           </section>
         </div>
