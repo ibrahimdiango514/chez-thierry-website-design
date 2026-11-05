@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import { RouteAnalytics } from './analytics/RouteAnalytics';
 import { CookieConsent } from './components/CookieConsent';
+import Confidentialite from './pages/Confidentialite';
 
 export default function App() {
   return (
@@ -20,6 +21,8 @@ export default function App() {
         <Route path="/plats-du-jour" element={<Home />} />
         {/* Page Menu Digital — partageable (QR Code) */}
         <Route path="/menu" element={<Menu />} />
+        {/* Politique de confidentialité (informations juridiques à valider — voir src/config/legal.ts) */}
+        <Route path="/confidentialite" element={<Confidentialite />} />
         {/* Toute autre URL inconnue redirige vers l'accueil */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

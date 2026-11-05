@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Cookie } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { applyConsent } from '../analytics/ga4';
 import { CONSENT_REQUEST_EVENT, getStoredConsent, storeConsent, ConsentChoice } from '../analytics/consent';
 
@@ -53,7 +54,10 @@ export const CookieConsent: React.FC = () => {
           <p id="cookie-consent-text" className="text-[13px] text-slate-300 leading-snug">
             Avec votre accord, Google Analytics mesure les pages et les boutons consultés pour améliorer le site.
             Ni publicité ni remarketing. Aucun numéro de téléphone ni message WhatsApp n'est transmis. Vous pouvez
-            changer d'avis via « Gérer les cookies » (pied de page).
+            changer d'avis via « Gérer les cookies » (pied de page).{' '}
+            <Link to="/confidentialite" className="underline text-amber-300 hover:text-amber-200 py-1.5">
+              Politique de confidentialité
+            </Link>
           </p>
         </div>
       </div>

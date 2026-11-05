@@ -25,7 +25,9 @@ export function useSectionViews(sections: Record<string, string>, pageKey: strin
           if (name) trackMenuSectionView(pageKey, name);
         });
       },
-      { threshold: 0.25 }
+      // Seuil 0 : une section compte comme vue dès qu'un pixel entre à l'écran.
+      // (Un seuil de 25 % ne peut jamais être atteint pour les sections plus hautes que l'écran.)
+      { threshold: 0 }
     );
 
     Object.keys(sections).forEach((id) => {

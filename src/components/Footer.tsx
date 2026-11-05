@@ -1,6 +1,7 @@
 import React from 'react';
 import { trackPhoneClick } from '../analytics/events';
 import { requestConsentBanner } from '../analytics/consent';
+import { Link } from 'react-router-dom';
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-neutral-950 border-t border-neutral-900 text-slate-400 py-12 px-6">
@@ -94,13 +95,21 @@ export const Footer: React.FC = () => {
       {/* Copyright */}
       <div className="max-w-6xl mx-auto mt-8 pt-4 border-t border-neutral-900/60 text-center text-[10px] text-neutral-600">
         <p>© {new Date().getFullYear()} Chez Thierry & Le Palmier Rooftop Bamako. Tous droits réservés.</p>
-        <button
-          type="button"
-          onClick={requestConsentBanner}
-          className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors cursor-pointer"
-        >
-          Gérer les cookies
-        </button>
+        <div className="flex flex-wrap justify-center items-center gap-x-4">
+          <button
+            type="button"
+            onClick={requestConsentBanner}
+            className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors cursor-pointer"
+          >
+            Gérer les cookies
+          </button>
+          <Link
+            to="/confidentialite"
+            className="mt-2 -my-3 inline-flex items-center min-h-11 px-2 underline underline-offset-2 hover:text-slate-300 transition-colors"
+          >
+            Politique de confidentialité
+          </Link>
+        </div>
       </div>
     </footer>
   );

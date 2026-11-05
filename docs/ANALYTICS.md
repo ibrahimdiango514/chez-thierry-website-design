@@ -24,6 +24,8 @@ architecture, événements envoyés, règles de confidentialité, tests et actio
 | `src/components/CookieConsent.tsx` | Bandeau de consentement (Accepter / Refuser, même poids visuel) |
 | `src/vite-env.d.ts` | Typage de `VITE_GA_MEASUREMENT_ID` et `VITE_ASSISTANT_WEBHOOK_URL` |
 | `src/main.tsx` | Appelle `initAnalytics()` avant le rendu React |
+| `src/pages/Confidentialite.tsx` | Page `/confidentialite` (politique de confidentialité) |
+| `src/config/legal.ts` | Informations juridiques de la page : champs vides affichés « À VALIDER » tant qu'ils ne sont pas validés |
 
 ### Chargement
 
@@ -69,7 +71,7 @@ Tous les événements sont définis dans `src/analytics/events.ts`. Les paramèt
 | --- | --- | --- |
 | `page_view` | Chaque changement de route | `page_location` (origine + chemin, sans query string), `page_path`, `page_title` |
 | `menu_view` | Arrivée sur `/menu` | `menu_name` = `menu_digital` |
-| `menu_section_view` | Une section du menu devient visible (≥ 25 %), une fois par visite | `section_name` (ex. `plat_du_jour`, `apero`, `restaurant_menu`, `rooftop_menu`, `pause_gourmande`) |
+| `menu_section_view` | Une section du menu entre à l'écran (≥ 1 px visible), une fois par visite. Seuil 0 : un seuil de 25 % n'était jamais atteint pour les sections plus hautes que l'écran | `section_name` (ex. `plat_du_jour`, `apero`, `restaurant_menu`, `rooftop_menu`, `pause_gourmande`) |
 | `begin_checkout` | Ouverture du formulaire de commande (accueil ou `/menu`) | `currency` = `XOF`, `value`, `item_count`, `order_scope` (`restaurant` / `rooftop` / `mixed`), `items` |
 | `whatsapp_click` | Clic sur un lien/bouton WhatsApp | `placement`, `business_unit`, `order_mode` (si pertinent) |
 | `phone_click` | Clic sur un lien `tel:` | `placement`, `business_unit`, `order_mode` (si pertinent) |
@@ -110,6 +112,7 @@ Principes appliqués :
 - Le refus est aussi simple que l'acceptation : deux boutons strictement identiques (format, couleur, police, 44 px de haut minimum).
 - Le bandeau reste au-dessus de la barre « Commander » sur mobile (il ne masque jamais les boutons de choix). Il est placé à 104 px du bas de l'écran et fait environ 20 à 37 % de la hauteur selon le téléphone.
 - Le lien « Gérer les cookies » du pied de page rouvre le bandeau (cible de 44 px).
+- La page `/confidentialite` (lien dans le pied de page et dans le bandeau) décrit les traitements réels. Les informations juridiques (identité, contact, bases légales, durées, transferts, droits, autorité de contrôle, date de mise à jour) ne sont **pas** inventées : elles sont vides dans `src/config/legal.ts` et affichées « À VALIDER » sur la page. Tant que `validated` vaut `false`, la page affiche un avertissement. **Le site n'est pas déclaré conforme** tant que ces champs ne sont pas validés par le responsable du restaurant.
 
 Contrôles automatisés effectués : `redact-check` (8 numéros masqués, IP / ports / prix / quantités / dates conservés) et contrôle E2E de l'absence de numéro, de nom ou de texte WhatsApp dans les requêtes.
 
@@ -136,6 +139,7 @@ Fichier `.env.example` (bloc GA commenté) :
 ### Vérifications automatisées (build local, Chromium headless)
 
 - **Non-régression visuelle** : captures par fenêtre de défilement (390×844 et 1280×800) comparées pixel à pixel à la version précédente. Écarts attendus uniquement : la zone carte (affichage à la demande) et le pied de page (bouton « Gérer les cookies »). Le haut de page est strictement identique.
+- **Vérifications de la version courante** (harnais Chromium headless, `gtag.js` simulé car le réseau Google n'est pas accessible depuis l'environnement de test) : consentement 29/29 (B : boutons identiques, cibles ≥ 44 px ; retrait supprime les cookies `_ga`), confidentialité et mise en page 35/35 (page `/confidentialite`, liens internes, carte à la demande, bandeau et pied de page sur 360×640, 390×844 et 1280×800), parcours E2E 74/74, vérifications finales 13/13 (liens internes, « Gérer les cookies » depuis la page, préférences après refus et après acceptation, géolocalisation déclenchée seulement après action, carte après clic).
 - **Parcours E2E** (74 vérifications) : chargement de la balise, page_view à chaque navigation (y compris retour arrière), `menu_view` unique, `menu_section_view`, `begin_checkout` une fois par ouverture, clics WhatsApp et téléphone sur les placements listés, `order_phone_declared`, absence de doublons, absence de données personnelles dans les paramètres.
 - **Partage QR** : repli `wa.me` tracé une seule fois (`qr_share_fallback`).
 - **Consentement** : aucune requête Google avant acceptation ; après refus ou retrait, aucune requête gtag.
@@ -161,13 +165,18 @@ Avant tout consentement, le site ne fait **aucune requête vers un domaine tiers
 | --- | --- | --- |
 | Google Fonts | Supprimé. La page n'a jamais appliqué Montserrat ni Playfair (les classes `font-playfair` n'étaient pas définies dans le thème Tailwind). Le rendu reste donc la pile système, inchangée. | Supprimé, aucun changement visuel |
 | Carte Google Maps | Insérée seulement après le clic « Afficher la carte ». Lien « Ouvrir dans Google Maps » (nouvel onglet) disponible avant. | Chargement à la demande |
-| Géolocalisation (commande, livraison) | Appels à `ipapi.co` et `nominatim.openstreetmap.org`, uniquement après une action de l'utilisateur dans le formulaire de commande. | Inchangé, à examiner (voir ci-dessous) |
+| Géolocalisation (commande, livraison) | Déclenchée uniquement par le choix « Ma position GPS » (mode livraison). Sans autorisation GPS (refusée, indisponible ou en erreur), **ipapi.co est appelé automatiquement** pour une localisation approximative, sans second clic. Avec GPS autorisé : seul Nominatim est appelé. Aucun appel au chargement (vérifié). | Inchangé ; point de décision (voir ci-dessous) |
 | Liens TikTok, Instagram, WhatsApp | Liens simples, aucune requête au chargement. | Inchangé |
 
 Points à trancher :
 - **Application de Playfair Display / Montserrat** : décision de design. Si vous voulez ces polices, il faut définir `--font-playfair` et `--font-sans` dans le thème, héberger les fichiers (licence SIL OFL) et accepter un changement visuel sur les titres.
-- **Géolocalisation de livraison** : `ipapi.co` reçoit l'adresse IP de l'utilisateur. Une solution sans tiers serait préférable.
-- **Politique de confidentialité** : aucune page n'existe dans le dépôt. Le bandeau ne contient donc pas de lien. À ajouter une fois le texte publié (responsable de traitement, contact, durées, droits).
+- **Géolocalisation de livraison** (décision à prendre, `ipapi.co` conservé provisoirement) :
+  - Données transmises. GPS : latitude et longitude vers Nominatim (géocodage inverse, requête déclenchée par l'utilisateur). Repli `ipapi.co` : adresse IP du client (et les en-têtes habituels du navigateur, dont User-Agent et Referer). Les coordonnées ou l'adresse ne sont envoyées au restaurant que lors de l'envoi de la commande, dans le message WhatsApp.
+  - Prestataire `ipapi.co` (Kloudend, Inc., États-Unis, contact privacy@kloudend.com). Sa politique indique ne pas partager ni vendre les requêtes IP et conserver les journaux pour une durée limitée. Elle mentionne toutefois des finalités publicité, remarketing et analytics dans sa politique générale ; leur application à l'API `/json/` n'est pas établie. À demander par écrit.
+  - Nominatim (OpenStreetMap Foundation) : limite d'un usage raisonnable (≤ 1 requête/s par application, User-Agent ou Referer identifiant l'application, attribution ODbL obligatoire, résultats à mettre en cache, pas de données personnelles, pas d'auto-complétion). L'usage actuel (un clic de l'utilisateur) est compatible, sous réserve de l'attribution.
+  - Alternatives : (a) supprimer le repli `ipapi.co` et ne garder que le GPS et la saisie manuelle (recommandé : la précision de l'IP est faible pour une livraison) ; (b) remplacer `ipapi.co` par un prestataire ayant un accord de traitement (DPA) ; (c) héberger un géocodeur (Nominatim ou Photon) ou utiliser un service avec accord contractuel.
+- **Politique de confidentialité** : la page `/confidentialite` existe. Son contenu juridique doit être validé (voir `src/config/legal.ts`).
+- **Google Fonts** : supprimé (décision). La typographie reste inchangée.
 
 ## 7. Actions à effectuer dans l'interface GA4
 
