@@ -60,8 +60,8 @@ export interface DejeunerJour {
   id: string;
   /** Jour concerné (ex: "Mardi") */
   day: string;
-  /** Photo fidèle du menu (chemin public) */
-  image: string;
+  /** Photo fidèle du menu (chemin public), optionnelle tant qu'elle n'est pas produite */
+  image?: string;
   entree?: string;
   plat?: string;
   dessert?: string;

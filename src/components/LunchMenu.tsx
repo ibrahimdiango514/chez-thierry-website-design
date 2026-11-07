@@ -132,14 +132,16 @@ export const LunchMenu: React.FC<LunchMenuProps> = ({ onAddToCart }) => {
         >
           {/* Photo fidèle au menu du jour */}
           <div className="flex items-start justify-center">
-            <img
-              key={day.image}
-              src={day.image}
-              alt={`Menu déjeuner du ${day.day.toLowerCase()} — Chez Thierry`}
-              loading="lazy"
-              decoding="async"
-              className="w-full max-w-[280px] rounded-2xl border border-neutral-800 bg-neutral-950 object-contain"
-            />
+            {day.image && (
+              <img
+                key={day.image}
+                src={day.image}
+                alt={`Menu déjeuner du ${day.day.toLowerCase()} — Chez Thierry`}
+                loading="lazy"
+                decoding="async"
+                className="w-full max-w-[280px] rounded-2xl border border-neutral-800 bg-neutral-950 object-contain"
+              />
+            )}
           </div>
 
           <div className="flex flex-col">

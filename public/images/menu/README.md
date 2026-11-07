@@ -18,9 +18,10 @@ Exemple :
 
 ## Plats du jour et menu Déjeuner (site principal)
 
-Photos extraites des visuels officiels du restaurant (« Plats du jour » et « Menu Déjeuner »).
+Images générées par IA à partir des descriptions de l'affiche officielle (même plat, mêmes accompagnements, même présentation). Ce ne sont pas des photos du restaurant : à remplacer par les photos réelles dès qu'elles sont disponibles, en gardant les mêmes noms de fichiers.
 
-- `plats-du-jour/` : `mardi-fakouye.jpg`, `mercredi-mafe.jpg`, `jeudi-yassa.jpg`, `vendredi-riz-au-gras.jpg`, `dimanche-couscous-royal.jpg` (chemins déclarés dans `WEEK_DAILY_DISHES` / `WEEKEND_DAILY_DISHES`, `src/data.ts`).
-- `dejeuner/` : une photo par journée (`mardi.jpg` … `dimanche.jpg`), déclarée dans `DEJEUNER_JOURS`, `src/data.ts`.
+État actuel :
+- `plats-du-jour/` : `mardi-fakouye.jpg`, `mercredi-mafe.jpg`, `vendredi-riz-au-gras.jpg`, `dimanche-couscous-royal.jpg` (vérifiées). `jeudi-yassa.jpg` : **à produire** (chemin non déclaré pour l'instant dans `src/data.ts`).
+- `dejeuner/` : `dimanche.jpg` (couscous royal, vérifiée). **À produire** : `mardi.jpg`, `mercredi.jpg`, `jeudi.jpg`, `vendredi.jpg`, `samedi.jpg` (une image par journée, entrée / plat / dessert). Tant qu'une image manque, aucune photo n'est affichée pour la journée (pas d'image cassée).
 
-Ces images sont des recadrages des visuels fournis (résolution limitée). Pour un rendu optimal, remplacer par les photos originales du plat, en gardant le même nom de fichier.
+Les chemins sont déclarés dans `src/data.ts` (`WEEK_DAILY_DISHES`, `WEEKEND_DAILY_DISHES`, `DEJEUNER_JOURS`).
