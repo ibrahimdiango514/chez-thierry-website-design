@@ -18,10 +18,16 @@ Exemple :
 
 ## Plats du jour et menu Déjeuner (site principal)
 
-Images générées par IA à partir des descriptions de l'affiche officielle (même plat, mêmes accompagnements, même présentation). Ce ne sont pas des photos du restaurant : à remplacer par les photos réelles dès qu'elles sont disponibles, en gardant les mêmes noms de fichiers.
+Images générées par IA à partir des descriptions de l'affiche officielle (même plat, mêmes accompagnements, même présentation), chacune vérifiée contre son libellé. Ce ne sont pas des photos du restaurant : à remplacer par les photos réelles dès qu'elles sont disponibles, en gardant les mêmes noms de fichiers.
 
-État actuel :
-- `plats-du-jour/` : `mardi-fakouye.jpg`, `mercredi-mafe.jpg`, `vendredi-riz-au-gras.jpg`, `dimanche-couscous-royal.jpg` (vérifiées). `jeudi-yassa.jpg` : **à produire** (chemin non déclaré pour l'instant dans `src/data.ts`).
-- `dejeuner/` : `dimanche.jpg` (couscous royal, vérifiée). **À produire** : `mardi.jpg`, `mercredi.jpg`, `jeudi.jpg`, `vendredi.jpg`, `samedi.jpg` (une image par journée, entrée / plat / dessert). Tant qu'une image manque, aucune photo n'est affichée pour la journée (pas d'image cassée).
+- `plats-du-jour/` (déclarés dans `WEEK_DAILY_DISHES` / `WEEKEND_DAILY_DISHES`, `src/data.ts`) :
+  - `mardi-fakouye.jpg` : fakouye à la viande de mouton
+  - `mercredi-mafe.jpg` : mafé à la viande de bœuf
+  - `jeudi-yassa.jpg` : yassa au poulet
+  - `vendredi-riz-au-gras.jpg` : riz au gras façon thiep (poisson)
+  - `dimanche-couscous-royal.jpg` : couscous royal 3 viandes
+- `dejeuner/` (déclarés dans `DEJEUNER_JOURS`, `src/data.ts`), une image par journée avec entrée, plat et dessert :
+  - `mardi.jpg`, `mercredi.jpg`, `jeudi.jpg`, `vendredi.jpg`, `samedi.jpg`
+  - `dimanche.jpg` : couscous royal (plat seul, même plat que le plat du jour du dimanche)
 
-Les chemins sont déclarés dans `src/data.ts` (`WEEK_DAILY_DISHES`, `WEEKEND_DAILY_DISHES`, `DEJEUNER_JOURS`).
+Si une image est absente, le site n'affiche pas de photo pour le plat ou la journée (aucune image cassée).

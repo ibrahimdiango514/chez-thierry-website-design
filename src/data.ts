@@ -173,6 +173,7 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
     name: 'Yassa au poulet',
     description: '',
     price: 5000,
+    image: '/images/menu/plats-du-jour/jeudi-yassa.jpg',
   },
   {
     id: 'dj-vendredi',
@@ -209,6 +210,7 @@ export const DEJEUNER_JOURS: DejeunerJour[] = [
   {
     id: 'mardi',
     day: 'Mardi',
+    image: '/images/menu/dejeuner/mardi.jpg',
     entree: 'Salade de hors-d’œuvre (pommes de terre, mayonnaise, œufs durs)',
     plat: 'Spaghettis bolognaise',
     dessert: 'Yaourt coulis d’hibiscus',
@@ -216,6 +218,7 @@ export const DEJEUNER_JOURS: DejeunerJour[] = [
   {
     id: 'mercredi',
     day: 'Mercredi',
+    image: '/images/menu/dejeuner/mercredi.jpg',
     entree: 'Œuf mayonnaise',
     plat: 'Duo de brochettes (1 bœuf, 1 poulet) et frites',
     dessert: 'Salade de fruits',
@@ -223,6 +226,7 @@ export const DEJEUNER_JOURS: DejeunerJour[] = [
   {
     id: 'jeudi',
     day: 'Jeudi',
+    image: '/images/menu/dejeuner/jeudi.jpg',
     entree: 'Salade de crudités',
     plat: 'Cuisses de poulet grillées et pommes sautées',
     dessert: 'Boule de glace caramel',
@@ -230,6 +234,7 @@ export const DEJEUNER_JOURS: DejeunerJour[] = [
   {
     id: 'vendredi',
     day: 'Vendredi',
+    image: '/images/menu/dejeuner/vendredi.jpg',
     entree: 'Salade macédoine',
     plat: 'Cassolette de poisson et son riz',
     dessert: 'Crêpe au chocolat',
@@ -237,6 +242,7 @@ export const DEJEUNER_JOURS: DejeunerJour[] = [
   {
     id: 'samedi',
     day: 'Samedi',
+    image: '/images/menu/dejeuner/samedi.jpg',
     entree: 'Salade niçoise',
     plat: 'Lasagne à la bolognaise',
     dessert: 'Gaufre au caramel',
