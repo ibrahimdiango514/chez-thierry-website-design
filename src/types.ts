@@ -41,7 +41,7 @@ export interface DailyDish {
   /** Courte description du plat (une phrase) */
   description: string;
   /**
-   * Prix du plat en F CFA (issu de la carte du restaurant).
+   * Prix du plat en FCFA (issu de la carte du restaurant).
    * Utilisé dans le message WhatsApp de commande.
    * Si absent, le message est envoyé sans prix.
    */
@@ -74,14 +74,6 @@ export interface DejeunerFormule {
   name: string;
   price: number;
   courses: DejeunerCourse[];
-}
-
-export interface MenuFormula {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  details?: string;
 }
 
 export interface PauseGourmandeDessert {

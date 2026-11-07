@@ -78,7 +78,7 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onAddToCart })
 
                     {/* Badge de prix superposé */}
                     <div className="absolute top-3 right-3 rounded-full bg-neutral-950/85 backdrop-blur-md border border-amber-500/40 px-3.5 py-1.5 text-xs sm:text-sm font-extrabold text-amber-400 shadow-lg">
-                      {planche.price.toLocaleString()} F CFA
+                      {planche.price.toLocaleString('fr-FR')} FCFA
                     </div>
 
                     {isSignature && (
@@ -94,7 +94,7 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onAddToCart })
                         {planche.name}
                       </h3>
                       <span className="text-base sm:text-lg font-extrabold text-amber-400">
-                        {planche.price.toLocaleString()} F CFA
+                        {planche.price.toLocaleString('fr-FR')} FCFA
                       </span>
                     </div>
 
@@ -107,9 +107,8 @@ export const ApresMidisApero: React.FC<ApresMidisAperoProps> = ({ onAddToCart })
                 <div className="mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between gap-3">
                   <div>
                     <span className="text-xl font-extrabold text-amber-400">
-                      {planche.price.toLocaleString()} F
+                      {planche.price.toLocaleString('fr-FR')} FCFA
                     </span>
-                    <span className="block text-[10px] text-neutral-500 font-semibold">F CFA</span>
                   </div>
 
                   {onAddToCart && (

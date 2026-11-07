@@ -1,7 +1,6 @@
 import {
   DailyDish,
   MenuItem,
-  MenuFormula,
   PauseGourmandeDessert,
   PauseGourmandeFormula,
   PauseGourmandeSupplement,
@@ -141,7 +140,7 @@ export const RESTAURANT_SPECIAL_DISH: SpecialDish = {
 };
 
 // ─── PLAT DU JOUR (semaine & weekend) ─────────────────────────────────────
-// Service continu : plats du jour de la semaine et du week-end (5 000 F CFA)
+// Service continu : plats du jour de la semaine et du week-end (5 000 FCFA)
 
 /** Plats de la semaine — du lundi au vendredi */
 export const WEEK_DAILY_DISHES: DailyDish[] = [
@@ -280,34 +279,6 @@ export const DEJEUNER_FORMULES: DejeunerFormule[] = [
     courses: ['plat', 'dessert'],
   },
 ];
-
-// ─── MENU DU JOUR ─────────────────────────────────────────────────────────
-export const MENU_DU_JOUR_FORMULES: MenuFormula[] = [
-  {
-    id: 'mdj-f1',
-    name: 'FORMULE 1',
-    price: 9000,
-    description: 'Entrée + Plat + Dessert',
-  },
-  {
-    id: 'mdj-f2',
-    name: 'FORMULE 2',
-    price: 7500,
-    description: 'Entrée + Plat',
-  },
-  {
-    id: 'mdj-f3',
-    name: 'FORMULE 3',
-    price: 7500,
-    description: 'Plat + Dessert',
-  },
-];
-
-export const DEFAULT_MENU_DU_JOUR_PROPOSITIONS = {
-  entree: 'Salade fraîcheur de saison',
-  plat: 'Plat du jour au choix',
-  dessert: 'Douceur maison de la Chef',
-};
 
 // ─── PAUSE GOURMANDE / SWEET BREAK (15h00 à 17h30) ─────────────────────────
 export const PAUSE_GOURMANDE_DESSERTS: PauseGourmandeDessert[] = [

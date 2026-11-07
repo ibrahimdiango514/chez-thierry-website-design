@@ -198,9 +198,8 @@ function DishCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
         <div className="mt-3 pt-3 border-t border-neutral-800/50 flex items-center justify-between gap-3">
           <div>
             <span className="text-2xl font-extrabold text-amber-400">
-              {item.price.toLocaleString()} F
+              {item.price.toLocaleString('fr-FR')} FCFA
             </span>
-            <span className="block text-[10px] text-neutral-500">F CFA</span>
           </div>
           <button
             onClick={onAdd}
@@ -307,9 +306,8 @@ function SpecialDishBanner({ onAdd }: { onAdd: () => void }) {
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
           <div className="text-center md:text-left">
             <span className="text-3xl font-extrabold text-amber-400">
-              {RESTAURANT_SPECIAL_DISH.price.toLocaleString()} F
+              {RESTAURANT_SPECIAL_DISH.price.toLocaleString('fr-FR')} FCFA
             </span>
-            <span className="block text-[10px] text-neutral-500">F CFA</span>
           </div>
           <button
             onClick={onAdd}
@@ -446,11 +444,11 @@ function OrderModal({
     msg += `🍽️ Mode : ${MODE_LABELS[mode]}\n\n`;
     msg += `📝 Commande :\n`;
     for (const l of lines) {
-      let line = `- ${l.qty}x ${l.item.name} (${(l.item.price * l.qty).toLocaleString()} F)`;
+      let line = `- ${l.qty}x ${l.item.name} (${(l.item.price * l.qty).toLocaleString('fr-FR')} FCFA)`;
       if (mixed) line += ` [${ESTABLISHMENT_SHORT[l.section]}]`;
       msg += line + '\n';
     }
-    msg += `\n💰 Total : ${totalPrice.toLocaleString()} F CFA\n\n`;
+    msg += `\n💰 Total : ${totalPrice.toLocaleString('fr-FR')} FCFA\n\n`;
     msg += `👤 Client : ${name.trim()}\n`;
     msg += `📞 Téléphone : ${phone.trim()}`;
 
@@ -533,7 +531,7 @@ function OrderModal({
                     <p className="text-sm md:text-base font-bold text-white truncate">{l.item.name}</p>
                     <p className="text-xs text-neutral-500">
                       {mixed ? `${ESTABLISHMENT_SHORT[l.section]} · ` : ''}
-                      {(l.item.price * l.qty).toLocaleString()} F
+                      {(l.item.price * l.qty).toLocaleString('fr-FR')} FCFA
                     </p>
                   </div>
                   <div className="flex items-center gap-2 bg-neutral-950 border border-neutral-800 rounded-xl px-1.5 py-1">
@@ -689,7 +687,7 @@ function OrderModal({
                 {totalQty} article{totalQty > 1 ? 's' : ''} · Total
               </span>
               <span className="text-2xl font-extrabold text-amber-400">
-                {totalPrice.toLocaleString()} F CFA
+                {totalPrice.toLocaleString('fr-FR')} FCFA
               </span>
             </div>
 
@@ -836,7 +834,7 @@ function OrderModal({
                   {lines.map((l) => (
                     <div key={l.key} className="flex justify-between items-center text-slate-200">
                       <span>• {l.qty}x {l.item.name}</span>
-                      <span className="font-bold text-amber-400">{(l.item.price * l.qty).toLocaleString()} F</span>
+                      <span className="font-bold text-amber-400">{(l.item.price * l.qty).toLocaleString('fr-FR')} FCFA</span>
                     </div>
                   ))}
                 </div>
@@ -845,7 +843,7 @@ function OrderModal({
               <div className="flex justify-between items-center pt-2 text-base font-bold text-white">
                 <span>Total à régler :</span>
                 <span className="text-amber-400 font-playfair text-lg sm:text-xl">
-                  {totalPrice.toLocaleString()} F CFA
+                  {totalPrice.toLocaleString('fr-FR')} FCFA
                 </span>
               </div>
             </div>
@@ -1109,7 +1107,7 @@ export default function Menu() {
               <h2 className="text-2xl md:text-3xl font-playfair font-bold text-white flex items-center justify-center gap-2">
                 <span className="text-3xl">🥘</span> Plats du jour
               </h2>
-              <p className="mt-2 text-xs md:text-sm text-slate-400">Semaine &amp; week-end · plats à 5 000 F, couscous royal à 7 500 F</p>
+              <p className="mt-2 text-xs md:text-sm text-slate-400">Semaine &amp; week-end · plats à 5 000 FCFA, couscous royal à 7 500 FCFA</p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
               {DAILY_DISH_CATEGORIES.map((category) => (
@@ -1204,7 +1202,7 @@ export default function Menu() {
               <ShoppingCart className="w-6 h-6" />
               {totalQty} article{totalQty > 1 ? 's' : ''}
             </span>
-            <span>{totalPrice.toLocaleString()} F</span>
+            <span>{totalPrice.toLocaleString('fr-FR')} FCFA</span>
             <span className="bg-neutral-950/20 px-3 py-1.5 rounded-xl text-sm">Commander</span>
           </button>
         </div>

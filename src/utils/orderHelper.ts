@@ -106,14 +106,14 @@ export function buildOrderMessage({
   for (const ci of items) {
     const sec = ci.section || getItemSection(ci.item);
     const lineTotal = ci.item.price * ci.quantity;
-    let line = `- ${ci.quantity}x ${ci.item.name} (${lineTotal.toLocaleString()} F)`;
+    let line = `- ${ci.quantity}x ${ci.item.name} (${lineTotal.toLocaleString('fr-FR')} FCFA)`;
     if (isMixed) {
       line += ` [${ESTABLISHMENT_SHORT[sec]}]`;
     }
     msg += `${line}\n`;
   }
 
-  msg += `\n💰 Total : ${total.toLocaleString()} F CFA\n\n`;
+  msg += `\n💰 Total : ${total.toLocaleString('fr-FR')} FCFA\n\n`;
   msg += `👤 Client : ${customerName.trim()}\n`;
   msg += `📞 Téléphone : ${customerPhone.trim()}`;
 

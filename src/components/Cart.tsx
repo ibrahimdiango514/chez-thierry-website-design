@@ -37,7 +37,7 @@ export const Cart: React.FC<CartProps> = ({
             {totalItems}
           </span>
         </div>
-        <span className="hidden md:inline">{totalPrice.toLocaleString()} F CFA</span>
+        <span className="hidden md:inline">{totalPrice.toLocaleString('fr-FR')} FCFA</span>
       </button>
 
       {/* Cart Sidebar/Modal */}
@@ -68,7 +68,7 @@ export const Cart: React.FC<CartProps> = ({
                   <div className="flex-1">
                     <h4 className="text-slate-100 font-bold text-sm">{item.item.name}</h4>
                     <p className="text-xs mt-1 font-semibold text-amber-400">
-                      {item.item.price.toLocaleString()} F CFA
+                      {item.item.price.toLocaleString('fr-FR')} FCFA
                     </p>
                   </div>
 
@@ -107,7 +107,7 @@ export const Cart: React.FC<CartProps> = ({
             <div className="p-6 border-t border-neutral-800 bg-neutral-900/40">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-neutral-400 font-medium">Total</span>
-                <span className="text-xl font-bold text-amber-400 font-playfair">{totalPrice.toLocaleString()} F CFA</span>
+                <span className="text-xl font-bold text-amber-400 font-playfair">{totalPrice.toLocaleString('fr-FR')} FCFA</span>
               </div>
               <button
                 onClick={onOpenCheckout}

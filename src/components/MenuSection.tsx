@@ -142,9 +142,8 @@ export const MenuSection: React.FC<MenuSectionProps> = ({ items, onAddToCart, se
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-800/40">
                       <div className="flex flex-col">
                         <span className="text-xl font-bold text-amber-400">
-                          {item.price.toLocaleString()} F
+                          {item.price.toLocaleString('fr-FR')} FCFA
                         </span>
-                        <span className="text-[10px] text-neutral-500 font-medium">F CFA</span>
                       </div>
 
                       <button

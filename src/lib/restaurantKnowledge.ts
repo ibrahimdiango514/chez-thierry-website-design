@@ -89,7 +89,7 @@ export const normalize = (s: string): string =>
     .replace(/\s+/g, ' ')
     .trim();
 
-export const formatPrice = (n: number): string => `${n.toLocaleString('fr-FR')} F`;
+export const formatPrice = (n: number): string => `${n.toLocaleString('fr-FR')} FCFA`;
 
 /** Catégories uniques de tous les plats */
 export const allCategories = (): string[] =>

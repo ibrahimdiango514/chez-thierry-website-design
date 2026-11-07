@@ -431,7 +431,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       {ci.quantity}x {ci.item.name}
                     </span>
                     <span className="text-white font-semibold flex-shrink-0">
-                      {(ci.item.price * ci.quantity).toLocaleString()} F
+                      {(ci.item.price * ci.quantity).toLocaleString('fr-FR')} FCFA
                     </span>
                   </div>
                 ))}
@@ -440,7 +440,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="flex justify-between items-center text-base sm:text-lg font-bold border-t border-neutral-800/80 pt-2">
                 <span className="text-neutral-200">Total :</span>
                 <span className="text-amber-400 font-playfair text-xl">
-                  {total.toLocaleString()} F CFA
+                  {total.toLocaleString('fr-FR')} FCFA
                 </span>
               </div>
             </div>
@@ -599,7 +599,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   {cartItems.map((ci) => (
                     <div key={ci.item.id} className="flex justify-between items-center text-slate-200">
                       <span>• {ci.quantity}x {ci.item.name}</span>
-                      <span className="font-bold text-amber-400">{(ci.item.price * ci.quantity).toLocaleString()} F</span>
+                      <span className="font-bold text-amber-400">{(ci.item.price * ci.quantity).toLocaleString('fr-FR')} FCFA</span>
                     </div>
                   ))}
                 </div>
@@ -608,7 +608,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="flex justify-between items-center pt-2 text-base font-bold text-white">
                 <span>Total :</span>
                 <span className="text-amber-400 font-playfair text-lg sm:text-xl">
-                  {total.toLocaleString()} F CFA
+                  {total.toLocaleString('fr-FR')} FCFA
                 </span>
               </div>
             </div>
