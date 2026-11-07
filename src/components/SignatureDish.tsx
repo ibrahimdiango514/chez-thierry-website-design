@@ -10,9 +10,9 @@ export const SignatureDish: React.FC<SignatureDishProps> = ({ onAddToCart, onDir
   const couscousItem = {
     id: 'signature-couscous',
     name: 'Couscous Royal',
-    price: 7000,
+    price: 7500,
     category: 'Plat Signature',
-    description: 'Couscous royal généreux composé de poulet, merguez et mouton'
+    description: 'Couscous royal généreux composé de poulet, merguez et agneau'
   };
 
   return (
@@ -31,7 +31,7 @@ export const SignatureDish: React.FC<SignatureDishProps> = ({ onAddToCart, onDir
           <div className="relative rounded-3xl overflow-hidden border-2 border-amber-500/20 shadow-2xl bg-neutral-900">
             <img 
               src="/images/couscous-royal.jpg" 
-              alt="Couscous Royal - Poulet, Merguez, Mouton" 
+              alt="Couscous Royal - Poulet, Merguez, Agneau" 
               className="w-full h-auto object-contain mx-auto"
               loading="lazy"
             />
@@ -39,7 +39,7 @@ export const SignatureDish: React.FC<SignatureDishProps> = ({ onAddToCart, onDir
         </div>
 
         <p className="text-white mt-4 text-sm sm:text-base md:text-xl font-light max-w-xl leading-relaxed px-2 break-words">
-          Couscous royal généreux composé de poulet, merguez et mouton
+          Couscous royal généreux composé de poulet, merguez et agneau
         </p>
 
         <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 px-4 py-2 rounded-full text-xs text-slate-300 mt-5 shadow-sm max-w-full">
@@ -61,7 +61,7 @@ export const SignatureDish: React.FC<SignatureDishProps> = ({ onAddToCart, onDir
 
         <div className="mt-8 pt-6 border-t border-neutral-900 w-full max-w-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center">
-            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-400">7 000 F</span>
+            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-400">7 500 F</span>
             <span className="text-xs text-neutral-500 font-bold block">F CFA</span>
           </div>
 

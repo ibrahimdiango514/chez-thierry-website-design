@@ -20,6 +20,8 @@ import { RESTAURANT_MENU, ROOFTOP_MENU, RESTAURANT_SPECIAL_DISH } from '../data'
 import { MenuItem, OrderMode } from '../types';
 import { Footer } from '../components/Footer';
 import { DishImage, CATEGORY_EMOJIS } from '../components/DishImage';
+import { DishCategory, DAILY_DISH_CATEGORIES } from '../components/DailyDishes';
+import { LunchMenu } from '../components/LunchMenu';
 import { QRCodeSection } from '../components/QRCodeSection';
 import { Assistant } from '../components/Assistant';
 import {
@@ -1034,6 +1036,18 @@ export default function Menu() {
       <div className="sticky top-16 z-30 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900/60 py-2.5 px-4">
         <div className="max-w-5xl mx-auto flex overflow-x-auto gap-2 scrollbar-hide">
           <button
+            onClick={() => jumpTo('plats-du-jour')}
+            className="whitespace-nowrap flex items-center gap-1.5 text-sm font-extrabold px-4 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-200 hover:border-amber-500/50"
+          >
+            🥘 Plats du jour
+          </button>
+          <button
+            onClick={() => jumpTo('dejeuner')}
+            className="whitespace-nowrap flex items-center gap-1.5 text-sm font-extrabold px-4 py-2 rounded-xl border transition-all bg-neutral-900 border-neutral-800 text-slate-200 hover:border-amber-500/50"
+          >
+            🥗 Déjeuner
+          </button>
+          <button
             onClick={() => jumpTo('menu-restaurant')}
             className="whitespace-nowrap flex items-center gap-1.5 text-sm font-extrabold px-4 py-2 rounded-xl border transition-all bg-amber-500 border-amber-500 text-neutral-950 shadow-lg shadow-amber-500/20"
           >
@@ -1085,6 +1099,34 @@ export default function Menu() {
             >
               Effacer la recherche
             </button>
+          </div>
+        )}
+
+        {/* ─── Plats du jour (semaine & week-end) — mêmes données et libellés que la page d'accueil ─── */}
+        {!isSearching && (
+          <section id="plats-du-jour" className="scroll-mt-32 mb-12">
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl md:text-3xl font-playfair font-bold text-white flex items-center justify-center gap-2">
+                <span className="text-3xl">🥘</span> Plats du jour
+              </h2>
+              <p className="mt-2 text-xs md:text-sm text-slate-400">Semaine &amp; week-end · plats à 5 000 F, couscous royal à 7 500 F</p>
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
+              {DAILY_DISH_CATEGORIES.map((category) => (
+                <DishCategory
+                  key={category.id}
+                  {...category}
+                  onAddToCart={(item) => addToCart(item, 'restaurant')}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ─── Déjeuner (entrée / plat / dessert, formules au choix) — même parcours de commande ─── */}
+        {!isSearching && (
+          <div className="-mx-4 md:-mx-8 mb-12">
+            <LunchMenu onAddToCart={(item) => addToCart(item, 'restaurant')} />
           </div>
         )}
 

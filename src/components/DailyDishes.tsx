@@ -41,6 +41,15 @@ const DishList: React.FC<DishListProps> = ({ dishes, onAddToCart }) => (
 
             {/* Plat + description + prix */}
             <div className="mt-2 sm:mt-0 min-w-0 flex-1">
+              {dish.image && !isClosed && (
+                <img
+                  src={dish.image}
+                  alt={`${dish.name} — plat du ${dish.day.toLowerCase()}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="mb-3 w-full max-w-[300px] rounded-xl border border-neutral-800 bg-neutral-950 object-contain"
+                />
+              )}
               <div className="flex flex-wrap items-baseline gap-2">
                 <h4
                   className={`font-playfair text-lg sm:text-xl md:text-2xl font-bold leading-snug break-words transition-colors ${
@@ -112,7 +121,7 @@ interface DishCategoryProps {
   onAddToCart?: (item: MenuItem) => void;
 }
 
-const DishCategory: React.FC<DishCategoryProps> = ({
+export const DishCategory: React.FC<DishCategoryProps> = ({
   badge,
   title,
   subtitle,
@@ -157,6 +166,26 @@ const DishCategory: React.FC<DishCategoryProps> = ({
 );
 
 const STORAGE_KEY = 'chezthierry_menu_du_jour_propositions';
+
+export const DAILY_DISH_CATEGORIES: (Omit<DishCategoryProps, 'onAddToCart'> & { id: DailyDishPeriod })[] = [
+  {
+    id: 'semaine',
+    badge: '🗓️ Lundi → Vendredi',
+    emoji: '🥘',
+    title: 'Plats de la semaine',
+    subtitle: 'Les suggestions du lundi au vendredi',
+    dishes: WEEK_DAILY_DISHES,
+  },
+  {
+    id: 'weekend',
+    badge: '✨ Samedi & Dimanche',
+    emoji: '⭐',
+    title: 'Plats du weekend',
+    subtitle: 'Les plats généreux du samedi et du dimanche',
+    dishes: WEEKEND_DAILY_DISHES,
+    highlighted: true,
+  },
+];
 
 export const DailyDishes: React.FC<{
   onAddToCart?: (item: MenuItem) => void;
@@ -203,25 +232,8 @@ export const DailyDishes: React.FC<{
     }
   };
 
-  const categories: (Omit<DishCategoryProps, 'onAddToCart'> & { id: DailyDishPeriod })[] = [
-    {
-      id: 'semaine',
-      badge: '🗓️ Lundi → Vendredi',
-      emoji: '🥘',
-      title: 'Plats de la semaine',
-      subtitle: 'Les suggestions du lundi au vendredi',
-      dishes: WEEK_DAILY_DISHES,
-    },
-    {
-      id: 'weekend',
-      badge: '✨ Samedi & Dimanche',
-      emoji: '⭐',
-      title: 'Plats du weekend',
-      subtitle: 'Les plats généreux du samedi et du dimanche',
-      dishes: WEEKEND_DAILY_DISHES,
-      highlighted: true,
-    },
-  ];
+
+  const categories = DAILY_DISH_CATEGORIES;
 
   return (
     <section
