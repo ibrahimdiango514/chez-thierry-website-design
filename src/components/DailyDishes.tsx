@@ -121,7 +121,7 @@ interface DishCategoryProps {
   onAddToCart?: (item: MenuItem) => void;
 }
 
-const DishCategory: React.FC<DishCategoryProps> = ({
+export const DishCategory: React.FC<DishCategoryProps> = ({
   badge,
   title,
   subtitle,
@@ -166,6 +166,26 @@ const DishCategory: React.FC<DishCategoryProps> = ({
 );
 
 const STORAGE_KEY = 'chezthierry_menu_du_jour_propositions';
+
+export const DAILY_DISH_CATEGORIES: (Omit<DishCategoryProps, 'onAddToCart'> & { id: DailyDishPeriod })[] = [
+  {
+    id: 'semaine',
+    badge: '🗓️ Lundi → Vendredi',
+    emoji: '🥘',
+    title: 'Plats de la semaine',
+    subtitle: 'Les suggestions du lundi au vendredi',
+    dishes: WEEK_DAILY_DISHES,
+  },
+  {
+    id: 'weekend',
+    badge: '✨ Samedi & Dimanche',
+    emoji: '⭐',
+    title: 'Plats du weekend',
+    subtitle: 'Les plats généreux du samedi et du dimanche',
+    dishes: WEEKEND_DAILY_DISHES,
+    highlighted: true,
+  },
+];
 
 export const DailyDishes: React.FC<{
   onAddToCart?: (item: MenuItem) => void;
@@ -212,25 +232,8 @@ export const DailyDishes: React.FC<{
     }
   };
 
-  const categories: (Omit<DishCategoryProps, 'onAddToCart'> & { id: DailyDishPeriod })[] = [
-    {
-      id: 'semaine',
-      badge: '🗓️ Lundi → Vendredi',
-      emoji: '🥘',
-      title: 'Plats de la semaine',
-      subtitle: 'Les suggestions du lundi au vendredi',
-      dishes: WEEK_DAILY_DISHES,
-    },
-    {
-      id: 'weekend',
-      badge: '✨ Samedi & Dimanche',
-      emoji: '⭐',
-      title: 'Plats du weekend',
-      subtitle: 'Les plats généreux du samedi et du dimanche',
-      dishes: WEEKEND_DAILY_DISHES,
-      highlighted: true,
-    },
-  ];
+
+  const categories = DAILY_DISH_CATEGORIES;
 
   return (
     <section
