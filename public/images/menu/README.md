@@ -28,7 +28,7 @@ Images générées par IA à partir des descriptions de l'affiche officielle (m�
   - `dimanche-couscous-royal.jpg` : couscous royal 3 viandes (style commun, vérifiée)
 - `dejeuner/` (déclarés dans `DEJEUNER_JOURS`, `src/data.ts`), une image par journée avec entrée, plat et dessert :
   - `mardi.jpg`, `mercredi.jpg`, `jeudi.jpg`, `samedi.jpg` : style commun, vérifiées
-  - `vendredi.jpg` : **version précédente** (ancien style, poisson visible dans la cassolette). Elle doit être remplacée par une version au style commun ; la génération de la cassolette de poisson sera reprise au tour suivant.
+  - `vendredi.jpg` : style commun, vérifiée (cassolette de poisson gratinée, macédoine, crêpe au chocolat)
   - `dimanche.jpg` : couscous royal (même plat que le plat du jour du dimanche)
 
 Le couscous royal de la carte signature garde son image existante (`public/images/couscous-royal.jpg`).
