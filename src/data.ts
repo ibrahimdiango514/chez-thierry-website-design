@@ -6,6 +6,8 @@ import {
   PauseGourmandeFormula,
   PauseGourmandeSupplement,
   AperoPlanche,
+  DejeunerJour,
+  DejeunerFormule,
 } from './types';
 
 export const RESTAURANT_MENU: MenuItem[] = [
@@ -152,30 +154,34 @@ export const WEEK_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-mardi',
     day: 'MARDI',
-    name: 'Facou',
-    description: 'À base de viande de mouton',
+    name: 'Fakouye',
+    description: 'À la viande de mouton',
     price: 5000,
+    image: '/images/menu/plats-du-jour/mardi-fakouye.jpg',
   },
   {
     id: 'dj-mercredi',
     day: 'MERCREDI',
     name: 'Mafé',
-    description: "Sauce à base d'arachide, viande de bœuf",
+    description: 'À la viande de bœuf',
     price: 5000,
+    image: '/images/menu/plats-du-jour/mercredi-mafe.jpg',
   },
   {
     id: 'dj-jeudi',
     day: 'JEUDI',
-    name: 'Yassa Poulet',
+    name: 'Yassa au poulet',
     description: '',
     price: 5000,
+    image: '/images/menu/plats-du-jour/jeudi-yassa.jpg',
   },
   {
     id: 'dj-vendredi',
     day: 'VENDREDI',
-    name: 'Tchep poisson',
-    description: '',
+    name: 'Riz au gras façon thiep',
+    description: 'Poisson ou poulet',
     price: 5000,
+    image: '/images/menu/plats-du-jour/vendredi-riz-au-gras.jpg',
   },
 ];
 
@@ -191,9 +197,87 @@ export const WEEKEND_DAILY_DISHES: DailyDish[] = [
   {
     id: 'dj-dimanche',
     day: 'DIMANCHE',
-    name: 'Couscous oriental – 3 viandes',
-    description: 'Agneau, merguez et poulet',
+    name: 'Couscous royal 3 viandes',
+    description: 'Agneau, merguez, poulet',
     price: 7500,
+    image: '/images/menu/plats-du-jour/dimanche-couscous-royal.jpg',
+  },
+];
+
+// ─── DÉJEUNER (entrée / plat / dessert) ───────────────────────────────────
+/** Journées du menu Déjeuner. Photos fidèles aux visuels du restaurant. */
+export const DEJEUNER_JOURS: DejeunerJour[] = [
+  {
+    id: 'mardi',
+    day: 'Mardi',
+    image: '/images/menu/dejeuner/mardi.jpg',
+    entree: 'Salade de hors-d’œuvre (pommes de terre, mayonnaise, œufs durs)',
+    plat: 'Spaghettis bolognaise',
+    dessert: 'Yaourt coulis d’hibiscus',
+  },
+  {
+    id: 'mercredi',
+    day: 'Mercredi',
+    image: '/images/menu/dejeuner/mercredi.jpg',
+    entree: 'Œuf mayonnaise',
+    plat: 'Duo de brochettes (1 bœuf, 1 poulet) et frites',
+    dessert: 'Salade de fruits',
+  },
+  {
+    id: 'jeudi',
+    day: 'Jeudi',
+    image: '/images/menu/dejeuner/jeudi.jpg',
+    entree: 'Salade de crudités',
+    plat: 'Cuisses de poulet grillées et pommes sautées',
+    dessert: 'Boule de glace caramel',
+  },
+  {
+    id: 'vendredi',
+    day: 'Vendredi',
+    image: '/images/menu/dejeuner/vendredi.jpg',
+    entree: 'Salade macédoine',
+    plat: 'Cassolette de poisson et son riz',
+    dessert: 'Crêpe au chocolat',
+  },
+  {
+    id: 'samedi',
+    day: 'Samedi',
+    image: '/images/menu/dejeuner/samedi.jpg',
+    entree: 'Salade niçoise',
+    plat: 'Lasagne à la bolognaise',
+    dessert: 'Gaufre au caramel',
+  },
+  {
+    id: 'dimanche',
+    day: 'Dimanche',
+    image: '/images/menu/dejeuner/dimanche.jpg',
+    platSeul: {
+      name: 'Couscous royal 3 viandes',
+      description: 'Agneau, merguez, poulet',
+      price: 7500,
+    },
+  },
+];
+
+/** Formules déjeuner (choisies entrée / plat / dessert selon la formule) */
+export const DEJEUNER_FORMULES: DejeunerFormule[] = [
+  {
+    id: 'complete',
+    name: 'Formule complète',
+    price: 9000,
+    courses: ['entree', 'plat', 'dessert'],
+  },
+  {
+    id: 'formule-1',
+    name: 'Formule 1',
+    price: 7500,
+    courses: ['entree', 'plat'],
+  },
+  {
+    id: 'formule-2',
+    name: 'Formule 2',
+    price: 7500,
+    courses: ['plat', 'dessert'],
   },
 ];
 

@@ -41,6 +41,15 @@ const DishList: React.FC<DishListProps> = ({ dishes, onAddToCart }) => (
 
             {/* Plat + description + prix */}
             <div className="mt-2 sm:mt-0 min-w-0 flex-1">
+              {dish.image && !isClosed && (
+                <img
+                  src={dish.image}
+                  alt={`${dish.name} — plat du ${dish.day.toLowerCase()}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="mb-3 w-full max-w-[300px] rounded-xl border border-neutral-800 bg-neutral-950 object-contain"
+                />
+              )}
               <div className="flex flex-wrap items-baseline gap-2">
                 <h4
                   className={`font-playfair text-lg sm:text-xl md:text-2xl font-bold leading-snug break-words transition-colors ${

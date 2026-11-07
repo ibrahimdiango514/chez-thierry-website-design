@@ -49,6 +49,33 @@ export interface DailyDish {
   image?: string;
 }
 
+/** Cours d'un menu déjeuner */
+export type DejeunerCourse = 'entree' | 'plat' | 'dessert';
+
+/**
+ * Journée du menu Déjeuner (entrée / plat / dessert).
+ * Si `platSeul` est renseigné, la journée se commande uniquement à la carte (pas de formule).
+ */
+export interface DejeunerJour {
+  id: string;
+  /** Jour concerné (ex: "Mardi") */
+  day: string;
+  /** Photo fidèle du menu (chemin public) */
+  image: string;
+  entree?: string;
+  plat?: string;
+  dessert?: string;
+  platSeul?: { name: string; description: string; price: number };
+}
+
+/** Formule déjeuner choisissable (combinaison de cours) */
+export interface DejeunerFormule {
+  id: string;
+  name: string;
+  price: number;
+  courses: DejeunerCourse[];
+}
+
 export interface MenuFormula {
   id: string;
   name: string;

@@ -6,6 +6,7 @@ import { Hero } from '../components/Hero';
 import { MapEmbed } from '../components/MapEmbed';
 import { GeneralInfo } from '../components/GeneralInfo';
 import { DailyDishes } from '../components/DailyDishes';
+import { LunchMenu } from '../components/LunchMenu';
 import { PauseGourmande } from '../components/PauseGourmande';
 import { ApresMidisApero } from '../components/ApresMidisApero';
 import { SignatureDish } from '../components/SignatureDish';
@@ -191,6 +192,7 @@ export default function Home() {
         <div className="hidden xl:flex items-center gap-5 text-xs xl:text-sm font-semibold text-slate-300">
           <button onClick={() => scrollToSection('accueil')} className="hover:text-amber-400 transition-colors cursor-pointer">Accueil</button>
           <button onClick={() => scrollToSection('plat-du-jour')} className="hover:text-amber-400 transition-colors cursor-pointer">Plats du jour</button>
+          <button onClick={() => scrollToSection('dejeuner')} className="hover:text-amber-400 transition-colors cursor-pointer">Déjeuner</button>
           <button onClick={() => scrollToSection('pause-gourmande')} className="hover:text-amber-400 transition-colors cursor-pointer">Pause Gourmande / Sweet Break</button>
           <button onClick={() => scrollToSection('apero')} className="hover:text-amber-400 transition-colors cursor-pointer">Nos après-midis apéro</button>
           <button onClick={() => scrollToSection('restaurant')} className="hover:text-amber-400 transition-colors cursor-pointer">Restaurant</button>
@@ -216,6 +218,12 @@ export default function Home() {
             className="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-lg text-slate-200 font-bold whitespace-nowrap"
           >
             🍽️ Plats du jour
+          </button>
+          <button 
+            onClick={() => scrollToSection('dejeuner')} 
+            className="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-lg text-slate-200 font-bold whitespace-nowrap"
+          >
+            🥗 Déjeuner
           </button>
           <button 
             onClick={() => scrollToSection('pause-gourmande')} 
@@ -249,6 +257,11 @@ export default function Home() {
 
           {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend + Menu du jour */}
           <DailyDishes
+            onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
+          />
+
+          {/* 1 bis bis. NOUVEL ONGLET « Déjeuner » : entrée / plat / dessert, formules au choix */}
+          <LunchMenu
             onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
           />
 
