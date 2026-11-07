@@ -61,8 +61,7 @@ export const SignatureDish: React.FC<SignatureDishProps> = ({ onAddToCart, onDir
 
         <div className="mt-8 pt-6 border-t border-neutral-900 w-full max-w-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center">
-            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-400">7 500 F</span>
-            <span className="text-xs text-neutral-500 font-bold block">F CFA</span>
+            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-400">7 500 FCFA</span>
           </div>
 
           <button

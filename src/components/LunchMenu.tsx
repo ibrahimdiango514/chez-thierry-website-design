@@ -22,7 +22,7 @@ const COURSE_LABELS: Record<DejeunerCourse, string> = {
 
 const COURSES: DejeunerCourse[] = ['entree', 'plat', 'dessert'];
 
-const formatPrice = (price: number) => `${price.toLocaleString('fr-FR')} F`;
+const formatPrice = (price: number) => `${price.toLocaleString('fr-FR')} FCFA`;
 
 /** Une formule est disponible si tous ses cours existent pour la journée */
 const isFormuleAvailable = (day: DejeunerJour, formule: DejeunerFormule) =>
@@ -104,7 +104,6 @@ const DayCard: React.FC<DayCardProps> = ({ day, onAddToCart }) => {
                 <span className="text-3xl font-extrabold text-amber-400">
                   {formatPrice(day.platSeul.price)}
                 </span>
-                <span className="text-xs font-semibold text-neutral-500">F CFA</span>
               </div>
               <p className="text-xs italic text-neutral-500">
                 Plat servi à la carte, sans formule entrée / dessert.

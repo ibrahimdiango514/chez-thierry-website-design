@@ -70,7 +70,7 @@ export const GeneralInfo: React.FC = () => {
                 <div className="flex items-start gap-2.5">
                   <span className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 mt-1.5" />
                   <div>
-                    <span className="font-bold text-amber-300">Du mardi au vendredi :</span> Plats du jour (chaque jour, deux propositions : plat du jour local et plat du jour occidental).
+                    <span className="font-bold text-amber-300">Du mardi au vendredi :</span> un plat du jour par jour (fakouye le mardi, mafé le mercredi, yassa au poulet le jeudi, riz au gras le vendredi).
                   </div>
                 </div>
 

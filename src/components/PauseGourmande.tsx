@@ -76,7 +76,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                       emoji={dessert.emoji ?? '🥞'}
                     />
                     <div className="absolute top-2 right-2 rounded-full bg-neutral-950/80 backdrop-blur-md border border-amber-500/30 px-3 py-1 text-xs font-bold text-amber-400">
-                      {dessert.price.toLocaleString()} F CFA
+                      {dessert.price.toLocaleString('fr-FR')} FCFA
                     </div>
                   </div>
 
@@ -93,9 +93,8 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                 <div className="mt-5 pt-3 border-t border-neutral-800/60 flex items-center justify-between gap-3">
                   <div>
                     <span className="text-xl font-extrabold text-amber-400">
-                      {dessert.price.toLocaleString()} F
+                      {dessert.price.toLocaleString('fr-FR')} FCFA
                     </span>
-                    <span className="block text-[10px] text-neutral-500 font-semibold">F CFA</span>
                   </div>
 
                   {onAddToCart && (
@@ -160,9 +159,8 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                   </h4>
                   <div className="my-3 flex items-baseline gap-1">
                     <span className="text-2xl font-extrabold text-amber-400">
-                      {formula.price.toLocaleString()} F
+                      {formula.price.toLocaleString('fr-FR')} FCFA
                     </span>
-                    <span className="text-xs font-semibold text-neutral-500">F CFA</span>
                   </div>
                   <p className="text-xs sm:text-sm font-light text-slate-300 leading-relaxed border-t border-neutral-800/80 pt-3">
                     {formula.description}
@@ -250,7 +248,7 @@ export const PauseGourmande: React.FC<PauseGourmandeProps> = ({ onAddToCart }) =
                         {supp.name}
                       </span>
                       <span className="text-xs font-extrabold text-amber-400">
-                        {supp.price.toLocaleString()} F CFA
+                        {supp.price.toLocaleString('fr-FR')} FCFA
                       </span>
                     </div>
                   </div>

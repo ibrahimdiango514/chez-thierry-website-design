@@ -73,9 +73,9 @@ export interface DishOrderMessageParams {
  *   🍽️ Mode : Sur place
  *
  *   📝 Commande :
- *   - 1x Pavé de Bœuf (8 000 F)
+ *   - 1x Pavé de Bœuf (8 000 FCFA)
  *
- *   💰 Total : 8 000 F CFA
+ *   💰 Total : 8 000 FCFA
  */
 export const buildDishOrderMessage = ({
   dish,
@@ -91,11 +91,11 @@ export const buildDishOrderMessage = ({
   message += `📝 Commande :\n`;
   // Ligne identique aux autres menus ; le prix est omis s'il n'est pas renseigné
   message += dish.price
-    ? `- ${quantity}x ${dish.name} (${total.toLocaleString()} F)`
+    ? `- ${quantity}x ${dish.name} (${total.toLocaleString('fr-FR')} FCFA)`
     : `- ${quantity}x ${dish.name}`;
 
   if (dish.price) {
-    message += `\n\n💰 Total : ${total.toLocaleString()} F CFA`;
+    message += `\n\n💰 Total : ${total.toLocaleString('fr-FR')} FCFA`;
   }
 
   return message;

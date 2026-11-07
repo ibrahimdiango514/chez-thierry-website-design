@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { SectionType, CartItem, MenuItem, OrderMode, DailyDish, MenuFormula } from '../types';
+import { SectionType, CartItem, MenuItem, OrderMode, DailyDish } from '../types';
 import { RESTAURANT_MENU, ROOFTOP_MENU } from '../data';
 import { Hero } from '../components/Hero';
 import { MapEmbed } from '../components/MapEmbed';
@@ -159,19 +159,6 @@ export default function Home() {
     setIsCheckoutOpen(true);
   };
 
-  const handleFormulaOrder = (formula: MenuFormula, mode: OrderMode) => {
-    const item: MenuItem = {
-      id: formula.id,
-      name: `${formula.name} — ${formula.description}`,
-      price: formula.price,
-      category: 'Menu du jour',
-      description: formula.description,
-    };
-    handleAddToCart(item, 'restaurant');
-    setCheckoutMode(mode);
-    setIsCheckoutOpen(true);
-  };
-
   return (
     <div className="min-h-screen bg-neutral-950 font-sans select-none antialiased text-slate-100 scroll-smooth">
       
@@ -255,7 +242,7 @@ export default function Home() {
           {/* INFORMATIONS GÉNÉRALES : MISE EN AVANT DÈS L'ARRIVÉE */}
           <GeneralInfo />
 
-          {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend + Menu du jour */}
+          {/* 1 bis. PARTIE 1 : Plat du jour — plats de la semaine & du weekend */}
           <DailyDishes
             onAddToCart={(item) => handleAddToCart(item, 'restaurant')}
           />
