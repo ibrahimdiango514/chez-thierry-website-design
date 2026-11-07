@@ -45,7 +45,7 @@ export const RESTAURANT_MENU: MenuItem[] = [
   // LES TEMPORELLES
   { id: 'lt1', name: 'Mijoté de collier d\'agneau', image: '/images/menu/restaurant/mijote-de-collier-dagneau.jpg', price: 10000, category: 'Les temporelles', description: "Collier d'agneau mijoté lentement aux épices et herbes aromatiques, accompagné d'une onctueuse purée de pommes de terre" },
   { id: 'lt2', name: 'Cuisses de grenouilles', image: '/images/menu/restaurant/cuisses-de-grenouilles.jpg', price: 7500, category: 'Les temporelles', description: "Cuisses de grenouilles sautées au beurre, à l'ail et au persil, déglacées au jus de citron, servies avec frites et salade" },
-  { id: 'lt3', name: 'Jarret d\'agneau rôti au romarin', image: '/images/menu/restaurant/jarret-dagneau-roti-au-romarin.jpg', price: 10000, category: 'Les temporelles', description: "Jarret d'agneau rôti au four au romarin, servi avec une poêlée de légumes de saison" },
+  { id: 'lt3', name: 'Jarret d\'agneau rôti au romarin', image: '/images/menu/restaurant/jarret-dagneau-roti-au-romarin.jpg', price: 15000, category: 'Les temporelles', description: "Jarret d'agneau rôti au four au romarin, servi avec une poêlée de légumes de saison" },
 
   // SUPPLÉMENTS D'ACCOMPAGNEMENT & EXTRA
   { id: 'su1', name: 'Supplément Frites', image: '/images/menu/restaurant/supplement-daccompagnement.jpg', price: 1500, category: 'Suppléments d\'accompagnement', description: 'Portion généreuse de frites croustillantes dorées' },
